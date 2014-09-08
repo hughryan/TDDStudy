@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  kata_name: MyString
+  cyberdojo_id: MyString
+  language_framework: MyString
+  session_count: 1
+  path: MyString
+
+two:
+  kata_name: MyString
+  cyberdojo_id: MyString
+  language_framework: MyString
+  session_count: 1
+  path: MyString

@@ -1,0 +1,53 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  kata_id: 
+  avatar: MyString
+  start_date: 2014-09-08 15:16:19
+  computed_time_secs: 1
+  total_light_count: 1
+  red_light_count: 1
+  green_light_count: 1
+  amber_light_count: 1
+  max_consecutive_red_chain_length: 1
+  total_sloc_count: 1
+  production_sloc_count: 1
+  test_sloc_count: 1
+  total_edited_line_count: 1
+  production_edited_line_count: 1
+  test_edited_line_count: 1
+  final_test_method_count: 1
+  cumulative_test_run_count: 1
+  cumulative_test_fail_count: 1
+  final_cyclomatic_complexity: 1
+  final_branch_coverage: 1.5
+  final_statement_coverage: 1.5
+  total_cycle_count: 1
+  final_light_color: MyString
+  tdd_score: 1.5
+
+two:
+  kata_id: 
+  avatar: MyString
+  start_date: 2014-09-08 15:16:19
+  computed_time_secs: 1
+  total_light_count: 1
+  red_light_count: 1
+  green_light_count: 1
+  amber_light_count: 1
+  max_consecutive_red_chain_length: 1
+  total_sloc_count: 1
+  production_sloc_count: 1
+  test_sloc_count: 1
+  total_edited_line_count: 1
+  production_edited_line_count: 1
+  test_edited_line_count: 1
+  final_test_method_count: 1
+  cumulative_test_run_count: 1
+  cumulative_test_fail_count: 1
+  final_cyclomatic_complexity: 1
+  final_branch_coverage: 1.5
+  final_statement_coverage: 1.5
+  total_cycle_count: 1
+  final_light_color: MyString
+  tdd_score: 1.5

@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  cycle_id: 
+  tdd_color: MyString
+  seconds_in_phase: 1
+  total_edit_count: 1
+  production_edit_count: 1
+  test_edit_count: 1
+  total_sloc_count: 1
+  production_sloc_count: 1
+  test_sloc_count: 1
+  total_line_change_count: 1
+  production_line_change_count: 1
+  test_line_change_count: 1
+
+two:
+  cycle_id: 
+  tdd_color: MyString
+  seconds_in_phase: 1
+  total_edit_count: 1
+  production_edit_count: 1
+  test_edit_count: 1
+  total_sloc_count: 1
+  production_sloc_count: 1
+  test_sloc_count: 1
+  total_line_change_count: 1
+  production_line_change_count: 1
+  test_line_change_count: 1
