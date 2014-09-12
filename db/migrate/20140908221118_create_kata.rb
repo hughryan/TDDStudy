@@ -1,6 +1,6 @@
 class CreateKata < ActiveRecord::Migration
   def change
-    create_table :kata do |t|
+    create_table :katas do |t|
       t.string :kata_name
       t.string :cyberdojo_id
       t.string :language_framework
