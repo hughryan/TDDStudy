@@ -25,6 +25,8 @@ gem 'sdoc', '~> 0.4.0',                              group: :doc
 gem 'rspec'
 # Capybara for BDD w/RSpec
 gem 'capybara'
+# smarter_csv because I cant figure out an easy way to import the kata data
+gem 'smarter_csv'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
