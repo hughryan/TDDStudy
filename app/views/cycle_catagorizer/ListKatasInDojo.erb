@@ -6,24 +6,32 @@
 
 <% @allSessions.each do |session| %>
     <tr>
-      <td><%= session.kata_name %></td>
-      <td><%= session.cyberdojo_id %></td>
-      <td><%= session.language_framework %></td>
-      <td><%= session.path %></td>
-      <td><%= session.avatar %></td>
-      <td><%= session.computed_time_secs %></td>
-
-<td><%= session.total_light_count %></td>
-<td><%= session.red_light_count %></td>
-<td><%= session.green_light_count %></td>
-<td><%= session.amber_light_count %></td>
-<td><%= session.max_consecutive_red_chain_length %></td>
-<td><%= session.total_sloc_count %></td>
-<td><%= session.production_sloc_count %></td>
-<td><%= session.test_sloc_count %></td>
-<td><%= session.total_edited_line_count %></td>
-<td><%= session.production_edited_line_count %></td>
-
+	    <td><%= session.kata_name %></td>
+	    <td><%= session.cyberdojo_id %></td>
+	    <td><%= session.language_framework %></td>
+	    <td><%= session.path %></td>
+	    <td><%= session.avatar %></td>
+	    <td><%= session.computed_time_secs %></td>
+		<td><%= session.total_light_count %></td>
+		<td><%= session.red_light_count %></td>
+		<td><%= session.green_light_count %></td>
+		<td><%= session.amber_light_count %></td>
+		<td><%= session.max_consecutive_red_chain_length %></td>
+		<td><%= session.total_sloc_count %></td>
+		<td><%= session.production_sloc_count %></td>
+		<td><%= session.test_sloc_count %></td>
+		<td><%= session.total_edited_line_count %></td>
+		<td><%= session.production_edited_line_count %></td>
+		<td><%= session.test_edited_line_count %></td>
+		<td><%= session.final_test_method_count %></td>
+		<td><%= session.cumulative_test_run_count %></td>
+		<td><%= session.cumulative_test_fail_count %></td>
+		<td><%= session.final_cyclomatic_complexity %></td>
+		<td><%= session.final_branch_coverage %></td>
+		<td><%= session.final_statement_coverage %></td>
+		<td><%= session.total_cycle_count %></td>
+		<td><%= session.final_light_color %></td>
+		<td><%= session.tdd_score %></td>
       <td><%= session.start_date %></td>
       <td><%= session.total_light_count %></td>
       <td><%= session.final_light_color %></td>
@@ -37,12 +45,12 @@
 
 
       t.integer :test_edited_line_count
-      t.integer :final_test_method_count
-      t.integer :cumulative_test_run_count
-      t.integer :cumulative_test_fail_count
-      t.integer :final_cyclomatic_complexity
-      t.float :final_branch_coverage
-      t.float :final_statement_coverage
+      t.integer :
+      t.integer :
+      t.integer :
+      t.integer :
+      t.float :
+      t.float :
       t.integer :total_cycle_count
-      t.string :final_light_color
-      t.float :tdd_score
+      t.string :
+      t.float :
