@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140908222355) do
+ActiveRecord::Schema.define(version: 20140915230754) do
 
   create_table "cycles", force: true do |t|
     t.integer  "session_id"
@@ -107,6 +107,10 @@ ActiveRecord::Schema.define(version: 20140908222355) do
     t.float    "tdd_score"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "kata_name"
+    t.string   "cyberdojo_id"
+    t.string   "language_framework"
+    t.string   "path"
   end
 
   add_index "sessions", ["kata_id"], name: "index_sessions_on_kata_id"

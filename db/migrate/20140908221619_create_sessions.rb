@@ -1,8 +1,11 @@
 class CreateSessions < ActiveRecord::Migration
   def change
     create_table :sessions do |t|
-      t.references :kata, index: true
-      t.string :avatar
+      t.string :kata_name
+      t.string :cyberdojo_id
+      t.string :language_framework
+      t.string :path
+      t.string   :avatar
       t.datetime :start_date
       t.integer :computed_time_secs
       t.integer :total_light_count

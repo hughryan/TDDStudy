@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   get 'cycle_catagorizer/cycle_catgories'
 
   get 'cycle_catagorizer/parseCSV'
+
+  get 'cycle_catagorizer/ListKatasInDojo'
+
+  get 'cycle_catagorizer/ImportAllKatas'
   
 
   # The priority is based upon order of creation: first created -> highest priority.
