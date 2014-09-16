@@ -68,7 +68,9 @@ class CycleCatagorizerController < ApplicationController
     end
   end
 
-
+  def buildCycleData
+    @allCycles = []
+  end
 
 
 
