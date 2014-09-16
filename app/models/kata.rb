@@ -2,7 +2,7 @@ root = '../..'
 require_relative root + '/app/lib/Cleaner'
 require 'json'
 
-class Kata < ActiveRecord::Base
+class Kata
 
   def initialize(katas,id,externals)
     raise "Invalid Kata(id)" if !katas.valid?(id)
@@ -35,7 +35,7 @@ class Kata < ActiveRecord::Base
 
       language.support_filenames.each do |filename|
         from = language.path + filename
-          to = avatar.sandbox.path + filename
+        to = avatar.sandbox.path + filename
         disk.symlink(from, to)
       end
 
@@ -96,7 +96,7 @@ class Kata < ActiveRecord::Base
     manifest['visible_files']
   end
 
-private
+  private
 
   def manifest
     @manifest ||= JSON.parse(clean(dir.read('manifest.json')))

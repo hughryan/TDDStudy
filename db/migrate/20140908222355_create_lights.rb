@@ -2,7 +2,6 @@ class CreateLights < ActiveRecord::Migration
   def change
     create_table :lights do |t|
       t.references :phase, index: true
-      t.references :phase, index: true
       t.string :light_color
       t.integer :git_tag
       t.integer :total_edited_line_count
