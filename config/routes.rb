@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   get 'cycle_catagorizer/ImportAllKatas'
 
   get 'cycle_catagorizer/buildCycleData'
-  
+
+  get 'grader/index'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

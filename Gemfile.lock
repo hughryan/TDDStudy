@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    ace-rails-ap (2.0.1)
     actionmailer (4.1.5)
       actionpack (= 4.1.5)
       actionview (= 4.1.5)
@@ -149,6 +150,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ace-rails-ap
   activerecord-jdbcsqlite3-adapter
   capybara
   coffee-rails (~> 4.0.0)

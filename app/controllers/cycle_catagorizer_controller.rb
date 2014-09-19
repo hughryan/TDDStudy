@@ -51,9 +51,18 @@ class CycleCatagorizerController < ApplicationController
     @katas = dojo.katas
     Session.delete_all
 
+
     @katas.each do |kata|
       kata.avatars.active.each do |avatar|
         session = Session.new do |s|
+          @redlights = 0
+          @greenlights = 0
+          @amberlights = 0
+          @path = avatar.path
+          @sloc = 0
+          @test_loc = 0
+          @production_loc = 0
+          @language = kata.language.name
           s.kata_name = kata.exercise.name
           s.cyberdojo_id = kata.id
           s.language_framework = kata.language.name
@@ -62,6 +71,40 @@ class CycleCatagorizerController < ApplicationController
           s.start_date = kata.created
           s.total_light_count = avatar.lights.count
           s.final_light_color = avatar.lights[avatar.lights.count-1].colour
+          maxRedString = 1
+          currRedString = 1
+          lastLightColor = "none"
+          avatar.lights.each do |curr_light|
+            #Count Types of Lights
+            case curr_light.colour.to_s
+            when "red"
+              @redlights += 1
+              if(lastLightColor == "red")
+                currRedString += 1
+                if(currRedString > maxRedString)
+                  maxRedString = currRedString
+                end
+              else
+                lastLightColor = "red"
+              end
+            when "green"
+              @greenlights += 1
+              lastLightColor = "green"
+              currRedString = 1
+            when "amber"
+              @amberlights += 1
+              lastLightColor = "amber"
+              currRedString = 1
+            end
+          end
+          s.red_light_count = @redlights
+          s.green_light_count = @greenlights
+          s.amber_light_count = @amberlights
+          s.max_consecutive_red_chain_length = maxRedString
+          calc_sloc
+          s.total_sloc_count = @sloc
+          s.production_sloc_count = @production_loc
+          s.test_sloc_count = @test_loc
         end
         session.save
       end
@@ -96,7 +139,7 @@ class CycleCatagorizerController < ApplicationController
 
         @allCycles.push(@json_cycles)
       end
-      if(i > 10)
+      if(i > 4)
         break
       end
     end
@@ -452,6 +495,42 @@ class CycleCatagorizerController < ApplicationController
     return lines.all? { |line| line[:type] === :added }
   end
 
+  def calc_sloc
+    puts "CALC SLOC"
+    dataset = {}
+    Dir.entries(@path.to_s + "sandbox").each do |currFile|
+      isFile = currFile.to_s =~ /\.java$|\.py$|\.c$|\.cpp$|\.js$|\.php$|\.rb$|\.hs$|\.clj$|\.go$|\.scala$|\.coffee$|\.cs$|\.groovy$\.erl$/i
+      puts "isFile"
+      puts isFile
+      unless isFile.nil?
+        file = @path.to_s + "sandbox/" + currFile.to_s
+        command = `./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{file}`
+        puts "./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{file}"
+        puts `pwd`
+        puts command
+        csv = CSV.parse(command)
+        puts csv.to_s
+        unless(csv.inspect() == "[]")
+          if @language.to_s == "Java-1.8_JUnit"
+            begin
+              if File.open(file).read.scan(/junit/).count > 0
+                @test_loc = @test_loc + csv[2][4].to_i
+                puts "TEST SLOC"
+                puts @test_loc
+              else
+                @production_loc = @production_loc + csv[2][4].to_i
+                puts "PRODUCTION SLOC"
+                puts @production_loc
+              end
+            rescue
+              puts "Error: Reading in calc_sloc"
+            end
+          end
+          @sloc = @sloc + csv[2][4].to_i
+        end
+      end
+    end
+  end
 
   private :new_file, :deleted_file, :calc_lines
 

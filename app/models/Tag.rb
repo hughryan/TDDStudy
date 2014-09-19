@@ -10,6 +10,7 @@ class Tag
   end
 
   def visible_files
+    #puts @avatar.path
     @manifest ||= JSON.parse(clean(@git.show(@avatar.path, "#{@n}:manifest.json")))
   end
 
@@ -26,7 +27,7 @@ class Tag
     git_diff(diff_lines, visible_files)
   end
 
-private
+  private
 
   include Cleaner
   include GitDiff
