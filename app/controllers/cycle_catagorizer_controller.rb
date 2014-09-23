@@ -33,6 +33,10 @@ class CycleCatagorizerController < ApplicationController
     @allSessions = Session.all
   end
 
+  def ListAllCompiles
+    @allCompiles = Compile.all
+  end
+
   def root_path
     Rails.root.to_s + '/'
   end
@@ -46,13 +50,16 @@ class CycleCatagorizerController < ApplicationController
     Dojo.new(root_path,externals)
   end
 
+  #0704A92264
+  #elephant
 
   def ImportAllKatas
     @katas = dojo.katas
     Session.delete_all
 
-
+    i = 0
     @katas.each do |kata|
+      i+= 1
       kata.avatars.active.each do |avatar|
         session = Session.new do |s|
           @redlights = 0
@@ -63,6 +70,8 @@ class CycleCatagorizerController < ApplicationController
           @test_loc = 0
           @production_loc = 0
           @language = kata.language.name
+          @runtests = 0
+          @runtestfails = 0
           s.kata_name = kata.exercise.name
           s.cyberdojo_id = kata.id
           s.language_framework = kata.language.name
@@ -96,6 +105,11 @@ class CycleCatagorizerController < ApplicationController
               lastLightColor = "amber"
               currRedString = 1
             end
+
+            # compile = Compile.new do |c|
+            #   c.light_color = "COLOR"
+            # end
+            # compile.save
           end
           s.red_light_count = @redlights
           s.green_light_count = @greenlights
@@ -105,8 +119,18 @@ class CycleCatagorizerController < ApplicationController
           s.total_sloc_count = @sloc
           s.production_sloc_count = @production_loc
           s.test_sloc_count = @test_loc
+
+          s.cumulative_test_run_count = @runtests
+          s.cumulative_test_fail_count = @runtestfails
+          #DO YOUR THiNG
+          #s.final_number_tests = XX
+
         end
         session.save
+        @compile = session.compiles.create(light_color: 'NO_COLOR')
+      end
+      if(i > 4)
+        break
       end
     end
   end
