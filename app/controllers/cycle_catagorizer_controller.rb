@@ -166,25 +166,28 @@ class CycleCatagorizerController < ApplicationController
     i = 0
     @katas = dojo.katas
     @katas.each do |kata|
-      i+= 1
-      kata.avatars.active.each do |avatar|
-        @json_cycles =  ""
-        @start_date = kata.created
-        @total_time = 0
-        @redlights = 0
-        @greenlights = 0
-        @amberlights = 0
-        @consecutive_reds = 0
-        @avatar = avatar
-        @transitions = ""
-        @cycles = 0
-        @edited_lines = 0
-        calc_cycles
-
-        @allCycles.push(@json_cycles)
-      end
-      if(i > 4)
-        break
+      if(kata.language.name == "Java-1.8_JUnit")
+        i+= 1
+        kata.avatars.active.each do |avatar|
+          @json_cycles =  ""
+          @start_date = kata.created
+          @total_time = 0
+          @redlights = 0
+          @greenlights = 0
+          @amberlights = 0
+          @consecutive_reds = 0
+          @avatar = avatar
+          @kata = kata
+          @transitions = ""
+          @cycles = 0
+          @edited_lines = 0
+          calc_cycles
+  
+          @allCycles.push(@json_cycles)
+        end
+        if(i > 4)
+          break
+        end
       end
     end
   end
@@ -192,6 +195,7 @@ class CycleCatagorizerController < ApplicationController
 
 
   def calc_cycles
+    pos = 0
     prev_outer = nil
     prev_cycle_end = nil
     test_change = false
@@ -210,7 +214,10 @@ class CycleCatagorizerController < ApplicationController
 
     #Start Json Array
     @json_cycles += '['
-
+  
+    curr_session = Session.where(cyberdojo_id: @kata.id, avatar: @avatar.name)
+    curr_cycle = Cycle.new(cycle_position: pos)
+    
     @avatar.lights.each_with_index do |curr, index|
 
       #Push light to queue
@@ -366,10 +373,16 @@ class CycleCatagorizerController < ApplicationController
           @json_cycles += '],"totalCycleEdits":' + cycle_total_edits.to_s + ',"totalCycleTestEdits":' + cycle_test_edits.to_s + ',"totalCycleCodeEdits":' + cycle_code_edits.to_s + ',"cycleTestChanges":' + cycle_test_change.to_s + ',"cycleCodeChanges":' + cycle_code_change.to_s + ',"totalCycleTime":' + cycle_time.to_s + '}'
           #Increment Cycle Counter
           @cycles += 1
+          curr_cycle.valid_tdd = true
           #elsif cycle == "R"
-          #Refactor
+        else
+          curr_cycle.valid_tdd = false
         end
-
+        
+        
+        curr_cycle.session_id = curr_session[0].id
+        curr_cycle.save
+        
         #Reset Cycle Metrics
         test_change = false
         prod_change = false
@@ -382,8 +395,11 @@ class CycleCatagorizerController < ApplicationController
         cycle_time = 0
         cycle_reds = 0
         cycle_lights.clear
-
+        
+        pos += 1
         prev_cycle_end = curr
+        
+        curr_cycle = Cycle.new(cycle_position: pos)
 
       elsif curr.colour.to_s == "red"
         in_cycle = true
