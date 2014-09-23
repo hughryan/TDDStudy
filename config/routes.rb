@@ -1,4 +1,19 @@
 Rails.application.routes.draw do
+  get 'cycle_catagorizer/cycle_catgories'
+
+  get 'cycle_catagorizer/parseCSV'
+
+  get 'cycle_catagorizer/ListKatasInDojo'
+
+  get 'cycle_catagorizer/ImportAllKatas'
+
+  get 'cycle_catagorizer/buildCycleData'
+
+  get 'cycle_catagorizer/ListCompiles'
+
+  get 'grader/index'
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

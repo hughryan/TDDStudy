@@ -25,6 +25,10 @@ gem 'sdoc', '~> 0.4.0',                              group: :doc
 gem 'rspec'
 # Capybara for BDD w/RSpec
 gem 'capybara'
+# smarter_csv because I cant figure out an easy way to import the kata data
+gem 'smarter_csv'
+# I need this gem in order to use ACE editor
+gem 'ace-rails-ap'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -34,5 +38,3 @@ gem 'capybara'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
-
-

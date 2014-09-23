@@ -1,3 +1,4 @@
 class Session < ActiveRecord::Base
-  belongs_to :kata
+	has_many :cycles
+	has_many :compiles
 end
