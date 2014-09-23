@@ -31,6 +31,7 @@ class CycleCatagorizerController < ApplicationController
 
   def ListKatasInDojo
     @allSessions = Session.all
+
   end
 
   def ListAllCompiles
@@ -69,80 +70,83 @@ class CycleCatagorizerController < ApplicationController
 
     i = 0
     @katas.each do |kata|
-      i+= 1
-      kata.avatars.active.each do |avatar|
-        session = Session.new do |s|
-          s.cyberdojo_id = kata.id
-          s.avatar = avatar.name
-        end
-        session.save
 
-        s = Session.find_by(cyberdojo_id: kata.id, avatar: avatar.name)
-        @redlights = 0
-        @greenlights = 0
-        @amberlights = 0
-        @path = avatar.path
-        @sloc = 0
-        @test_loc = 0
-        @production_loc = 0
-        @language = kata.language.name
-        @runtests = 0
-        @runtestfails = 0
-        s.kata_name = kata.exercise.name
-        # s.cyberdojo_id = kata.id
-        s.language_framework = kata.language.name
-        s.path = kata.path
-        # s.avatar = avatar.name
-        s.start_date = kata.created
-        s.total_light_count = avatar.lights.count
-        s.final_light_color = avatar.lights[avatar.lights.count-1].colour
-        maxRedString = 1
-        currRedString = 1
-        lastLightColor = "none"
-        avatar.lights.each do |curr_light|
-          #Count Types of Lights
-          case curr_light.colour.to_s
-          when "red"
-            @redlights += 1
-            if(lastLightColor == "red")
-              currRedString += 1
-              if(currRedString > maxRedString)
-                maxRedString = currRedString
-              end
-            else
-              lastLightColor = "red"
-            end
-          when "green"
-            @greenlights += 1
-            lastLightColor = "green"
-            currRedString = 1
-          when "amber"
-            @amberlights += 1
-            lastLightColor = "amber"
-            currRedString = 1
+      if(kata.language.name == "Java-1.8_JUnit")
+        i+= 1
+        kata.avatars.active.each do |avatar|
+          session = Session.new do |s|
+            s.cyberdojo_id = kata.id
+            s.avatar = avatar.name
           end
+          session.save
 
-          puts "*********************DEBUG*********************"
-          puts curr_light.tag
-          @compile = s.compiles.create(light_color: curr_light.colour.to_s, git_tag: curr_light.number.to_s)
+          s = Session.find_by(cyberdojo_id: kata.id, avatar: avatar.name)
+          @redlights = 0
+          @greenlights = 0
+          @amberlights = 0
+          @path = avatar.path
+          @sloc = 0
+          @test_loc = 0
+          @production_loc = 0
+          @language = kata.language.name
+          @runtests = 0
+          @runtestfails = 0
+          s.kata_name = kata.exercise.name
+          # s.cyberdojo_id = kata.id
+          s.language_framework = kata.language.name
+          s.path = kata.path
+          # s.avatar = avatar.name
+          s.start_date = kata.created
+          s.total_light_count = avatar.lights.count
+          s.final_light_color = avatar.lights[avatar.lights.count-1].colour
+          maxRedString = 1
+          currRedString = 1
+          lastLightColor = "none"
+          avatar.lights.each do |curr_light|
+            #Count Types of Lights
+            case curr_light.colour.to_s
+            when "red"
+              @redlights += 1
+              if(lastLightColor == "red")
+                currRedString += 1
+                if(currRedString > maxRedString)
+                  maxRedString = currRedString
+                end
+              else
+                lastLightColor = "red"
+              end
+            when "green"
+              @greenlights += 1
+              lastLightColor = "green"
+              currRedString = 1
+            when "amber"
+              @amberlights += 1
+              lastLightColor = "amber"
+              currRedString = 1
+            end
+
+            puts "*********************DEBUG*********************"
+            puts curr_light.tag
+            @compile = s.compiles.create(light_color: curr_light.colour.to_s, git_tag: curr_light.number.to_s)
+          end
+          s.red_light_count = @redlights
+          s.green_light_count = @greenlights
+          s.amber_light_count = @amberlights
+          s.max_consecutive_red_chain_length = maxRedString
+          calc_sloc
+          s.total_sloc_count = @sloc
+          s.production_sloc_count = @production_loc
+          s.test_sloc_count = @test_loc
+
+          s.cumulative_test_run_count = @runtests
+          s.cumulative_test_fail_count = @runtestfails
+          #DO YOUR THiNG
+          #s.final_number_tests = XX
+
+          s.save
+
+          #@compile = session.compiles.create(light_color: 'NO_COLOR')
         end
-        s.red_light_count = @redlights
-        s.green_light_count = @greenlights
-        s.amber_light_count = @amberlights
-        s.max_consecutive_red_chain_length = maxRedString
-        calc_sloc
-        s.total_sloc_count = @sloc
-        s.production_sloc_count = @production_loc
-        s.test_sloc_count = @test_loc
-
-        s.cumulative_test_run_count = @runtests
-        s.cumulative_test_fail_count = @runtestfails
-        #DO YOUR THiNG
-        #s.final_number_tests = XX
-
-        s.save
-
-        #@compile = session.compiles.create(light_color: 'NO_COLOR')
       end
       if(i > 4)
         break

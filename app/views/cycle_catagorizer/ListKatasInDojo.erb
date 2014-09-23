@@ -1,5 +1,7 @@
 <h1>List Katas in Dojo</h1>
 
+<%=  @allSessions %>
+
 <h5>Number of CSV Rows:
 <%= @allSessions.count %>
 <BR>
@@ -35,6 +37,12 @@
       <td>session.start_date:<%= session.start_date %></td><BR>
       <td>session.total_light_count:<%= session.total_light_count %></td><BR>
       <td>session.final_light_color:<%= session.final_light_color %></td><BR>
+      <BR>
+      <% session.compiles.each do |compile| %>
+      <td>compile.light_color:<%= compile.light_color %></td><BR>
+      <td>compile.git_tag:<%= compile.git_tag %></td><BR>
+      <td>compile.git_tag:<%= compile.git_tag %></td><BR>
+      <% end %>
       <BR><BR>
     </tr>
   <% end %>
