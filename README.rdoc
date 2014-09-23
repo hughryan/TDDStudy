@@ -12,17 +12,8 @@ Listed in Gemfile install via:
 Update via:
 'bundle update'
 
-* Configuration
-None?
-
-* Database creation
-'bundle exec rails db:create'
-
-* Database initialization
-TODO
+* Database Initalization
+'bundle exec rake db:setup'
 
 * How to run the test suite
 TODO
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
