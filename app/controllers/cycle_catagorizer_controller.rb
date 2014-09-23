@@ -126,7 +126,8 @@ class CycleCatagorizerController < ApplicationController
             end
 
             puts "*********************DEBUG*********************"
-            puts curr_light.tag
+            #puts curr_light.tag.diff(0)
+            puts curr_light.tag.visible_files.first
             @compile = s.compiles.create(light_color: curr_light.colour.to_s, git_tag: curr_light.number.to_s)
           end
           s.red_light_count = @redlights
