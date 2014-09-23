@@ -31,10 +31,20 @@ class CycleCatagorizerController < ApplicationController
 
   def ListKatasInDojo
     @allSessions = Session.all
+
   end
 
   def ListAllCompiles
+    puts "####################DEBUG"
+    puts Compile.all
     @allCompiles = Compile.all
+  end
+
+  def InsertTestCompiles
+    compile = Compile.new do |c|
+      c.light_color = "COLOR"
+    end
+    compile.save
   end
 
   def root_path
@@ -56,12 +66,21 @@ class CycleCatagorizerController < ApplicationController
   def ImportAllKatas
     @katas = dojo.katas
     Session.delete_all
+    Compile.delete_all
 
     i = 0
     @katas.each do |kata|
-      i+= 1
-      kata.avatars.active.each do |avatar|
-        session = Session.new do |s|
+      puts kata
+      if(kata.language.name == "Java-1.8_JUnit")
+        i+= 1
+        kata.avatars.active.each do |avatar|
+          session = Session.new do |s|
+            s.cyberdojo_id = kata.id
+            s.avatar = avatar.name
+          end
+          session.save
+
+          s = Session.find_by(cyberdojo_id: kata.id, avatar: avatar.name)
           @redlights = 0
           @greenlights = 0
           @amberlights = 0
@@ -73,10 +92,10 @@ class CycleCatagorizerController < ApplicationController
           @runtests = 0
           @runtestfails = 0
           s.kata_name = kata.exercise.name
-          s.cyberdojo_id = kata.id
+          # s.cyberdojo_id = kata.id
           s.language_framework = kata.language.name
           s.path = kata.path
-          s.avatar = avatar.name
+          # s.avatar = avatar.name
           s.start_date = kata.created
           s.total_light_count = avatar.lights.count
           s.final_light_color = avatar.lights[avatar.lights.count-1].colour
@@ -106,10 +125,10 @@ class CycleCatagorizerController < ApplicationController
               currRedString = 1
             end
 
-            # compile = Compile.new do |c|
-            #   c.light_color = "COLOR"
-            # end
-            # compile.save
+            puts "*********************DEBUG*********************"
+            #puts curr_light.tag.diff(0)
+            puts curr_light.tag.visible_files.first
+            @compile = s.compiles.create(light_color: curr_light.colour.to_s, git_tag: curr_light.number.to_s)
           end
           s.red_light_count = @redlights
           s.green_light_count = @greenlights
@@ -125,9 +144,10 @@ class CycleCatagorizerController < ApplicationController
           #DO YOUR THiNG
           #s.final_number_tests = XX
 
+          s.save
+
+          #@compile = session.compiles.create(light_color: 'NO_COLOR')
         end
-        session.save
-        @compile = session.compiles.create(light_color: 'NO_COLOR')
       end
       if(i > 4)
         break
@@ -146,25 +166,28 @@ class CycleCatagorizerController < ApplicationController
     i = 0
     @katas = dojo.katas
     @katas.each do |kata|
-      i+= 1
-      kata.avatars.active.each do |avatar|
-        @json_cycles =  ""
-        @start_date = kata.created
-        @total_time = 0
-        @redlights = 0
-        @greenlights = 0
-        @amberlights = 0
-        @consecutive_reds = 0
-        @avatar = avatar
-        @transitions = ""
-        @cycles = 0
-        @edited_lines = 0
-        calc_cycles
+      if(kata.language.name == "Java-1.8_JUnit")
+        i+= 1
+        kata.avatars.active.each do |avatar|
+          @json_cycles =  ""
+          @start_date = kata.created
+          @total_time = 0
+          @redlights = 0
+          @greenlights = 0
+          @amberlights = 0
+          @consecutive_reds = 0
+          @avatar = avatar
+          @kata = kata
+          @transitions = ""
+          @cycles = 0
+          @edited_lines = 0
+          calc_cycles
 
-        @allCycles.push(@json_cycles)
-      end
-      if(i > 4)
-        break
+          @allCycles.push(@json_cycles)
+        end
+        if(i > 4)
+          break
+        end
       end
     end
   end
@@ -172,6 +195,7 @@ class CycleCatagorizerController < ApplicationController
 
 
   def calc_cycles
+    pos = 0
     prev_outer = nil
     prev_cycle_end = nil
     test_change = false
@@ -190,6 +214,9 @@ class CycleCatagorizerController < ApplicationController
 
     #Start Json Array
     @json_cycles += '['
+
+    curr_session = Session.where(cyberdojo_id: @kata.id, avatar: @avatar.name)
+    curr_cycle = Cycle.new(cycle_position: pos)
 
     @avatar.lights.each_with_index do |curr, index|
 
@@ -346,9 +373,15 @@ class CycleCatagorizerController < ApplicationController
           @json_cycles += '],"totalCycleEdits":' + cycle_total_edits.to_s + ',"totalCycleTestEdits":' + cycle_test_edits.to_s + ',"totalCycleCodeEdits":' + cycle_code_edits.to_s + ',"cycleTestChanges":' + cycle_test_change.to_s + ',"cycleCodeChanges":' + cycle_code_change.to_s + ',"totalCycleTime":' + cycle_time.to_s + '}'
           #Increment Cycle Counter
           @cycles += 1
+          curr_cycle.valid_tdd = true
           #elsif cycle == "R"
-          #Refactor
+        else
+          curr_cycle.valid_tdd = false
         end
+
+
+        curr_cycle.session_id = curr_session[0].id
+        curr_cycle.save
 
         #Reset Cycle Metrics
         test_change = false
@@ -363,7 +396,10 @@ class CycleCatagorizerController < ApplicationController
         cycle_reds = 0
         cycle_lights.clear
 
+        pos += 1
         prev_cycle_end = curr
+
+        curr_cycle = Cycle.new(cycle_position: pos)
 
       elsif curr.colour.to_s == "red"
         in_cycle = true
