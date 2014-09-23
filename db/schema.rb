@@ -11,10 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140922234006) do
+ActiveRecord::Schema.define(version: 20140923173657) do
 
   create_table "compiles", force: true do |t|
-    t.integer  "sessions_id"
     t.string   "light_color"
     t.integer  "git_tag"
     t.integer  "total_edited_line_count"
@@ -29,9 +28,10 @@ ActiveRecord::Schema.define(version: 20140922234006) do
     t.integer  "test_sloc_count"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "session_id"
   end
 
-  add_index "compiles", ["sessions_id"], name: "index_compiles_on_sessions_id"
+  add_index "compiles", ["session_id"], name: "index_compiles_on_session_id"
 
   create_table "cycles", force: true do |t|
     t.integer  "session_id"

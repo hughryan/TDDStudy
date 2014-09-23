@@ -9,7 +9,9 @@ Rails.application.routes.draw do
 
   get 'cycle_catagorizer/buildCycleData'
 
-  get 'cycle_catagorizer/ListCompiles'
+  get 'cycle_catagorizer/ListAllCompiles'
+
+  get 'cycle_catagorizer/InsertTestCompiles'
 
   get 'grader/index'
 
