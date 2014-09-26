@@ -1,3 +1,3 @@
 class Compile < ActiveRecord::Base
-	belongs_to :session
+  belongs_to :phase
 end

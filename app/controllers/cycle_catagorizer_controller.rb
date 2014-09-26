@@ -70,7 +70,7 @@ class CycleCatagorizerController < ApplicationController
 
     i = 0
     @katas.each do |kata|
-
+      puts kata
       if(kata.language.name == "Java-1.8_JUnit")
         i+= 1
         kata.avatars.active.each do |avatar|
@@ -182,7 +182,7 @@ class CycleCatagorizerController < ApplicationController
           @cycles = 0
           @edited_lines = 0
           calc_cycles
-  
+
           @allCycles.push(@json_cycles)
         end
         if(i > 4)
@@ -214,10 +214,10 @@ class CycleCatagorizerController < ApplicationController
 
     #Start Json Array
     @json_cycles += '['
-  
+
     curr_session = Session.where(cyberdojo_id: @kata.id, avatar: @avatar.name)
     curr_cycle = Cycle.new(cycle_position: pos)
-    
+
     @avatar.lights.each_with_index do |curr, index|
 
       #Push light to queue
@@ -378,11 +378,11 @@ class CycleCatagorizerController < ApplicationController
         else
           curr_cycle.valid_tdd = false
         end
-        
-        
+
+
         curr_cycle.session_id = curr_session[0].id
         curr_cycle.save
-        
+
         #Reset Cycle Metrics
         test_change = false
         prod_change = false
@@ -395,10 +395,10 @@ class CycleCatagorizerController < ApplicationController
         cycle_time = 0
         cycle_reds = 0
         cycle_lights.clear
-        
+
         pos += 1
         prev_cycle_end = curr
-        
+
         curr_cycle = Cycle.new(cycle_position: pos)
 
       elsif curr.colour.to_s == "red"
