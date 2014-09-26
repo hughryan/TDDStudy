@@ -2,6 +2,7 @@ class OneMigrationToRuleThemAll < ActiveRecord::Migration
   def change
     create_table :compiles do |t|
       t.references :phase, index: true
+      t.references :session, index: true
       t.string :light_color
       t.integer :git_tag
       t.integer :total_edited_line_count

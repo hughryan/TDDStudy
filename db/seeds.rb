@@ -157,18 +157,23 @@ def import_all_katas
   end
 end
 
-def expectation(compile, phase)
-
-  case phase.tdd_color
-  when 'red'
-    unless compile.light_color == 'green' && compile.
-
-        end
-    #when 'green'
-    #when 'blue'
+def expected_phase(compile)
+  case compile.light_color.to_s
+  when "red" || "amber"
+  	if compile.test_change && !compile.prod_change
+  		return "red"
+  	else
+  		return "green blue"
+  	end
+  when "green"
+  	if compile.test_change && !compile.prod_change
+  		return "blue"
+  	else
+  		return "green blue"
+  	end
   end
-
 end
+
 
 def calc_cycles
   pos = 0
@@ -197,11 +202,10 @@ def calc_cycles
   curr_cycle = Cycle.new(cycle_position: pos)
 
   #New Phase
-  curr_phase = Phase.new(tdd_color: 'red')
+  curr_phase = Phase.new(tdd_color: "red")
 
   #For Each Light
   @avatar.lights.each_with_index do |curr, index|
-
     #New Compile
     curr_compile = Compile.new
 
@@ -279,149 +283,93 @@ def calc_cycles
     #TODO: Coverage, Total SLOC, Prod SLOC, Test SLOC
     #################################
 
+    # puts "Light color" + curr_compile.light_color
+    # puts "Expected phase: " + expected_phase(curr_compile)
+    # puts "Current Phase: " + curr_phase.tdd_color
+
     #NEW LOGIC ============================
-    case evaluation(curr_compile)
-    when 'red'
-    when 'green'
-    when 'blue'
-    else
-    end
+    case curr_phase.tdd_color
+    when "red"
+   		if expected_phase(curr_compile) == "red"
+        	curr_phase.compiles << curr_compile
+        	curr_compile.save			
+   		else
+   			puts curr_phase.compiles.count
+   			unless curr_phase.compiles.empty?
+   				curr_phase.cycle_id = curr_cycle.id
+    	    	curr_phase.save
+    	 		puts "DEBUG save red phase"
+    	    	curr_phase = Phase.new(tdd_color: "green")
+      		else
+      			#NON TDD (no red phase occured)
+	    		curr_cycle.valid_tdd = false
+	    		curr_phase.tdd_color = "white"
+	    		#save compile to phase
+	     	 	curr_phase.compiles << curr_compile
+	        	curr_compile.save	
+      		end
+      	end
+      when "green"
+      	unless expected_phase(curr_compile) == "red"
+      		#save compile to phase
+     	 	curr_phase.compiles << curr_compile
+        	curr_compile.save	
+      		if curr_compile.light_color == "green" #the green phase has ended, move on to refactor (or test if need be)
+     	 		#save phase to cycle
+        		curr_phase.cycle_id = curr_cycle.id
+        		curr_phase.save
+        		puts "DEBUG save green phase"
+        		#next phase (assume the next phase is blue)
+    	    	curr_phase = Phase.new(tdd_color: "blue")
+    	    end
+    	else #if the expected phase WAS red
+    		#NON TDD (green phase was never completed [we never reached a green state])
+    		curr_cycle.valid_tdd = false
+    		curr_phase.tdd_color = "white"
+    		#save compile to phase
+     	 	curr_phase.compiles << curr_compile
+        	curr_compile.save	
+    	end
+    when "blue"
+    	if expected_phase(curr_compile) == "red"
+	      	unless curr_phase.compiles.empty? #the blue phase is not empty
+	        	curr_phase.cycle_id = curr_cycle.id
+	        	curr_phase.save
+				puts "DEBUG save blue phase"
+	        	curr_phase = Phase.new(tdd_color: "red")
+	      	else
+	        	curr_phase.tdd_color == "red"
+	      	end
+	      	#End the Cycle
+	      	pos += 1
+	      	curr_cycle.session_id = curr_session.id
+	      	curr_cycle.valid_tdd = true
+	      	curr_cycle.save
+	      	curr_cycle = Cycle.new(cycle_position: pos)
+	    else
+      		#save compile to phase
+     	 	curr_phase.compiles << curr_compile
+        	curr_compile.save	
+	    end
+	when "white"
+		unless expected_phase(curr_compile) == "red"
+			#save compile to phase
+     	 	curr_phase.compiles << curr_compile
+        	curr_compile.save	
+      	else
+      		pos += 1
+      		curr_phase.cycle_id = curr_cycle.id
+      		curr_phase.save
+      		curr_cycle.session_id = curr_session.id
+      		curr_cycle.save
+	        curr_phase = Phase.new(tdd_color: "red")
+	        curr_cycle = Cycle.new(cycle_position: pos)
+	    end
+	end
 
-
-    #LOGIC ================================
-    if expectation(curr_compile, curr_phase)
-      curr_compile.phase_id = curr_phase.id
-      curr_compile.save
-      if curr_phase.tdd_color == 'green' && curr_compile.light_color == 'green'
-        #New Phase (Blue)
-        curr_phase.save
-        curr_phase = Phase.new(tdd_color = 'blue')
-      end
-      #Expectation Not Met: Current compile was not a refactor, so push as red
-    elsif curr_phase.tdd_color == 'blue'
-      #A refactor phase occurred
-      unless curr_phase.compiles.empty?
-        curr_phase.cycle_id = curr_cycle.id
-        curr_phase = Phase.new(tdd_color: red)
-      else
-        curr_phase.tdd_color == 'red'
-
-      end
-      #End the Cycle
-      pos += 1
-      curr_cycle.session_id = curr_session.id
-      curr_cycle = Cycle.new(cycle_position: pos)
-
-    end
-
-    ##    #Green indicates end of cycle, also process if at last light
-    ##    if curr.colour.to_s == "green" || index == @avatar.lights.count - 1
-
-    ##      #Determine the type of cycle
-    ##      if (test_change && !prod_change) || (!test_change && prod_change) || (!test_change && !prod_change)
-    ##        cycle = "R" #Refactor if changes are exclusive to production or test files
-    ##      else
-    ##        if in_cycle == true && curr.colour.to_s == "green"
-    ##          cycle = "TP" #Test-Prod
-    ##        else
-    ##          cycle = "R"
-    ##        end
-    ##      end
-
-    ##    #Total Lines Modified in Cycle
-    ##    cycle_test_edits += test_edits
-    ##    cycle_code_edits += code_edits
-
-    ##    #Total Lines Modified in Kata
-    ##    @edited_lines += test_edits
-    ##    @edited_lines += code_edits
-    ##    light_edits = code_edits + test_edits
-    ##    cycle_total_edits += light_edits
-
-    ##      prev = nil
-    ##      #Process Metrics & Output Data
-    ##      cycle_lights.each_with_index do |light, light_index|
-
-    ##        #Increment Time
-    ##        @total_time += time_diff
-    ##        cycle_time += time_diff
-
-    ##        #Count Types of Lights
-    ##        case light.colour.to_s
-    ##        when "red"
-    ##          @redlights += 1
-    ##          cycle_reds += 1
-    ##        when "green"
-    ##          @greenlights += 1
-    ##        when "amber"
-    ##          @amberlights += 1
-    ##        end
-
-    ##        #Eliminate Unsupported Stats
-    ##        unless @supp_test_langs.include?@language
-    ##          light_edits = "NA"
-    ##          test_edits = "NA"
-    ##          code_edits = "NA"
-    ##        end
-
-    ##        #Assign current light to previous
-    ##        prev = light
-    ##      end #End of For Each
-
-    #Eliminate Unsupported Stats
-    unless @supp_test_langs.include?@language
-      cycle_total_edits = "NA"
-      cycle_test_edits = "NA"
-      cycle_code_edits = "NA"
-      cycle_test_change = "NA"
-      cycle_code_change = "NA"
-    end
-
-    ##      #If this was a TP Cycle then process it accordingly
-    ##      if cycle == "TP"
-    ##        #Set consecutive reds if new maximum
-    ##        if cycle_reds > @consecutive_reds
-    ##          @consecutive_reds = cycle_reds
-    ##        end
-    ##        #Count changes to Test and Code from diff of entire cycle
-    ##        cycle_test_change, cycle_code_change = calc_lines(prev_cycle_end, curr)
-    ##      end
-
-    #Save to DB
-    curr_cycle.session_id = curr_session[0].id
-    curr_cycle.save
-
-    #Reset Phase Metrics
-    test_change = false
-    prod_change = false
-    in_cycle = false
-    cycle_test_change = 0
-    cycle_code_change = 0
-    cycle_test_edits = 0
-    cycle_code_edits = 0
-    cycle_total_edits = 0
-    cycle_time = 0
-    cycle_reds = 0
-    cycle_lights.clear
-
-    pos += 1
-    prev_cycle_end = curr
-
-    ##      #New Cycle
-    ##      curr_cycle = Cycle.new(cycle_position: pos)
-
-    ##    elsif curr.colour.to_s == "red"
-    ##      in_cycle = true
-    ##      if (test_change && !prod_change)
-
-    ##      end
-    ##    end #End of "If Green"
-
-    ##    prev_outer = curr
+	#END NEW LOGIC =====================================
 
   end #End of For Each Light
-
-  #END OF SESSION METRICS
 
   #Final Test Number
   count_tests
@@ -671,7 +619,7 @@ def calc_lines(prev, curr)
         break if is_test == true
       end #End of Lines For Each
 
-      if NEW_EDIT_COUNT #New way of counting
+      if @NEW_EDIT_COUNT #New way of counting
         lines.each do |line|
           output = re.match(line.to_s)
           unless output.nil?

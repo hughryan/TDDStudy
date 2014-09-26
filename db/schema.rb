@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 20140925220227) do
 
   create_table "compiles", force: true do |t|
     t.integer  "phase_id"
+    t.integer  "session_id"
     t.string   "light_color"
     t.integer  "git_tag"
     t.integer  "total_edited_line_count"
@@ -35,6 +36,7 @@ ActiveRecord::Schema.define(version: 20140925220227) do
   end
 
   add_index "compiles", ["phase_id"], name: "index_compiles_on_phase_id"
+  add_index "compiles", ["session_id"], name: "index_compiles_on_session_id"
 
   create_table "cycles", force: true do |t|
     t.integer  "session_id"
