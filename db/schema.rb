@@ -11,27 +11,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140923173657) do
+ActiveRecord::Schema.define(version: 20140925220227) do
 
   create_table "compiles", force: true do |t|
+    t.integer  "phase_id"
     t.string   "light_color"
     t.integer  "git_tag"
     t.integer  "total_edited_line_count"
     t.integer  "production_edited_line_count"
     t.integer  "test_edited_line_count"
     t.integer  "total_test_method_count"
+    t.integer  "total_test_run_count"
     t.integer  "total_test_run_fail_count"
     t.integer  "seconds_since_last_light"
     t.float    "statement_coverage"
     t.integer  "total_sloc_count"
     t.integer  "production_sloc_count"
     t.integer  "test_sloc_count"
+    t.boolean  "test_change"
+    t.boolean  "prod_change"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "session_id"
   end
 
-  add_index "compiles", ["session_id"], name: "index_compiles_on_session_id"
+  add_index "compiles", ["phase_id"], name: "index_compiles_on_phase_id"
 
   create_table "cycles", force: true do |t|
     t.integer  "session_id"
@@ -50,26 +53,6 @@ ActiveRecord::Schema.define(version: 20140923173657) do
   end
 
   add_index "cycles", ["session_id"], name: "index_cycles_on_session_id"
-
-  create_table "lights", force: true do |t|
-    t.integer  "phase_id"
-    t.string   "light_color"
-    t.integer  "git_tag"
-    t.integer  "total_edited_line_count"
-    t.integer  "production_edited_line_count"
-    t.integer  "test_edited_line_count"
-    t.integer  "total_test_method_count"
-    t.integer  "total_test_run_fail_count"
-    t.integer  "seconds_since_last_light"
-    t.float    "statement_coverage"
-    t.integer  "total_sloc_count"
-    t.integer  "production_sloc_count"
-    t.integer  "test_sloc_count"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "lights", ["phase_id"], name: "index_lights_on_phase_id"
 
   create_table "phases", force: true do |t|
     t.integer  "cycle_id"
@@ -91,7 +74,10 @@ ActiveRecord::Schema.define(version: 20140923173657) do
   add_index "phases", ["cycle_id"], name: "index_phases_on_cycle_id"
 
   create_table "sessions", force: true do |t|
-    t.integer  "kata_id"
+    t.string   "kata_name"
+    t.string   "cyberdojo_id"
+    t.string   "language_framework"
+    t.string   "path"
     t.string   "avatar"
     t.datetime "start_date"
     t.integer  "computed_time_secs"
@@ -117,12 +103,6 @@ ActiveRecord::Schema.define(version: 20140923173657) do
     t.float    "tdd_score"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "kata_name"
-    t.string   "cyberdojo_id"
-    t.string   "language_framework"
-    t.string   "path"
   end
-
-  add_index "sessions", ["kata_id"], name: "index_sessions_on_kata_id"
 
 end
