@@ -11,7 +11,7 @@ require_relative root + '/lib/HostTestRunner'
 require_relative root + '/lib/OsDisk'
 
 # Set to true for debug prints
-DEBUG = false
+DEBUG = true
 
 def root_path
   Rails.root.to_s + '/'
@@ -58,7 +58,7 @@ def build_cycle_data
         calc_cycles
 
       end
-      if(i > 4)
+      if(i > 2)
         break
       end
     end
@@ -129,8 +129,8 @@ def import_all_katas
 
           puts "*********************DEBUG*********************" if DEBUG
           #puts curr_light.tag.diff(0)
-          puts curr_light.tag.visible_files.first if DEBUG
-          @compile = s.compiles.create(light_color: curr_light.colour.to_s, git_tag: curr_light.number.to_s)
+          # puts curr_light.tag.visible_files.first if DEBUG
+          # @compile = s.compiles.create(light_color: curr_light.colour.to_s, git_tag: curr_light.number.to_s)
         end
         s.red_light_count = @redlights
         s.green_light_count = @greenlights
@@ -214,6 +214,9 @@ def calc_cycles
     curr_compile.prod_change = false
     curr_compile.light_color = curr.colour
     curr_compile.git_tag = curr.number
+
+    #Calculate Code Coverage for current Light
+    curr_compile.statement_coverage = calc_code_covg(curr)
 
     #Aquire file changes from light
     if index == 0
@@ -656,6 +659,19 @@ end
 def new_file(lines)
   return lines.all? { |line| line[:type] === :added }
 end
+
+def calc_code_covg(curLight)
+puts curLight if DEBUG
+puts curLight.colour
+if curLight.colour.to_s == "amber"
+  puts "AMBER"
+  return  
+else
+  puts "DO WORK"
+end
+
+end
+
 
 def calc_sloc
   puts "CALC SLOC" if DEBUG
