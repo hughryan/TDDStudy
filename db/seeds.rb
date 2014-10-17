@@ -160,17 +160,17 @@ end
 def expected_phase(compile)
   case compile.light_color.to_s
   when "red" || "amber"
-  	if compile.test_change && !compile.prod_change
-  		return "red"
-  	else
-  		return "green blue"
-  	end
+    if compile.test_change && !compile.prod_change
+      return "red"
+    else
+      return "green blue"
+    end
   when "green"
-  	if compile.test_change && !compile.prod_change
-  		return "blue"
-  	else
-  		return "green blue"
-  	end
+    if compile.test_change && !compile.prod_change
+      return "blue"
+    else
+      return "green blue"
+    end
   end
 end
 
@@ -293,84 +293,84 @@ def calc_cycles
     #NEW LOGIC ============================
     case curr_phase.tdd_color
     when "red"
-   		if expected_phase(curr_compile) == "red"
-        	curr_phase.compiles << curr_compile
-        	curr_compile.save			
-   		else
-   			puts curr_phase.compiles.count
-   			unless curr_phase.compiles.empty?
-   				curr_phase.cycle_id = curr_cycle.id
-    	    	curr_phase.save
-    	 		puts "DEBUG save red phase"
-    	    	curr_phase = Phase.new(tdd_color: "green")
-      		else
-      			#NON TDD (no red phase occured)
-	    		curr_cycle.valid_tdd = false
-	    		curr_phase.tdd_color = "white"
-	    		#save compile to phase
-	     	 	curr_phase.compiles << curr_compile
-	        	curr_compile.save	
-      		end
-      	end
-      when "green"
-      	unless expected_phase(curr_compile) == "red"
-      		#save compile to phase
-     	 	curr_phase.compiles << curr_compile
-        	curr_compile.save	
-      		if curr_compile.light_color == "green" #the green phase has ended, move on to refactor (or test if need be)
-     	 		#save phase to cycle
-        		curr_phase.cycle_id = curr_cycle.id
-        		curr_phase.save
-        		puts "DEBUG save green phase"
-        		#next phase (assume the next phase is blue)
-    	    	curr_phase = Phase.new(tdd_color: "blue")
-    	    end
-    	else #if the expected phase WAS red
-    		#NON TDD (green phase was never completed [we never reached a green state])
-    		curr_cycle.valid_tdd = false
-    		curr_phase.tdd_color = "white"
-    		#save compile to phase
-     	 	curr_phase.compiles << curr_compile
-        	curr_compile.save	
-    	end
+      if expected_phase(curr_compile) == "red"
+        curr_phase.compiles << curr_compile
+        curr_compile.save
+      else
+        puts curr_phase.compiles.count
+        unless curr_phase.compiles.empty?
+          curr_phase.cycle_id = curr_cycle.id
+          curr_phase.save
+          puts "DEBUG save red phase"
+          curr_phase = Phase.new(tdd_color: "green")
+        else
+          #NON TDD (no red phase occured)
+          curr_cycle.valid_tdd = false
+          curr_phase.tdd_color = "white"
+          #save compile to phase
+          curr_phase.compiles << curr_compile
+          curr_compile.save
+        end
+      end
+    when "green"
+      unless expected_phase(curr_compile) == "red"
+        #save compile to phase
+        curr_phase.compiles << curr_compile
+        curr_compile.save
+        if curr_compile.light_color == "green" #the green phase has ended, move on to refactor (or test if need be)
+          #save phase to cycle
+          curr_phase.cycle_id = curr_cycle.id
+          curr_phase.save
+          puts "DEBUG save green phase"
+          #next phase (assume the next phase is blue)
+          curr_phase = Phase.new(tdd_color: "blue")
+        end
+      else #if the expected phase WAS red
+        #NON TDD (green phase was never completed [we never reached a green state])
+        curr_cycle.valid_tdd = false
+        curr_phase.tdd_color = "white"
+        #save compile to phase
+        curr_phase.compiles << curr_compile
+        curr_compile.save
+      end
     when "blue"
-    	if expected_phase(curr_compile) == "red"
-	      	unless curr_phase.compiles.empty? #the blue phase is not empty
-	        	curr_phase.cycle_id = curr_cycle.id
-	        	curr_phase.save
-				puts "DEBUG save blue phase"
-	        	curr_phase = Phase.new(tdd_color: "red")
-	      	else
-	        	curr_phase.tdd_color == "red"
-	      	end
-	      	#End the Cycle
-	      	pos += 1
-	      	curr_cycle.session_id = curr_session.id
-	      	curr_cycle.valid_tdd = true
-	      	curr_cycle.save
-	      	curr_cycle = Cycle.new(cycle_position: pos)
-	    else
-      		#save compile to phase
-     	 	curr_phase.compiles << curr_compile
-        	curr_compile.save	
-	    end
-	when "white"
-		unless expected_phase(curr_compile) == "red"
-			#save compile to phase
-     	 	curr_phase.compiles << curr_compile
-        	curr_compile.save	
-      	else
-      		pos += 1
-      		curr_phase.cycle_id = curr_cycle.id
-      		curr_phase.save
-      		curr_cycle.session_id = curr_session.id
-      		curr_cycle.save
-	        curr_phase = Phase.new(tdd_color: "red")
-	        curr_cycle = Cycle.new(cycle_position: pos)
-	    end
-	end
+      if expected_phase(curr_compile) == "red"
+        unless curr_phase.compiles.empty? #the blue phase is not empty
+          curr_phase.cycle_id = curr_cycle.id
+          curr_phase.save
+          puts "DEBUG save blue phase"
+          curr_phase = Phase.new(tdd_color: "red")
+        else
+          curr_phase.tdd_color == "red"
+        end
+        #End the Cycle
+        pos += 1
+        curr_cycle.session_id = curr_session.id
+        curr_cycle.valid_tdd = true
+        curr_cycle.save
+        curr_cycle = Cycle.new(cycle_position: pos)
+      else
+        #save compile to phase
+        curr_phase.compiles << curr_compile
+        curr_compile.save
+      end
+    when "white"
+      unless expected_phase(curr_compile) == "red"
+        #save compile to phase
+        curr_phase.compiles << curr_compile
+        curr_compile.save
+      else
+        pos += 1
+        curr_phase.cycle_id = curr_cycle.id
+        curr_phase.save
+        curr_cycle.session_id = curr_session.id
+        curr_cycle.save
+        curr_phase = Phase.new(tdd_color: "red")
+        curr_cycle = Cycle.new(cycle_position: pos)
+      end
+    end
 
-	#END NEW LOGIC =====================================
+    #END NEW LOGIC =====================================
 
   end #End of For Each Light
 
@@ -661,14 +661,23 @@ def new_file(lines)
 end
 
 def calc_code_covg(curLight)
-puts curLight if DEBUG
-puts curLight.colour
-if curLight.colour.to_s == "amber"
-  puts "AMBER"
-  return  
-else
-  puts "DO WORK"
-end
+  puts curLight if DEBUG
+  puts curLight.colour
+  if curLight.colour.to_s == "amber"
+    puts "AMBER"
+    return
+  else
+    puts "DO WORK"
+
+    puts "CURRENT TAG"
+    puts curLight.tag.visible_files.count
+
+    curLight.tag.visible_files.each do |gitFile|
+      currfileName =  gitFile
+      puts currfileName
+    end
+
+  end
 
 end
 
