@@ -193,6 +193,8 @@ def calc_cycles
   cycle_time = 0
   first_cycle = true
 
+
+
   #Get Session
   curr_session = Session.where(cyberdojo_id: @kata.id, avatar: @avatar.name)
   puts "DEBUG: #{curr_session[0]}" if DEBUG
@@ -669,6 +671,15 @@ def calc_code_covg(curLight)
   else
     puts "DO WORK"
 
+    `mkdir codeCovg`
+    `mkdir codeCovg/src`
+    `mkdir codeCovg/isrc`
+    `rm -f ./codeCovg/*`
+    `rm -f ./codeCovg/src/*`
+    `rm -r ./codeCovg/isrc/*`
+    `rm -r ./codeCovg/report.csv`
+    `rm -r ./*.clf`
+
     puts @avatar.path
     puts "CURRENT TAG"
     puts curLight.tag.visible_files.count
@@ -678,11 +689,45 @@ def calc_code_covg(curLight)
     puts "^^^^^^^^^^^^^START^^^^^^^^^^^^^^^"
     javaFiles = fileNames.select { |name|  name.include? "java" }
 
-    # puts curLight.tag.visible_files[javaFiles[0]]
+    currTestClass = ""
+    javaFiles.each do |javaFileName|
+      # puts `cat #{@avatar.path}/sandbox/#{javaFileName}`
+      `cp #{@avatar.path}/sandbox/#{javaFileName} ./codeCovg/src/#{javaFileName}`
+      puts javaFileName
 
-    # puts `pwd`
+      initialLoc = javaFileName.to_s =~ /test/i
+      unless initialLoc.nil?
+        fileNameParts = javaFileName.split('.')
+        currTestClass = fileNameParts.first
+        puts currTestClass
+      end
 
-    puts `ls #{@avatar.path}\\sandbox\\`
+      # fileNameParts = javaFileName.split('.')
+      # currTestClass = fileNameParts.first
+      # puts currTestClass
+
+    end
+
+
+    `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar instrument --root-directory ./codeCovg/src --destination ./codeCovg/isrc --container ./codeCovg/src/con.xml --language java --charset UTF-8`
+    `javac -cp ./vendor/calcCodeCovg/libs/*:./codeCovg/isrc ./codeCovg/isrc/*.java`
+    # puts currTestClass
+    puts `java -cp ./vendor/calcCodeCovg/libs/*:./codeCovg/isrc org.junit.runner.JUnitCore #{currTestClass}`
+
+    `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar analyze --container ./codeCovg/src/con.xml --coverage-log *.clf --name test1`
+
+    puts `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar report --container ./codeCovg/src/con.xml --destination ./codeCovg/report.csv --session test1 --template ./vendor/calcCodeCovg/report-templates/CSV_Report.xml`
+
+    if File.exist?('./codeCovg/report.csv')
+      codeCoverageCSV = CSV.read('./codeCovg/report.csv')
+      unless(codeCoverageCSV.inspect() == "[]")
+        @branchcov = codeCoverageCSV[2][6]
+        @statementCov = codeCoverageCSV[2][16]
+      end
+      puts "STATEMENTCOV"
+      puts @statementCov
+      return @statementCov
+    end
 
     puts "^^^^^^^^END^^^^^^^^^^"
 
