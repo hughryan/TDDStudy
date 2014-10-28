@@ -674,45 +674,17 @@ def calc_code_covg(curLight)
     puts curLight.tag.visible_files.count
     puts curLight.number
 
-    # puts curLight.tag.visible_files['output']
+    fileNames = curLight.tag.visible_files.keys
+    puts "^^^^^^^^^^^^^START^^^^^^^^^^^^^^^"
+    javaFiles = fileNames.select { |name|  name.include? "java" }
 
-    # puts curLight.tag.visible_files['HikerTest.java']
+    # puts curLight.tag.visible_files[javaFiles[0]]
 
-    # puts curLight.tag.visible_files['Hiker.java']
+    # puts `pwd`
 
-    # puts curLight.tag.visible_files['cyber-dojo.sh']
+    puts `ls #{@avatar.path}\\sandbox\\`
 
-    # puts curLight.tag.visible_files['instructions']
-
-
-
-    # puts "curLight.tag.visible_files[0].to_s"
-
-    # puts curLight.tag.visible_files[0].to_s
-
-    # puts curLight.tag.visible_files[1]
-
-    # puts curLight.tag.visible_files[2]
-
-    # puts curLight.tag.visible_files[3]
-
-    # puts curLight.tag.visible_files[4]
-
-    # for i in 0..curLight.tag.visible_files.count
-    #   puts curLight.tag.visible_files[i]
-    # end
-
-
-    puts curLight.tag.visible_files.map {|k,v| puts k}
-
-    # curLight.tag.visible_files.each do |file|
-
-    #   #   #   #   #   # currfileName =  gitFile[0]
-    #   #   #   #   #   # puts currfileName
-    #   #   #   #   # currfileName =  gitFile[0].to_s
-    #   #   #   #   #puts currfileName
-    #   #   #   #   gitFile.count
-    # end
+    puts "^^^^^^^^END^^^^^^^^^^"
 
   end
 
