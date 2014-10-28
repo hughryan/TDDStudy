@@ -11,7 +11,7 @@ require_relative root + '/lib/HostTestRunner'
 require_relative root + '/lib/OsDisk'
 
 # Set to true for debug prints
-DEBUG = true
+DEBUG = false
 
 def root_path
   Rails.root.to_s + '/'
@@ -669,13 +669,50 @@ def calc_code_covg(curLight)
   else
     puts "DO WORK"
 
+    puts @avatar.path
     puts "CURRENT TAG"
     puts curLight.tag.visible_files.count
+    puts curLight.number
 
-    curLight.tag.visible_files.each do |gitFile|
-      currfileName =  gitFile
-      puts currfileName
-    end
+    # puts curLight.tag.visible_files['output']
+
+    # puts curLight.tag.visible_files['HikerTest.java']
+
+    # puts curLight.tag.visible_files['Hiker.java']
+
+    # puts curLight.tag.visible_files['cyber-dojo.sh']
+
+    # puts curLight.tag.visible_files['instructions']
+
+
+
+    # puts "curLight.tag.visible_files[0].to_s"
+
+    # puts curLight.tag.visible_files[0].to_s
+
+    # puts curLight.tag.visible_files[1]
+
+    # puts curLight.tag.visible_files[2]
+
+    # puts curLight.tag.visible_files[3]
+
+    # puts curLight.tag.visible_files[4]
+
+    # for i in 0..curLight.tag.visible_files.count
+    #   puts curLight.tag.visible_files[i]
+    # end
+
+
+    puts curLight.tag.visible_files.map {|k,v| puts k}
+
+    # curLight.tag.visible_files.each do |file|
+
+    #   #   #   #   #   # currfileName =  gitFile[0]
+    #   #   #   #   #   # puts currfileName
+    #   #   #   #   # currfileName =  gitFile[0].to_s
+    #   #   #   #   #puts currfileName
+    #   #   #   #   gitFile.count
+    # end
 
   end
 
