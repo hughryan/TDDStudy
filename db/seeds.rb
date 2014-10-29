@@ -221,8 +221,12 @@ def calc_cycles
     curr_compile.light_color = curr.colour
     curr_compile.git_tag = curr.number
 
-    workingDir = copy_source_files_to_working_dir(curr)
 
+    @statement_coverage = 0
+    workingDir = copy_source_files_to_working_dir(curr)
+    # puts "DDDDDDDDDDDD"
+    # puts @statement_coverage
+    curr_compile.statement_coverage = @statement_coverage
 
 
     #Calculate Code Coverage for current Light
@@ -850,7 +854,7 @@ def copy_source_files_to_working_dir(curLight)
       end
     end
   end
-  calc_test_coverage(curLight,currTestClass)
+  @statement_coverage = calc_test_coverage(curLight,currTestClass)
 end
 
 
@@ -912,14 +916,14 @@ def calc_test_coverage(curLight,currTestClass)
 
     puts `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar report --container ./workingDir/con.xml --destination ./workingDir/report.csv --session test1 --template ./vendor/calcCodeCovg/report-templates/CSV_Report.xml`
 
-    if File.exist?('./codeCovg/report.csv')
-      codeCoverageCSV = CSV.read('./codeCovg/report.csv')
+    if File.exist?('./workingDir/report.csv')
+      codeCoverageCSV = CSV.read('./workingDir/report.csv')
       unless(codeCoverageCSV.inspect() == "[]")
-        @branchcov = codeCoverageCSV[2][6]
-        @statementCov = codeCoverageCSV[2][16]
+        # @branchcov = codeCoverageCSV[2][6]
+        @statementCov  = codeCoverageCSV[2][16]
       end
-      puts "STATEMENTCOV"
-      puts @statementCov
+      # puts "STATEMENTCOV"
+      # puts @statementCov
       return @statementCov
     end
 
