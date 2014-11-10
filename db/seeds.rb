@@ -232,6 +232,13 @@ def calc_cycles
     # puts @statement_coverage
     curr_compile.statement_coverage = @statement_coverage
 
+    puts "CALCULATED SLOC:"
+    puts @light_test_sloc
+    puts  @light_prod_sloc
+
+    curr_compile.test_sloc_count = @light_test_sloc
+    curr_compile.production_sloc_count = @light_prod_sloc
+    curr_compile.total_sloc_count = @light_test_sloc.to_i + @light_prod_sloc.to_i
 
     #Calculate Code Coverage for current Light
     # curr_compile.statement_coverage = calc_code_covg(curr)
@@ -878,7 +885,99 @@ def copy_source_files_to_working_dir(curLight)
   # puts "./workingDir/codeCovg/Example_v0.java"
   # ASTInterface.treeAST("./workingDir/codeCovg/Example_v0.java")
   justJavafilesDir = "#{currLightDir}/src"
-  puts `./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{justJavafilesDir}`
+  # SLOC_Report = `./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{justJavafilesDir}`
+  cloc_csv = `./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{justJavafilesDir}`
+  #
+  puts cloc_csv
+
+  sloc_csv = CSV.parse(cloc_csv)
+
+  # puts "SLOC_CSV"
+  # puts sloc_csv
+  # puts "%%%%%%%%%%%%%%%%%%%%%%%%%%"
+
+  print "SLOC:"
+  puts sloc_csv[2][4].to_i
+
+  @light_test_sloc = sloc_csv[2][4].to_i
+
+
+  print "TEST_SLOC:"
+  puts sloc_csv[3][4].to_i
+
+  @light_prod_sloc = sloc_csv[3][4].to_i
+
+
+  # unless(sloc_csv.inspect() == "[]")
+  #   # if @language.to_s == "Java-1.8_JUnit"
+  #   begin
+  #     if File.open(file).read.scan(/junit/).count > 0
+  #       @test_loc = @test_loc + sloc_csv[2][4].to_i
+  #       puts "TEST SLOC" if DEBUG
+  #       puts @test_loc if DEBUG
+  #     else
+  #       @production_loc = @production_loc + sloc_csv[2][4].to_i
+  #       puts "PRODUCTION SLOC" if DEBUG
+  #       puts @production_loc if DEBUG
+  #     end
+  #   rescue
+  #     puts "Error: Reading in calc_sloc"
+  #   end
+  #   # end
+  #   @sloc = @sloc + sloc_csv[2][4].to_i
+  # end
+  # print "SLOC:::: "
+  # puts @sloc
+  # end
+
+
+
+
+  # command = `./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{file}`
+  #       puts "./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{file}" if DEBUG
+  #       puts `pwd` if DEBUG
+  #       puts command if DEBUG
+  #       csv = CSV.parse(command)
+  #       puts csv.to_s if DEBUG
+  #       unless(csv.inspect() == "[]")
+  #         if @language.to_s == "Java-1.8_JUnit"
+  #           begin
+  #             if File.open(file).read.scan(/junit/).count > 0
+  #               @test_loc = @test_loc + csv[2][4].to_i
+  #               puts "TEST SLOC" if DEBUG
+  #               puts @test_loc if DEBUG
+  #             else
+  #               @production_loc = @production_loc + csv[2][4].to_i
+  #               puts "PRODUCTION SLOC" if DEBUG
+  #               puts @production_loc if DEBUG
+  #             end
+  #           rescue
+  #             puts "Error: Reading in calc_sloc"
+  #           end
+  #         end
+  #         @sloc = @sloc + csv[2][4].to_i
+  #       end
+  #     end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   # @statement_coverage = calc_test_coverage(curLight,currTestClass)
