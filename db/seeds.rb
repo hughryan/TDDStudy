@@ -232,9 +232,9 @@ def calc_cycles
     # puts @statement_coverage
     curr_compile.statement_coverage = @statement_coverage
 
-    puts "CALCULATED SLOC:"
-    puts @light_test_sloc
-    puts  @light_prod_sloc
+    # puts "CALCULATED SLOC:"
+    # puts @light_test_sloc
+    # puts  @light_prod_sloc
 
     curr_compile.test_sloc_count = @light_test_sloc
     curr_compile.production_sloc_count = @light_prod_sloc
@@ -888,7 +888,7 @@ def copy_source_files_to_working_dir(curLight)
   # SLOC_Report = `./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{justJavafilesDir}`
   cloc_csv = `./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{justJavafilesDir}`
   #
-  puts cloc_csv
+  # puts cloc_csv
 
   sloc_csv = CSV.parse(cloc_csv)
 
@@ -896,14 +896,14 @@ def copy_source_files_to_working_dir(curLight)
   # puts sloc_csv
   # puts "%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
-  print "SLOC:"
-  puts sloc_csv[2][4].to_i
+  # print "SLOC:"
+  # puts sloc_csv[2][4].to_i
 
   @light_test_sloc = sloc_csv[2][4].to_i
 
 
-  print "TEST_SLOC:"
-  puts sloc_csv[3][4].to_i
+  # print "TEST_SLOC:"
+  # puts sloc_csv[3][4].to_i
 
   @light_prod_sloc = sloc_csv[3][4].to_i
 
@@ -959,98 +959,50 @@ def copy_source_files_to_working_dir(curLight)
   #       end
   #     end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  # @statement_coverage = calc_test_coverage(curLight,currTestClass)
+  @statement_coverage = calc_test_coverage(curLight,currTestClass,currLightDir)
 end
 
 
 
 
-def calc_test_coverage(curLight,currTestClass)
+def calc_test_coverage(curLight,currTestClass,currLightDir)
   if curLight.colour.to_s == "amber"
     # puts "AMBER"
     return
   else
     # puts "DO WORK"
 
-    `mkdir ./workingDir`
-    `mkdir ./workingDir/codeCovg`
-    `mkdir ./workingDir/codeCovg/isrc`
-    `rm -f ./workingDir/*`
-    # `rm -f ./codeCovg/src/*`
-    # `rm -r ./codeCovg/isrc/*`
-    # `rm -r ./codeCovg/report.csv`
+    # `mkdir ./workingDir`
+    # `mkdir ./workingDir/codeCovg`
+    `mkdir #{currLightDir}/isrc`
+    # `rm -f ./workingDir/*`
     `rm -r ./*.clf`
 
-    # puts @avatar.path
-    # puts "CURRENT TAG"
-    # puts curLight.tag.visible_files.count
-    # puts curLight.number
+    puts "java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar instrument --root-directory #{currLightDir}/src --destination #{currLightDir}/isrc --container #{currLightDir}/con.xml --language java --charset UTF-8"
+    puts "javac -cp ./vendor/calcCodeCovg/libs/*:#{currLightDir}/isrc #{currLightDir}/isrc/*.java"
+    puts "java -cp ./vendor/calcCodeCovg/libs/*:#{currLightDir}/isrc org.junit.runner.JUnitCore #{currTestClass}"
 
-    # fileNames = curLight.tag.visible_files.keys
-    # puts "^^^^^^^^^^^^^START^^^^^^^^^^^^^^^"
-    # javaFiles = fileNames.select { |name|  name.include? "java" }
+    puts "java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar analyze --container #{currLightDir}/con.xml --coverage-log *.clf --name test1"
 
-    # currTestClass = ""
-    # javaFiles.each do |javaFileName|
-    # puts `cat #{@avatar.path}/sandbox/#{javaFileName}`
-    # `cp #{@avatar.path}/sandbox/#{javaFileName} ./codeCovg/src/#{javaFileName}`
-    # puts javaFileName
+    puts "java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar report --container #{currLightDir}/con.xml --destination #{currLightDir}/report.csv --session test1 --template ./vendor/calcCodeCovg/report-templates/CSV_Report.xml"
 
 
 
-    # initialLoc = javaFileName.to_s =~ /test/i
-    # unless initialLoc.nil?
-    # fileNameParts = javaFileName.split('.')
-    # currTestClass = fileNameParts.first
-    # puts currTestClass
-    # end
+    puts `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar instrument --root-directory #{currLightDir}/src --destination #{currLightDir}/isrc --container #{currLightDir}/con.xml --language java --charset UTF-8`
+    puts `javac -cp ./vendor/calcCodeCovg/libs/*:#{currLightDir}/isrc #{currLightDir}/isrc/*.java`
+    puts `java -cp ./vendor/calcCodeCovg/libs/*:#{currLightDir}/isrc org.junit.runner.JUnitCore #{currTestClass}`
 
-    # fileNameParts = javaFileName.split('.')
-    # currTestClass = fileNameParts.first
-    # puts currTestClass
+    puts `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar analyze --container #{currLightDir}/con.xml --coverage-log *.clf --name test1`
 
-    # end
+    puts `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar report --container #{currLightDir}/con.xml --destination #{currLightDir}/report.csv --session test1 --template ./vendor/calcCodeCovg/report-templates/CSV_Report.xml`
 
-
-
-    `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar instrument --root-directory ./workingDir/src --destination ./workingDir/codeCovg/isrc --container ./workingDir/con.xml --language java --charset UTF-8`
-    `javac -cp ./vendor/calcCodeCovg/libs/*:./workingDir/codeCovg/isrc ./workingDir/codeCovg/isrc/*.java`
-    # puts currTestClass
-    puts `java -cp ./vendor/calcCodeCovg/libs/*:./workingDir/codeCovg/isrc org.junit.runner.JUnitCore #{currTestClass}`
-
-    `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar analyze --container ./workingDir/con.xml --coverage-log *.clf --name test1`
-
-    puts `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar report --container ./workingDir/con.xml --destination ./workingDir/report.csv --session test1 --template ./vendor/calcCodeCovg/report-templates/CSV_Report.xml`
-
-    if File.exist?('./workingDir/report.csv')
-      codeCoverageCSV = CSV.read('./workingDir/report.csv')
+    if File.exist?('#{currLightDir}/report.csv')
+      codeCoverageCSV = CSV.read('#{currLightDir}/report.csv')
       unless(codeCoverageCSV.inspect() == "[]")
         # @branchcov = codeCoverageCSV[2][6]
         @statementCov  = codeCoverageCSV[2][16]
       end
-      # puts "STATEMENTCOV"
-      # puts @statementCov
+
       return @statementCov
     end
 
@@ -1058,82 +1010,6 @@ def calc_test_coverage(curLight,currTestClass)
 
   end
 end
-
-# def calc_code_coverage(workingDir)
-#   puts curLight if DEBUG
-#   puts curLight.colour
-#   if curLight.colour.to_s == "amber"
-#     puts "AMBER"
-#     return
-#   else
-#     puts "DO WORK"
-
-#     `mkdir codeCovg`
-#     `mkdir codeCovg/src`
-#     `mkdir codeCovg/isrc`
-#     `rm -f ./codeCovg/*`
-#     `rm -f ./codeCovg/src/*`
-#     `rm -r ./codeCovg/isrc/*`
-#     `rm -r ./codeCovg/report.csv`
-#     `rm -r ./*.clf`
-
-#     puts @avatar.path
-#     puts "CURRENT TAG"
-#     puts curLight.tag.visible_files.count
-#     puts curLight.number
-
-#     fileNames = curLight.tag.visible_files.keys
-#     puts "^^^^^^^^^^^^^START^^^^^^^^^^^^^^^"
-#     javaFiles = fileNames.select { |name|  name.include? "java" }
-
-#     currTestClass = ""
-#     javaFiles.each do |javaFileName|
-#       # puts `cat #{@avatar.path}/sandbox/#{javaFileName}`
-#       `cp #{@avatar.path}/sandbox/#{javaFileName} ./codeCovg/src/#{javaFileName}`
-#       puts javaFileName
-
-
-#       initialLoc = javaFileName.to_s =~ /test/i
-#       unless initialLoc.nil?
-#         fileNameParts = javaFileName.split('.')
-#         currTestClass = fileNameParts.first
-#         puts currTestClass
-#       end
-
-#       # fileNameParts = javaFileName.split('.')
-#       # currTestClass = fileNameParts.first
-#       # puts currTestClass
-
-#     end
-
-
-#     `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar instrument --root-directory ./codeCovg/src --destination ./codeCovg/isrc --container ./codeCovg/src/con.xml --language java --charset UTF-8`
-#     `javac -cp ./vendor/calcCodeCovg/libs/*:./codeCovg/isrc ./codeCovg/isrc/*.java`
-#     # puts currTestClass
-#     puts `java -cp ./vendor/calcCodeCovg/libs/*:./codeCovg/isrc org.junit.runner.JUnitCore #{currTestClass}`
-
-#     `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar analyze --container ./codeCovg/src/con.xml --coverage-log *.clf --name test1`
-
-#     puts `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar report --container ./codeCovg/src/con.xml --destination ./codeCovg/report.csv --session test1 --template ./vendor/calcCodeCovg/report-templates/CSV_Report.xml`
-
-#     if File.exist?('./codeCovg/report.csv')
-#       codeCoverageCSV = CSV.read('./codeCovg/report.csv')
-#       unless(codeCoverageCSV.inspect() == "[]")
-#         @branchcov = codeCoverageCSV[2][6]
-#         @statementCov = codeCoverageCSV[2][16]
-#       end
-#       puts "STATEMENTCOV"
-#       puts @statementCov
-#       return @statementCov
-#     end
-
-#     puts "^^^^^^^^END^^^^^^^^^^"
-
-#   end
-
-# end
-
-
 
 
 import_all_katas
