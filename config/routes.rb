@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   get 'cycle_catagorizer/parseCSV'
 
+  get 'cycle_catagorizer/listCC'
+
   get 'cycle_catagorizer/ListKatasInDojo'
 
   get 'cycle_catagorizer/ImportAllKatas'
