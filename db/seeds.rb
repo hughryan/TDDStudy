@@ -870,17 +870,19 @@ def copy_source_files_to_working_dir(curLight)
     # puts "FILE CONTENTS"
     # puts curLight.tag.visible_files[javaFileName]
 
-    currTestClass = ""
+
     # javaFiles.each do |javaFileName|
     # `cp #{@avatar.path}/sandbox/#{javaFileName} #{currLightDir}/codeCovg/#{javaFileName}`
     initialLoc = javaFileName.to_s =~ /test/i
+    puts initialLoc
     unless initialLoc.nil?
       fileNameParts = javaFileName.split('.')
       currTestClass = fileNameParts.first
     end
     # end
   end
-  # puts "$$$$$$$$$$$$$$$$$$$$$"
+  puts currTestClass
+  puts "$$$$$$$$$$$$$$$$$$$$$"
   # puts `ls ./workingDir/codeCovg`
   # puts "./workingDir/codeCovg/Example_v0.java"
   # ASTInterface.treeAST("./workingDir/codeCovg/Example_v0.java")
@@ -966,6 +968,10 @@ end
 
 
 def calc_test_coverage(curLight,currTestClass,currLightDir)
+
+  puts "currTestClass!!!!!!!!!!!"
+  puts currTestClass
+
   if curLight.colour.to_s == "amber"
     # puts "AMBER"
     return
@@ -996,11 +1002,18 @@ def calc_test_coverage(curLight,currTestClass,currLightDir)
 
     puts `java -jar ./vendor/calcCodeCovg/libs/codecover-batch.jar report --container #{currLightDir}/con.xml --destination #{currLightDir}/report.csv --session test1 --template ./vendor/calcCodeCovg/report-templates/CSV_Report.xml`
 
-    if File.exist?('#{currLightDir}/report.csv')
-      codeCoverageCSV = CSV.read('#{currLightDir}/report.csv')
+    puts '#{currLightDir}/report.csv'
+
+    if File.exist?(currLightDir + '/report.csv')
+      puts "DEBUG1"
+      codeCoverageCSV = CSV.read(currLightDir + '/report.csv')
+      puts "DEBUG2"
       unless(codeCoverageCSV.inspect() == "[]")
         # @branchcov = codeCoverageCSV[2][6]
+        puts "DEBUG3"
         @statementCov  = codeCoverageCSV[2][16]
+        print "@statementCov::"
+        puts @statementCov
       end
 
       return @statementCov
