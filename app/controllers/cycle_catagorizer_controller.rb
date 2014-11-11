@@ -29,6 +29,11 @@ class CycleCatagorizerController < ApplicationController
     #user = User.create(name: "David", occupation: "Code Artist")
   end
 
+  def listCC
+    @allSessions = Session.all
+  end
+
+
   def ListKatasInDojo
     @allSessions = Session.all
 
@@ -36,8 +41,8 @@ class CycleCatagorizerController < ApplicationController
 
   def ListAllCompiles
     puts "####################DEBUG"
-    puts Compile.all
-    @allCompiles = Compile.all
+    puts Phase.all
+    @allPhases = Phase.all
   end
 
   def InsertTestCompiles
