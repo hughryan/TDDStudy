@@ -224,6 +224,7 @@ def calc_cycles
     curr_compile.prod_change = false
     curr_compile.light_color = curr.colour
     curr_compile.git_tag = curr.number
+    curr_compile.session_id = curr_session.id
 
 
     @statement_coverage = 0
