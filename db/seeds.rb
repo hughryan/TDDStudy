@@ -693,7 +693,7 @@ def copy_source_files_to_working_dir(curLight)
   javaFiles = fileNames.select { |name|  name.include? "java" }
   currLightDir =  "./workingDir/"+curLight.number.to_s
 
-  # `rm -rf ./workingDir/*`
+  `rm -rf ./workingDir/*`
   `mkdir ./workingDir/`
   `mkdir #{currLightDir}`
   `mkdir #{currLightDir}/src`
