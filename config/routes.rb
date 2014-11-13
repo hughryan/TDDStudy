@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'viz/index'
+
   get 'cycle_catagorizer/cycle_catgories'
 
   get 'cycle_catagorizer/parseCSV'
