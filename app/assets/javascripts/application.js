@@ -16,3 +16,11 @@
 //= require_tree .
 
 //= require ace/ace
+
+//= require codemirror.min
+//= require jquery-2.1.1.min
+//= require mergely.min
+//= require searchcursor
+//= require clike
+//= require d3.v3.min
+//= require d3-timeline
