@@ -16,6 +16,7 @@ include ASTInterface
 
 # Set to true for debug prints
 DEBUG = false
+CYCLE_DIAG = true
 
 def root_path
   Rails.root.to_s + '/'
@@ -315,24 +316,33 @@ def calc_cycles
     #TODO: Coverage, Total SLOC, Prod SLOC, Test SLOC
     #################################
 
-    # puts "Light color" + curr_compile.light_color
-    # puts "Expected phase: " + expected_phase(curr_compile)
-    # puts "Current Phase: " + curr_phase.tdd_color
-
+    puts "*************" if CYCLE_DIAG              
+    puts "{" if CYCLE_DIAG
+    puts "Light color: " + curr_compile.light_color.to_s if CYCLE_DIAG
+    puts "Test edit: " + curr_compile.test_change.to_s if CYCLE_DIAG
+    puts "Production edit: " + curr_compile.prod_change.to_s if CYCLE_DIAG
+    
+    puts "Current Phase: " + curr_phase.tdd_color.to_s if CYCLE_DIAG
+    puts "Expected Phase: " + expected_phase(curr_compile).to_s if CYCLE_DIAG
+    puts "Current Phase Empty?: " + curr_phase.compiles.empty?.to_s if CYCLE_DIAG
+    
     #NEW LOGIC ============================
     case curr_phase.tdd_color
     when "red"
       if expected_phase(curr_compile) == "red"
         curr_phase.compiles << curr_compile
         curr_compile.save
+        puts "Saved Compile to red phase" if CYCLE_DIAG
       else
-        puts curr_phase.compiles.count
         unless curr_phase.compiles.empty?
-          curr_phase.cycle_id = curr_cycle.id
+          curr_cycle.phases << curr_phase
           curr_phase.save
-          puts "DEBUG save red phase"
+          puts "Start Green Phase" if CYCLE_DIAG
           curr_phase = Phase.new(tdd_color: "green")
+          puts "Saved Compile to green phase" if CYCLE_DIAG
+          curr_phase.compiles << curr_compile
         else
+          puts "[!!] NON - TDD >> no red phase occured" if CYCLE_DIAG
           #NON TDD (no red phase occured)
           curr_cycle.valid_tdd = false
           curr_phase.tdd_color = "white"
@@ -346,16 +356,19 @@ def calc_cycles
         #save compile to phase
         curr_phase.compiles << curr_compile
         curr_compile.save
-        if curr_compile.light_color == "green" #the green phase has ended, move on to refactor (or test if need be)
-          #save phase to cycle
-          curr_phase.cycle_id = curr_cycle.id
+        if curr_compile.light_color.to_s == "green" #the green phase has ended, move on to refactor (or test if need be)
+          #save current compile to phase and phase to cycle
+          curr_cycle.phases << curr_phase   
           curr_phase.save
-          puts "DEBUG save green phase"
+          puts "Saved Compile to green phase" if CYCLE_DIAG
+          puts "Exit Green Phase" if CYCLE_DIAG
+          puts "Start Blue phase" if CYCLE_DIAG
           #next phase (assume the next phase is blue)
           curr_phase = Phase.new(tdd_color: "blue")
         end
-      else #if the expected phase WAS red
+      else #if the expected phase is red
         #NON TDD (green phase was never completed [we never reached a green state])
+        puts "[!!] NON - TDD >> never reached end of green phase (no green state)" if CYCLE_DIAG
         curr_cycle.valid_tdd = false
         curr_phase.tdd_color = "white"
         #save compile to phase
@@ -365,43 +378,60 @@ def calc_cycles
     when "blue"
       if expected_phase(curr_compile) == "red"
         unless curr_phase.compiles.empty? #the blue phase is not empty
-          curr_phase.cycle_id = curr_cycle.id
+          curr_cycle.phases << curr_phase
           curr_phase.save
-          puts "DEBUG save blue phase"
+          puts "Start red phase" if CYCLE_DIAG
           curr_phase = Phase.new(tdd_color: "red")
+          curr_phase.compiles << curr_compile
+          puts "Saved Compile to red phase" if CYCLE_DIAG
         else
+          puts "Start red phase" if CYCLE_DIAG
           curr_phase.tdd_color == "red"
+          curr_phase.compiles << curr_compile
         end
         #End the Cycle
         pos += 1
-        curr_cycle.session_id = curr_session.id
+        curr_session.cycles << curr_cycle
         curr_cycle.valid_tdd = true
         curr_cycle.save
+        puts "Saved cycle" if CYCLE_DIAG
         curr_cycle = Cycle.new(cycle_position: pos)
       else
         #save compile to phase
         curr_phase.compiles << curr_compile
         curr_compile.save
+        puts "Saved Compile to blue phase" if CYCLE_DIAG
       end
     when "white"
       unless expected_phase(curr_compile) == "red"
         #save compile to phase
         curr_phase.compiles << curr_compile
         curr_compile.save
+        puts "Inside white phase" if CYCLE_DIAG
       else
         pos += 1
-        curr_phase.cycle_id = curr_cycle.id
+        curr_cycle.phases << curr_phase
         curr_phase.save
-        curr_cycle.session_id = curr_session.id
+        curr_session.cycles << curr_cycle
         curr_cycle.save
+        puts "Exit white phase" if CYCLE_DIAG
         curr_phase = Phase.new(tdd_color: "red")
         curr_cycle = Cycle.new(cycle_position: pos)
+        curr_phase.compiles << curr_compile
+        curr_compile.save
       end
     end
 
     #END NEW LOGIC =====================================
-
+    puts "}" if CYCLE_DIAG
+    puts "*************" if CYCLE_DIAG              
+    
   end #End of For Each Light
+
+  curr_cycle.phases << curr_phase
+  curr_session.cycles << curr_cycle
+  curr_phase.save
+  curr_cycle.save
 
   #Final Test Number
   count_tests
