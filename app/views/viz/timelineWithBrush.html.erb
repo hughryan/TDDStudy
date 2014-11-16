@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+/*.chart rect {
+  fill: steelblue;
+}*/
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+.axis text {
+  font: 11px sans-serif;
+}
+
+.axis path {
+  display: none;
+}
+
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.grid-background {
+  fill: #ddd;
+}
+
+.grid line,
+.grid path {
+  fill: none;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+.grid .minor.tick line {
+  stroke-opacity: .5;
+}
+
+.brush .extent {
+  stroke: #000;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+</style>
+<h1>Timeline With Brush</h1>
+
+
+<body>
+<%=  @allSessions.first.as_json %>
+
+<BR>
+
+
+
+<svg class="chart"></svg>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var data = [{"start":0,"end":1,"value":1},{"start":1,"end":3,"value":2},{"start":3,"end":5,"value":3}];
+
+console.log(data);
+
+var margin = {top: 20, right: 30, bottom: 30, left: 40},
+  width = 960 - margin.left - margin.right,
+  height = 500 - margin.top - margin.bottom;
+
+
+var width = 400,
+  barHeight = 20,
+  color = d3.scale.category20c();
+
+var x = d3.scale.linear()
+.domain([0, 5])
+.range([0, width]);
+
+var xAxis = d3.svg.axis()
+.scale(x)
+.orient("bottom");
+
+
+
+var chart = d3.select(".chart")
+.attr("width", width)
+.attr("height", barHeight *2);
+
+var bar = chart.selectAll("g")
+.data(data)
+.enter().append("g")
+// .attr("transform", function(d, i) {
+           //         var str = "translate(0," +  (d.end - d.start) + ")"
+           //         return str;
+// })
+.style("fill", function(d) {
+         return color(d.value);
+});
+
+bar.append("rect")
+.attr("x",function(d, i) {
+        return x(d.start);
+})
+.attr("width", function(d, i) {
+        return x(d.end - d.start);
+})
+.attr("height", barHeight );
+
+
+// bar.append("text")
+// .attr("x", function(d) { return x(d) - 3; })
+// .attr("y", barHeight / 2)
+// .attr("dy", ".35em")
+// .text(function(d) { return d; });
+
+/*
+var testData = [
+  {times: [{"starting_time": 1, "ending_time": 2}, {"starting_time": 3, "ending_time": 4}]},
+  {times: [{"starting_time": 4, "ending_time": 6}, {"starting_time": 2, "ending_time": 3}]},
+  {times: [{"starting_time": 6, "ending_time": 8}]},
+];
+var width = 500;
+  var chart = d3.timeline();
+  var svg = d3.select("#timeline1").append("svg").attr("width", width)
+  .datum(testData).call(chart);
+// */
+// var testData = [
+  //   {times: [{"starting_time": 1, "ending_time": 2}, {"starting_time": 3, "ending_time": 4}]},
+  //   {times: [{"starting_time": 4, "ending_time": 6}, {"starting_time": 2, "ending_time": 3}]},
+  //   {times: [{"starting_time": 6, "ending_time": 8}]},
+// ];
+
+// var margin = {top: 200, right: 40, bottom: 200, left: 40},
+  //   width = 960 - margin.left - margin.right,
+  //   height = 500 - margin.top - margin.bottom;
+
+// var x = d3.time.scale()
+// .domain([new Date(2013, 7, 1), new Date(2013, 7, 5) - 1])
+// .range([0, width]);
+
+// // var brush = d3.svg.brush()
+// // .x(x)
+// // .extent([new Date(2013, 7, 2), new Date(2013, 7, 3)])
+// // .on("brushend", brushended);
+
+// var svg = d3.select("body").append("svg")
+// .attr("width", width + margin.left + margin.right)
+// .attr("height", height + margin.top + margin.bottom)
+// .append("g")
+// .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// svg.append("rect")
+// .attr("class", "grid-background")
+// .attr("width", width)
+// .attr("height", height);
+
+// svg.append("g")
+// .attr("class", "x grid")
+// .attr("transform", "translate(0," + height + ")")
+// .call(d3.svg.axis()
+         //       .scale(x)
+         //       .orient("bottom")
+         //       .ticks(d3.time.hours, 12)
+         //       .tickSize(-height)
+         //       .tickFormat(""))
+// .selectAll(".tick")
+// .classed("minor", function(d) { return d.getHours(); });
+
+// svg.append("g")
+// .attr("class", "x axis")
+// .attr("transform", "translate(0," + height + ")")
+// .call(d3.svg.axis()
+         //       .scale(x)
+         //       .orient("bottom")
+         //       .ticks(d3.time.days)
+         //       .tickPadding(0))
+// .selectAll("text")
+// .attr("x", 6)
+// .style("text-anchor", null);
+
+// var gBrush = svg.append("g")
+// .attr("class", "brush")
+// .call(brush)
+// .call(brush.event);
+
+// gBrush.selectAll("rect")
+// .attr("height", height);
+
+// function brushended() {
+  //   if (!d3.event.sourceEvent) return; // only transition after input
+  //     var extent0 = brush.extent(),
+  //       extent1 = extent0.map(d3.time.day.round);
+
+  //     // if empty when rounded, use floor & ceil instead
+  //     if (extent1[0] >= extent1[1]) {
+    //         extent1[0] = d3.time.day.floor(extent0[0]);
+    //         extent1[1] = d3.time.day.ceil(extent0[1]);
+  //       }
+
+  //       d3.select(this).transition()
+  //       .call(brush.extent(extent1))
+  //       .call(brush.event);
+//       }
+
+</script>

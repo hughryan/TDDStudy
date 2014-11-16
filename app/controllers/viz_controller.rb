@@ -28,5 +28,13 @@ class VizController < ApplicationController
 		Rails.root.to_s + '/'
 	end
 
+	def timelineWithBrush
+		@allSessions = Session.all
+		@katas = dojo.katas
+
+		# render json: @allSessions
+
+	end
+
 
 end
