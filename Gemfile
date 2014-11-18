@@ -29,6 +29,8 @@ gem 'capybara'
 gem 'smarter_csv'
 # I need this gem in order to use ACE editor
 gem 'ace-rails-ap'
+# this makes getting data into json for the viz stuff WAY easier
+gem 'gon'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

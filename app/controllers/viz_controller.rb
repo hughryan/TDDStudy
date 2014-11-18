@@ -33,7 +33,7 @@ class VizController < ApplicationController
 		@katas = dojo.katas
 
 		# render json: @allSessions
-
+		gon.compiles = @allSessions.first.compiles
 	end
 
 
