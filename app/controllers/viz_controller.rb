@@ -34,6 +34,26 @@ class VizController < ApplicationController
 
 		# render json: @allSessions
 		gon.compiles = @allSessions.first.compiles
+
+		allPhases = Array.new
+		@allSessions.first.cycles.each do |cycle|
+			cycleStart = 0
+			cycleEnd = 0
+			cycle.phases.each do |phase|
+				phase.first_compile_in_phase = phase.compiles.first.id
+				phase.last_compile_in_phase = phase.compiles.last.id
+				print  "cycleStart:"
+				puts cycleStart
+				print  "cycleEnd:"
+				puts cycleEnd
+			end
+			allPhases.push(cycle.phases)
+		end
+		gon.phases = allPhases
+
+
+
+		# gon.cycles = @allSessions.first.phase
 	end
 
 
