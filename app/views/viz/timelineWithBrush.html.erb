@@ -17,9 +17,9 @@
   font: 11px sans-serif;
 }
 
-.axis path {
+/*.axis path {
   display: none;
-}
+}*/
 
 .axis line {
   fill: none;
@@ -48,6 +48,18 @@
   shape-rendering: crispEdges;
 }
 
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+
 </style>
 <h1>Timeline With Brush</h1>
 
@@ -57,7 +69,7 @@
 
 <BR>
 
-
+<div id="viz"></div>
 
 <svg class="chart"></svg>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -69,7 +81,12 @@ var data = gon.compiles;
 
 console.log(gon.compiles);
 
+
 // console.log(data);
+
+var phaseData = gon.phases[0];
+console.log(phaseData);
+
 
 var margin = {top: 20, right: 30, bottom: 30, left: 40},
   width = 960 - margin.left - margin.right,
@@ -95,37 +112,142 @@ var xAxis = d3.svg.axis()
 .orient("bottom");
 
 
+// var dataset = [],
+  //   i = 0;
+
+// for(i=0; i<5; i++){
+  //     dataset.push(Math.round(Math.random()*100));
+//   }
+
+//   var sampleSVG = d3.select("#viz")
+//   .append("svg")
+//   .attr("width", 400)
+//   .attr("height", 75);
+
+//   sampleSVG.selectAll("circle")
+//   .data(dataset)
+//   .enter().append("circle")
+//   .style("stroke", "gray")
+//   .style("fill", "white")
+//   .attr("r", 40)
+//   .attr("cx", 50)
+//   .attr("cy", 50)
+//   .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
+//   .on("mouseout", function(){d3.select(this).style("fill", "white");});
+
+
+// var dataset = [],
+  //   i = 0;
+
+// for(i=0; i<5; i++){
+  //     dataset.push(Math.round(Math.random()*100));
+//   }
+
+//   var sampleSVG = d3.select("#viz")
+//   .append("svg")
+//   .attr("width", 400)
+//   .attr("height", 75);
+
+//   sampleSVG.selectAll("circle")
+//   .data(dataset)
+//   .enter().append("circle")
+//   .style("stroke", "gray")
+//   .style("fill", "white")
+//   .attr("height", 40)
+//   .attr("width", 75)
+//   .attr("x", function(d, i){return i*80})
+//   .attr("y", 20);
 
 var chart = d3.select(".chart")
 .attr("width", width)
-.attr("height", barHeight *2);
+.attr("height", barHeight *3);
+
+
+chart.selectAll("f")
+.data(phaseData)
+.enter().append("rect")
+.attr("x" ,function(d, i) {
+        return x(d.first_compile_in_phase);
+})
+.attr("y", 10)
+.attr("width", 50)
+.attr("height", 100)
+;
+
+
+// var rectangle = chart.append("rect")
+// .attr("x", 0)
+// .attr("y", 10)
+// .attr("width", 50)
+// .attr("height", 100);
+
+
+var myLine = chart.append("svg:line")
+.attr("x1", 30)
+.attr("y1", 10)
+.attr("x2", width+10)
+.attr("y2", 10)
+.style("stroke", "#737373");
+
+
+
+
+// var phases = chart.append(".phases")
+// .data(gon.phases)
+
+// var phases = chart.selectAll("f")
+// .data(phaseData)
+// .enter().append("f");
+
+// phases.append("rect")
+// // .style("fill","rgb(60,179,113)")
+// .attr("width", 100)
+// .attr("height", 20)
+// .attr("x",10)
+// .attr("y",4)
+// .attr("transform", "translate(5,10)");
+
+
+// //Make an SVG Container
+// var svgContainer = d3.select("body").append("svg")
+//                                     .attr("width", 200)
+//                                     .attr("height", 200);
+
+// //Draw the Rectangle
+// var rectangle = chart.append("rect")
+// .attr("x", 10)
+// .attr("y", 10)
+// .attr("width", 50)
+// .attr("height", 100);
 
 var bar = chart.selectAll("g")
 .data(data)
-.enter().append("g")
-// .attr("transform", function(d, i) {
-           //         var str = "translate(0," +  (d.end - d.start) + ")"
-           //         return str;
-// })
-.style("fill", function(d) {
-         return d.light_color;
-});
+.enter().append("g");
 
-bar.append("rect")
-.attr("x",function(d, i) {
+
+
+bar.append("circle")
+.attr("cx",function(d, i) {
         return x(d.git_tag);
 })
-.attr("width", function(d, i) {
-        return x(1);
+.attr("r", 5)
+.attr("transform", "translate(5,10)")
+.attr("stroke", function(d) {
+        return d.light_color;
 })
-.attr("height", barHeight );
+.style("fill","rgba(60,179,113, 0)")
+.attr("stroke-width", 3);
+
+
+
 
 chart.append("g")
 .attr("class", "x axis")
 .attr("transform", "translate(31," + barHeight + ")")
 .call(xAxis)
 .selectAll("text")
-// .attr("y", 6)
+.attr("y", 6)
+.attr("height",10)
 // .attr("x", 6)
 .style("text-anchor", "start");
 
@@ -165,6 +287,74 @@ function brushended() {
     .call(brush.extent(extent1))
     .call(brush.event);
     }
+
+
+
+
+    // .attr("r", function(d, i) {
+               //         return x(1);
+    // });
+    // .attr("height", barHeight );
+
+
+    // var margin = {top: 250, right: 40, bottom: 250, left: 40},
+      //   width = 960 - margin.left - margin.right,
+      //   height = 500 - margin.top - margin.bottom;
+
+    // var x = d3.time.scale()
+    // .domain([new Date(2012, 0, 1), new Date(2013, 0, 1)])
+    // .range([0, width]);
+
+    // var xAxis = d3.svg.axis()
+    // .scale(x);
+
+    // var svg = d3.select("body").append("svg")
+    // .attr("width", width + margin.left + margin.right)
+    // .attr("height", height + margin.top + margin.bottom)
+    // .append("g")
+    // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // svg.append("g")
+    // .attr("class", "x axis")
+    // .attr("transform", "translate(0," + height + ")")
+    // .call(xAxis)
+    // .selectAll("text")
+    // .attr("y", 0)
+    // .attr("x", 9)
+    // .attr("dy", ".5em")
+    // .attr("transform", "rotate(90)")
+    // .style("text-anchor", "start");
+
+
+
+
+    // var margin = {top: 250, right: 40, bottom: 250, left: 40},
+      //   width = 960 - margin.left - margin.right,
+      //   height = 500 - margin.top - margin.bottom;
+
+    // var x = d3.time.scale()
+    // .domain([new Date(2012, 0, 1), new Date(2013, 0, 1)])
+    // .range([0, width]);
+
+    // var xAxis = d3.svg.axis()
+    // .scale(x);
+
+    // var svg = d3.select("body").append("svg")
+    // .attr("width", width + margin.left + margin.right)
+    // .attr("height", height + margin.top + margin.bottom)
+    // .append("g")
+    // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // svg.append("g")
+    // .attr("class", "x axis")
+    // .attr("transform", "translate(0," + height + ")")
+    // .call(xAxis)
+    // .selectAll("text")
+    // .attr("y", 0)
+    // .attr("x", 9)
+    // .attr("dy", ".35em")
+    // .attr("transform", "rotate(90)")
+    // .style("text-anchor", "start");
 
 
 
