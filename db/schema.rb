@@ -69,6 +69,8 @@ ActiveRecord::Schema.define(version: 20140925220227) do
     t.integer  "total_line_change_count"
     t.integer  "production_line_change_count"
     t.integer  "test_line_change_count"
+    t.integer  "first_compile_in_phase"
+    t.integer  "last_compile_in_phase"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
