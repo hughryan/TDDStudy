@@ -9,7 +9,7 @@ class OneMigrationToRuleThemAll < ActiveRecord::Migration
       t.integer :production_edited_line_count
       t.integer :test_edited_line_count
       t.integer :total_test_method_count
-      t.integer :total_test_run_count      
+      t.integer :total_test_run_count
       t.integer :total_test_run_fail_count
       t.integer :seconds_since_last_light
       t.float :statement_coverage
@@ -35,7 +35,8 @@ class OneMigrationToRuleThemAll < ActiveRecord::Migration
       t.integer :total_line_change_count
       t.integer :production_line_change_count
       t.integer :test_line_change_count
-
+      t.integer :first_compile_in_phase
+      t.integer :last_compile_in_phase
       t.timestamps
     end
 
