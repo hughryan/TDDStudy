@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <%= include_gon %>
+
+
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<script>
+$(function() {
+    $( "#accordion" ).accordion();
+});
+</script>
+
+
+
 <style>
 
 .chart {
@@ -58,10 +73,65 @@
 </style>
 <h1>Timeline With Brush</h1>
 
+
+
 <body>
 <BR>
 <div id="viz"></div>
 <svg class="chart"></svg>
+
+
+
+<div id="accordion">
+<h3>Section 1</h3>
+<div>
+<p>
+Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+  </p>
+</div>
+<h3>Section 2</h3>
+<div>
+<p>
+Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+suscipit faucibus urna.
+  </p>
+</div>
+<h3>Section 3</h3>
+<div>
+<p>
+Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
+  Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
+ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
+lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
+  </p>
+<ul>
+<li>List item one</li>
+<li>List item two</li>
+<li>List item three</li>
+</ul>
+</div>
+<h3>Section 4</h3>
+<div>
+<p>
+Cras dictum. Pellentesque habitant morbi tristique senectus et netus
+et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
+faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
+mauris vel est.
+  </p>
+<p>
+Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
+  Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
+inceptos himenaeos.
+  </p>
+</div>
+</div>
+
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
@@ -108,88 +178,123 @@ chart.selectAll("f")
 .attr("height", 10)
 .attr("stroke", "grey")
 .attr("fill",
-      function(d) {
-        if(d.tdd_color == "white"){return "gray";}
-        else{return d.tdd_color;}})
-          .attr("transform", "translate("+margin.left+",10)");
+      function(d)
+      {if(d.tdd_color == "white"){return "gray";} else{return d.tdd_color;}})
+         .attr("transform", "translate("+margin.left+",10)");
 
-          var myLine = chart.append("svg:line")
-          .attr("x1", margin.left)
-          .attr("y1", 45)
-          .attr("x2" ,function(d, i) {
-                  return x(gon.compiles.length);
-          })
-          .attr("y2", 45)
-          .style("stroke", "#737373");
+         var myLine = chart.append("svg:line")
+         .attr("x1", margin.left)
+         .attr("y1", 45)
+         .attr("x2" ,function(d, i) {
+                 return x(gon.compiles.length);
+         })
+         .attr("y2", 45)
+         .style("stroke", "#737373");
 
-          var bar = chart.selectAll("g")
-          .data(data)
-          .enter().append("g");
-
-
-
-          bar.append("circle")
-          .attr("cx",function(d, i) {
-                  return x(d.git_tag);
-          })
-          .attr("r", 5)
-          .attr("transform", "translate("+margin.left+",45)")
-          .attr("stroke",
-                function(d) {
-                  if(d.light_color == "amber")
-                    {
-                      return "orange";
-                    }
-                    return d.light_color;
-                    })
-                    .style("fill","rgba(60,179,113, 0)")
-                    .attr("stroke-width", 3);
+         var bar = chart.selectAll("g")
+         .data(data)
+         .enter().append("g");
 
 
 
-
-                    chart.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate("+margin.left+",60)")
-                    .call(xAxis)
-                    .selectAll("text")
-                    .attr("y", 6)
-                    .attr("height",10)
-                    // .attr("x", 6)
-                    .style("text-anchor", "start");
-
-
-                    var gBrush = chart.append("g")
-                    .attr("class", "brush")
-                    .call(brush)
-                    .call(brush.event);
-
-                    gBrush.selectAll("rect")
-                    .attr("height", 40)
-                    .attr("transform", "translate("+margin.left+",20)")
-                    ;
+         bar.append("circle")
+         .attr("cx",function(d, i) {
+                 return x(d.git_tag);
+         })
+         .attr("r", 5)
+         .attr("transform", "translate("+margin.left+",45)")
+         .attr("stroke",
+               function(d) {
+                 if(d.light_color == "amber")
+                   {
+                     return "orange";
+                   }
+                   return d.light_color;
+                   })
+                   .style("fill","rgba(60,179,113, 0)")
+                   .attr("stroke-width", 3);
 
 
 
-                    function brushended() {
 
-                      if (!d3.event.sourceEvent) return; // only transition after input
-                        console.log("BRUSH_END")
-                        var extent0 = brush.extent();
-
-
-                        var extent1 = extent0;
-                        extent1[0] = Math.round(extent0[0]);
-                        extent1[1] = Math.round(extent0[1]);
-
-                        // console.log(extent0)
-                        console.log(extent1[0])
-                        console.log(extent1[1])
-
-                        d3.select(this).transition()
-                        .call(brush.extent(extent1))
-                        .call(brush.event);
-                        }
+                   chart.append("g")
+                   .attr("class", "x axis")
+                   .attr("transform", "translate("+margin.left+",60)")
+                   .call(xAxis)
+                   .selectAll("text")
+                   .attr("y", 6)
+                   .attr("height",10)
+                   // .attr("x", 6)
+                   .style("text-anchor", "start");
 
 
-                        </script>
+                   var gBrush = chart.append("g")
+                   .attr("class", "brush")
+                   .call(brush)
+                   .call(brush.event);
+
+                   gBrush.selectAll("rect")
+                   .attr("height", 40)
+                   .attr("transform", "translate("+margin.left+",20)")
+                   ;
+
+
+
+                   function brushended()
+                   {
+
+                     if (!d3.event.sourceEvent) return; // only transition after input
+                       console.log("BRUSH_END")
+                       var extent0 = brush.extent();
+
+
+                       var extent1 = extent0;
+                       extent1[0] = Math.round(extent0[0]);
+                       extent1[1] = Math.round(extent0[1]);
+
+                       // console.log(extent0)
+                       console.log(extent1[0]);
+                       console.log(extent1[1]);
+                       var start = extent1[0];
+                     var end = extent1[1];
+
+                     $.ajax({
+                              url: "/viz/retrieve_session",
+                              dataType:'json',
+                              data: {
+                                'start': start,
+                                'end':end
+                              },
+                              success: function(data){
+                                console.log(data);
+                                // $.each(data, function(key, value) {
+                                            //          // alert(key + ", " + $.param(value));
+                                            //          console.log(key);
+                                            //          console.log(value);
+                                // });
+
+                              },
+                              error: function(){
+                                console.error("AJAX");
+                              },
+                              type: 'GET'
+                     });
+
+
+
+
+
+
+
+
+
+
+                     d3.select(this).transition()
+                     .call(brush.extent(extent1))
+                     .call(brush.event);
+                   }
+
+
+
+
+                   </script>
