@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
+  get 'visualizations/index'
+
   get 'viz/index'
 
   get 'viz/timelineWithBrush'
+
+  get 'viz/retrieve_session'
 
   get 'cycle_catagorizer/cycle_catgories'
 
