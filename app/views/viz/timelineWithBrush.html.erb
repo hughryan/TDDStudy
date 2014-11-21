@@ -3,10 +3,6 @@
 <%= include_gon %>
 <style>
 
-/*.chart rect {
-  fill: steelblue;
-}*/
-
 .chart {
   background-color: #efefef;
 }
@@ -19,10 +15,6 @@
 .axis text {
   font: 11px sans-serif;
 }
-
-/*.axis path {
-  display: none;
-}*/
 
 .axis line {
   fill: none;
@@ -66,38 +58,24 @@
 </style>
 <h1>Timeline With Brush</h1>
 
-
 <body>
-
-
 <BR>
-
 <div id="viz"></div>
-
 <svg class="chart"></svg>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-// var data = [{"start":0,"end":1,"value":1},{"start":1,"end":3,"value":2},{"start":3,"end":5,"value":3}];
-
 var data = gon.compiles;
-
 console.log(gon.compiles);
-
-
-// console.log(data);
 
 var phaseData = gon.phases[0];
 console.log(phaseData);
-
 
 var margin = {top: 20, right: 20, bottom: 30, left: 10},
   width = 530 - margin.left - margin.right,
   height = 500 - margin.top - margin.bottom;
 
-
-// var width = 400,
-  var  barHeight = 50,
+var  barHeight = 50,
   color = d3.scale.category20c();
 
 var x = d3.scale.linear()
@@ -109,17 +87,13 @@ var brush = d3.svg.brush()
 .extent([3, 5])
 .on("brushend", brushended);
 
-
 var xAxis = d3.svg.axis()
 .scale(x)
 .orient("bottom");
 
-
-
 var chart = d3.select(".chart")
 .attr("width", width)
 .attr("height", barHeight *3);
-
 
 chart.selectAll("f")
 .data(phaseData)
@@ -135,58 +109,17 @@ chart.selectAll("f")
 .attr("stroke", "grey")
 .attr("fill", function(d) {
         if(d.tdd_color == "white"){return "gray";}
-        else{return d.tdd_color;}
-          }).attr("transform", "translate("+margin.left+",10)")
-          ;
-
-
-          // var rectangle = chart.append("rect")
-          // .attr("x", 0)
-          // .attr("y", 10)
-          // .attr("width", 50)
-          // .attr("height", 100);
-
+        else{return d.tdd_color;}})
+          .attr("transform", "translate("+margin.left+",10)");
 
           var myLine = chart.append("svg:line")
           .attr("x1", margin.left)
           .attr("y1", 45)
-          // .attr("x2", width+10)
           .attr("x2" ,function(d, i) {
                   return x(gon.compiles.length);
           })
           .attr("y2", 45)
           .style("stroke", "#737373");
-
-
-
-
-          // var phases = chart.append(".phases")
-          // .data(gon.phases)
-
-          // var phases = chart.selectAll("f")
-          // .data(phaseData)
-          // .enter().append("f");
-
-          // phases.append("rect")
-          // // .style("fill","rgb(60,179,113)")
-          // .attr("width", 100)
-          // .attr("height", 20)
-          // .attr("x",10)
-          // .attr("y",4)
-          // .attr("transform", "translate(5,10)");
-
-
-          // //Make an SVG Container
-          // var svgContainer = d3.select("body").append("svg")
-          //                                     .attr("width", 200)
-          //                                     .attr("height", 200);
-
-          // //Draw the Rectangle
-          // var rectangle = chart.append("rect")
-          // .attr("x", 10)
-          // .attr("y", 10)
-          // .attr("width", 50)
-          // .attr("height", 100);
 
           var bar = chart.selectAll("g")
           .data(data)
@@ -237,8 +170,6 @@ chart.selectAll("f")
             if (!d3.event.sourceEvent) return; // only transition after input
               console.log("BRUSH_END")
               var extent0 = brush.extent();
-              // extent1 = extent0.map(d3.time.day.round);
-
 
 
               var extent1 = extent0;
@@ -249,180 +180,10 @@ chart.selectAll("f")
               console.log(extent1[0])
               console.log(extent1[1])
 
-              //   // if empty when rounded, use floor & ceil instead
-              //   if (extent1[0] >= extent1[1]) {
-                //       extent1[0] = d3.time.day.floor(extent0[0]);
-                //       extent1[1] = d3.time.day.ceil(extent0[1]);
-              //     }
-
               d3.select(this).transition()
               .call(brush.extent(extent1))
               .call(brush.event);
               }
 
-
-
-
-              // .attr("r", function(d, i) {
-                         //         return x(1);
-              // });
-              // .attr("height", barHeight );
-
-
-              // var margin = {top: 250, right: 40, bottom: 250, left: 40},
-                //   width = 960 - margin.left - margin.right,
-                //   height = 500 - margin.top - margin.bottom;
-
-              // var x = d3.time.scale()
-              // .domain([new Date(2012, 0, 1), new Date(2013, 0, 1)])
-              // .range([0, width]);
-
-              // var xAxis = d3.svg.axis()
-              // .scale(x);
-
-              // var svg = d3.select("body").append("svg")
-              // .attr("width", width + margin.left + margin.right)
-              // .attr("height", height + margin.top + margin.bottom)
-              // .append("g")
-              // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-              // svg.append("g")
-              // .attr("class", "x axis")
-              // .attr("transform", "translate(0," + height + ")")
-              // .call(xAxis)
-              // .selectAll("text")
-              // .attr("y", 0)
-              // .attr("x", 9)
-              // .attr("dy", ".5em")
-              // .attr("transform", "rotate(90)")
-              // .style("text-anchor", "start");
-
-
-
-
-              // var margin = {top: 250, right: 40, bottom: 250, left: 40},
-                //   width = 960 - margin.left - margin.right,
-                //   height = 500 - margin.top - margin.bottom;
-
-              // var x = d3.time.scale()
-              // .domain([new Date(2012, 0, 1), new Date(2013, 0, 1)])
-              // .range([0, width]);
-
-              // var xAxis = d3.svg.axis()
-              // .scale(x);
-
-              // var svg = d3.select("body").append("svg")
-              // .attr("width", width + margin.left + margin.right)
-              // .attr("height", height + margin.top + margin.bottom)
-              // .append("g")
-              // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-              // svg.append("g")
-              // .attr("class", "x axis")
-              // .attr("transform", "translate(0," + height + ")")
-              // .call(xAxis)
-              // .selectAll("text")
-              // .attr("y", 0)
-              // .attr("x", 9)
-              // .attr("dy", ".35em")
-              // .attr("transform", "rotate(90)")
-              // .style("text-anchor", "start");
-
-
-
-              // bar.append("text")
-              // .attr("x", function(d) { return x(d) - 3; })
-              // .attr("y", barHeight / 2)
-              // .attr("dy", ".35em")
-              // .text(function(d) { return d; });
-
-              /*
-var testData = [
-  {times: [{"starting_time": 1, "ending_time": 2}, {"starting_time": 3, "ending_time": 4}]},
-  {times: [{"starting_time": 4, "ending_time": 6}, {"starting_time": 2, "ending_time": 3}]},
-  {times: [{"starting_time": 6, "ending_time": 8}]},
-];
-var width = 500;
-  var chart = d3.timeline();
-  var svg = d3.select("#timeline1").append("svg").attr("width", width)
-  .datum(testData).call(chart);
-// */
-              // var testData = [
-                //   {times: [{"starting_time": 1, "ending_time": 2}, {"starting_time": 3, "ending_time": 4}]},
-                //   {times: [{"starting_time": 4, "ending_time": 6}, {"starting_time": 2, "ending_time": 3}]},
-                //   {times: [{"starting_time": 6, "ending_time": 8}]},
-              // ];
-
-              // var margin = {top: 200, right: 40, bottom: 200, left: 40},
-                //   width = 960 - margin.left - margin.right,
-                //   height = 500 - margin.top - margin.bottom;
-
-              // var x = d3.time.scale()
-              // .domain([new Date(2013, 7, 1), new Date(2013, 7, 5) - 1])
-              // .range([0, width]);
-
-              // // var brush = d3.svg.brush()
-              // // .x(x)
-              // // .extent([new Date(2013, 7, 2), new Date(2013, 7, 3)])
-              // // .on("brushend", brushended);
-
-              // var svg = d3.select("body").append("svg")
-              // .attr("width", width + margin.left + margin.right)
-              // .attr("height", height + margin.top + margin.bottom)
-              // .append("g")
-              // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-              // svg.append("rect")
-              // .attr("class", "grid-background")
-              // .attr("width", width)
-              // .attr("height", height);
-
-              // svg.append("g")
-              // .attr("class", "x grid")
-              // .attr("transform", "translate(0," + height + ")")
-              // .call(d3.svg.axis()
-                       //       .scale(x)
-                       //       .orient("bottom")
-                       //       .ticks(d3.time.hours, 12)
-                       //       .tickSize(-height)
-                       //       .tickFormat(""))
-              // .selectAll(".tick")
-              // .classed("minor", function(d) { return d.getHours(); });
-
-              // svg.append("g")
-              // .attr("class", "x axis")
-              // .attr("transform", "translate(0," + height + ")")
-              // .call(d3.svg.axis()
-                       //       .scale(x)
-                       //       .orient("bottom")
-                       //       .ticks(d3.time.days)
-                       //       .tickPadding(0))
-              // .selectAll("text")
-              // .attr("x", 6)
-              // .style("text-anchor", null);
-
-              // var gBrush = svg.append("g")
-              // .attr("class", "brush")
-              // .call(brush)
-              // .call(brush.event);
-
-              // gBrush.selectAll("rect")
-              // .attr("height", height);
-
-              // function brushended() {
-                //   if (!d3.event.sourceEvent) return; // only transition after input
-                //     var extent0 = brush.extent(),
-                //       extent1 = extent0.map(d3.time.day.round);
-
-                //     // if empty when rounded, use floor & ceil instead
-                //     if (extent1[0] >= extent1[1]) {
-                  //         extent1[0] = d3.time.day.floor(extent0[0]);
-                  //         extent1[1] = d3.time.day.ceil(extent0[1]);
-                //       }
-
-                //       d3.select(this).transition()
-                //       .call(brush.extent(extent1))
-                //       .call(brush.event);
-              //       }
 
               </script>
