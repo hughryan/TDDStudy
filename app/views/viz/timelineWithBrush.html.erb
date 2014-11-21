@@ -107,7 +107,8 @@ chart.selectAll("f")
 })
 .attr("height", 10)
 .attr("stroke", "grey")
-.attr("fill", function(d) {
+.attr("fill",
+      function(d) {
         if(d.tdd_color == "white"){return "gray";}
         else{return d.tdd_color;}})
           .attr("transform", "translate("+margin.left+",10)");
@@ -133,57 +134,62 @@ chart.selectAll("f")
           })
           .attr("r", 5)
           .attr("transform", "translate("+margin.left+",45)")
-          .attr("stroke", function(d) {
-                  return d.light_color;
-          })
-          .style("fill","rgba(60,179,113, 0)")
-          .attr("stroke-width", 3);
+          .attr("stroke",
+                function(d) {
+                  if(d.light_color == "amber")
+                    {
+                      return "orange";
+                    }
+                    return d.light_color;
+                    })
+                    .style("fill","rgba(60,179,113, 0)")
+                    .attr("stroke-width", 3);
 
 
 
 
-          chart.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate("+margin.left+",60)")
-          .call(xAxis)
-          .selectAll("text")
-          .attr("y", 6)
-          .attr("height",10)
-          // .attr("x", 6)
-          .style("text-anchor", "start");
+                    chart.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate("+margin.left+",60)")
+                    .call(xAxis)
+                    .selectAll("text")
+                    .attr("y", 6)
+                    .attr("height",10)
+                    // .attr("x", 6)
+                    .style("text-anchor", "start");
 
 
-          var gBrush = chart.append("g")
-          .attr("class", "brush")
-          .call(brush)
-          .call(brush.event);
+                    var gBrush = chart.append("g")
+                    .attr("class", "brush")
+                    .call(brush)
+                    .call(brush.event);
 
-          gBrush.selectAll("rect")
-          .attr("height", 40)
-          .attr("transform", "translate("+margin.left+",20)")
-          ;
-
-
-
-          function brushended() {
-
-            if (!d3.event.sourceEvent) return; // only transition after input
-              console.log("BRUSH_END")
-              var extent0 = brush.extent();
+                    gBrush.selectAll("rect")
+                    .attr("height", 40)
+                    .attr("transform", "translate("+margin.left+",20)")
+                    ;
 
 
-              var extent1 = extent0;
-              extent1[0] = Math.round(extent0[0]);
-              extent1[1] = Math.round(extent0[1]);
 
-              // console.log(extent0)
-              console.log(extent1[0])
-              console.log(extent1[1])
+                    function brushended() {
 
-              d3.select(this).transition()
-              .call(brush.extent(extent1))
-              .call(brush.event);
-              }
+                      if (!d3.event.sourceEvent) return; // only transition after input
+                        console.log("BRUSH_END")
+                        var extent0 = brush.extent();
 
 
-              </script>
+                        var extent1 = extent0;
+                        extent1[0] = Math.round(extent0[0]);
+                        extent1[1] = Math.round(extent0[1]);
+
+                        // console.log(extent0)
+                        console.log(extent1[0])
+                        console.log(extent1[1])
+
+                        d3.select(this).transition()
+                        .call(brush.extent(extent1))
+                        .call(brush.event);
+                        }
+
+
+                        </script>
