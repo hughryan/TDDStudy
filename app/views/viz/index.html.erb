@@ -40,7 +40,19 @@ transform: translate(0px,30px);
 <BR><BR><BR>
 
 <%= @katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files['FizzBuzz.java'] %>
+<b>Users</b>
 
+<ul id="users">
+<%= render @users %>
+</ul>
+
+<br>
+
+<%= form_for(@user, remote: true) do |f| %>
+	<%= f.label :name %><br>
+	<%= f.text_field :name %>
+	<%= f.submit %>
+<% end %>
 </body>
 
 <script>

@@ -52,21 +52,28 @@ class VizController < ApplicationController
 		puts allPhases.size
 		puts allPhases
 		gon.phases = allPhases
+		gon.cyberdojo_id = @cyberdojo_id
+		gon.cyberdojo_avatar = @cyberdojo_avatar
 	end
 
 	def retrieve_session
 		start_id = params[:start]
 		end_id = params[:end]
+		cyberdojo_id = params[:cyberdojo_id]
+		cyberdojo_avatar = params[:cyberdojo_avatar]
 		print "Start:"
 		print start_id
 		print "  End:"
 		puts end_id
 
+		# puts "@cyberdojo_id"
+		@cyberdojo_id
+		@cyberdojo_avatar
 		# allFiles.push(dojo.katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files)
 
 		names = Hash.new
-		names["start"] = dojo.katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files
-		names["end"] = dojo.katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files
+		names["start"] = dojo.katas[cyberdojo_id].avatars[cyberdojo_avatar].lights[start_id.to_i].tag.visible_files
+		names["end"] = dojo.katas[cyberdojo_id].avatars[cyberdojo_avatar].lights[end_id.to_i].tag.visible_files
 
 		puts names
 

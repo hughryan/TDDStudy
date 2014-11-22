@@ -274,16 +274,24 @@ chart.selectAll("f")
                                         dataType:'json',
                                         data: {
                                           'start': start,
-                                          'end':end
+                                          'end':end,
+                                          'cyberdojo_id':gon.cyberdojo_id,
+                                          'cyberdojo_avatar':gon.cyberdojo_avatar
                                         },
                                         success: function(data){
                                           console.log(data);
+
                                           // $.each(data, function(key, value) {
                                                       //          // alert(key + ", " + $.param(value));
                                                       //          console.log(key);
                                                       //          console.log(value);
                                           // });
 
+                                          // var currContents = $("#accordion").html();
+
+                                          var newDiv = "<h3>Q4 New Question<\/h3><div>New Content</div>";
+                                          $('#accordion').append(newDiv)
+                                          $('#accordion').accordion("refresh");
                                         },
                                         error: function(){
                                           console.error("AJAX");
