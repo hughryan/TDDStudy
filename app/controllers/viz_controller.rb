@@ -29,31 +29,57 @@ class VizController < ApplicationController
 	end
 
 	def timelineWithBrush
-		@allSessions = Session.all
-		@katas = dojo.katas
-
-		# render json: @allSessions
-		gon.compiles = @allSessions.first.compiles
+		# Params to know what to drwa
+		@cyberdojo_id = params[:id]
+		@cyberdojo_avatar = params[:avatar]
+		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
+		gon.compiles = @currSession.compiles
 
 		allPhases = Array.new
-		@allSessions.first.cycles.each do |cycle|
+		@currSession.cycles.each do |cycle|
 			cycleStart = 0
 			cycleEnd = 0
 			cycle.phases.each do |phase|
-				phase.first_compile_in_phase = phase.compiles.first.id
-				phase.last_compile_in_phase = phase.compiles.last.id
+				phase.first_compile_in_phase = phase.compiles.first.git_tag
+				phase.last_compile_in_phase = phase.compiles.last.git_tag
 				print  "cycleStart:"
 				puts cycleStart
 				print  "cycleEnd:"
 				puts cycleEnd
+				allPhases << phase
 			end
-			allPhases.push(cycle.phases)
 		end
+		puts allPhases.size
+		puts allPhases
 		gon.phases = allPhases
+	end
 
+	def retrieve_session
+		start_id = params[:start]
+		end_id = params[:end]
+		print "Start:"
+		print start_id
+		print "  End:"
+		puts end_id
 
+		# allFiles.push(dojo.katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files)
 
-		# gon.cycles = @allSessions.first.phase
+		names = Hash.new
+		names["start"] = dojo.katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files
+		names["end"] = dojo.katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files
+
+		puts names
+
+		# <%= @katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files['FizzBuzz.java'] %>
+		# @katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files['FizzBuzz.java']
+		puts dojo.katas['0A0D302A01']
+
+		@oneSession = Session.all.first
+		respond_to do |format|
+			format.html
+			# format.json { render :json => @oneSession }
+			format.json { render :json => names }
+		end
 	end
 
 
