@@ -82,9 +82,6 @@ $(function() {
 <div id="viz"></div>
 <svg class="chart"></svg>
 
-<BR>
-<div id="compare" class="CodeMirror"></div>
-<BR>
 
 <div id="accordion">
 </div>
@@ -93,25 +90,6 @@ $(function() {
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
-
-
-var str1 = 'AAAAAAa';
-var str2 = 'AAAABbb';
-$(document).ready(function () {
-                    $('#compare').mergely({
-                                            width: 300,
-                                            height: 100,
-                                            cmsettings: {
-                                            readOnly: true, lineNumbers: true, mode: "text/x-java"},
-                                            lhs: function(setValue) {
-                                              setValue(str1);
-                                            },
-                                            rhs: function(setValue) {
-                                              setValue(str2);
-                                            }
-                    });
-});
-
 
 
 function populateAccordion(data){
