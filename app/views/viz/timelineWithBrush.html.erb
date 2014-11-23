@@ -84,228 +84,217 @@ $(function() {
 <BR>
 
 <div id="accordion">
-<h3>Section 1</h3>
-<div>
-<p>
-Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
-ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
-amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
-odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
-  </p>
-</div>
-<h3>Section 2</h3>
-<div>
-<p>
-Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
-purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
-velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
-suscipit faucibus urna.
-  </p>
-</div>
-<h3>Section 3</h3>
-<div>
-<p>
-Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
-  Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
-ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
-lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
-  </p>
-<ul>
-<li>List item one</li>
-<li>List item two</li>
-<li>List item three</li>
-</ul>
-</div>
-<h3>Section 4</h3>
-<div>
-<p>
-Cras dictum. Pellentesque habitant morbi tristique senectus et netus
-et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
-faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
-mauris vel est.
-  </p>
-<p>
-Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
-  Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-inceptos himenaeos.
-  </p>
-</div>
 </div>
 
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var data = gon.compiles;
-console.log(gon.compiles);
+function populateAccordion(data){
+  var commonFiles = [];
+  var uniqueStart = [];
+  var uniqueEnd = [];
+  for(var start_key in data.start)
+    {
+      var found = 0;
+      for(var end_key in data.end)
+        {
+          if(start_key == end_key){
+              commonFiles.push(start_key)
+              found = 1;
+            }
+            }
+            if(found < 1){
+                uniqueStart.push(start_key)
+              }
+              }
 
-var phaseData = gon.phases;
-console.log(phaseData);
+              for(var end_key in data.end)
+                {
+                  if(commonFiles.indexOf(end_key)<0)
+                    {
+                      uniqueEnd.push(end_key);
+                    }
+                    }
 
-var margin = {top: 20, right: 20, bottom: 30, left: 10},
-  width = 530 - margin.left - margin.right,
-  height = 500 - margin.top - margin.bottom;
+                    console.log(commonFiles);
+                    console.log(uniqueStart);
+                    console.log(uniqueEnd);
 
-var  barHeight = 50,
-  color = d3.scale.category20c();
-
-var x = d3.scale.linear()
-.domain([1, gon.compiles.length])
-.range([1, width-40]);
-
-var brush = d3.svg.brush()
-.x(x)
-.extent([3, 5])
-.on("brushend", brushended);
-
-var xAxis = d3.svg.axis()
-.scale(x)
-.orient("bottom");
-
-var chart = d3.select(".chart")
-.attr("width", width)
-.attr("height", barHeight *3);
-
-//Draw phase bars
-chart.selectAll("f")
-.data(phaseData)
-.enter().append("rect")
-.attr("x" ,function(d, i) {
-        return x(d.first_compile_in_phase);
-})
-.attr("y", 10)
-.attr("width",function(d, i) {
-        if(d.last_compile_in_phase == gon.compiles.length){
-            return x(d.last_compile_in_phase - d.first_compile_in_phase+1);
-        }else{
-            return x(d.last_compile_in_phase - d.first_compile_in_phase+2);
-          }
-          })
-          .attr("height", 10)
-          .attr("stroke", "grey")
-          .attr("fill",
-                function(d)
-                {if(d.tdd_color == "white"){return "gray";} else{return d.tdd_color;}})
-                   .attr("transform", "translate("+margin.left+",10)");
+                    //console.log(data.start);
+                    $('#accordion').html("");
+                    for(var key in data.start)
+                      {
+                        // console.log(key);
+                        // console.log(data.start[key]);
+                        var newDiv = "<h3>"+key+"<\/h3><div>"+data.start[key]+"</div>";
+                        $('#accordion').append(newDiv);
+                      }
 
 
-                   // Draw Line for compile points
-                   var myLine = chart.append("svg:line")
-                   .attr("x1", margin.left)
-                   .attr("y1", 45)
-                   .attr("x2" ,function(d, i) {
-                           return x(gon.compiles.length);
-                   })
-                   .attr("y2", 45)
-                   .style("stroke", "#737373");
+                      $('#accordion').accordion("refresh");
+                      }
+
+                      var data = gon.compiles;
+                      console.log(gon.compiles);
+
+                      var phaseData = gon.phases;
+                      console.log(phaseData);
+
+                      var margin = {top: 20, right: 20, bottom: 30, left: 10},
+                        width = 530 - margin.left - margin.right,
+                        height = 500 - margin.top - margin.bottom;
+
+                      var  barHeight = 50,
+                        color = d3.scale.category20c();
+
+                      var x = d3.scale.linear()
+                      .domain([1, gon.compiles.length])
+                      .range([1, width-40]);
+
+                      var brush = d3.svg.brush()
+                      .x(x)
+                      .extent([3, 5])
+                      .on("brushend", brushended);
+
+                      var xAxis = d3.svg.axis()
+                      .scale(x)
+                      .orient("bottom");
+
+                      var chart = d3.select(".chart")
+                      .attr("width", width)
+                      .attr("height", barHeight *3);
+
+                      //Draw phase bars
+                      chart.selectAll("f")
+                      .data(phaseData)
+                      .enter().append("rect")
+                      .attr("x" ,function(d, i) {
+                              return x(d.first_compile_in_phase);
+                      })
+                      .attr("y", 10)
+                      .attr("width",
+                            function(d, i)
+                            {
+                              if(d.last_compile_in_phase == gon.compiles.length){
+                                  return x(d.last_compile_in_phase - d.first_compile_in_phase+1);
+                              }else{
+                                  return x(d.last_compile_in_phase - d.first_compile_in_phase+2);
+                                }
+                                })
+                                .attr("height", 10)
+                                .attr("stroke", "grey")
+                                .attr("fill",
+                                      function(d)
+                                      {if(d.tdd_color == "white"){return "gray";} else{return d.tdd_color;}})
+                                         .attr("transform", "translate("+margin.left+",10)");
 
 
-
-                   //Draw Compile Points
-                   var bar = chart.selectAll("g")
-                   .data(data)
-                   .enter().append("g");
-
-
-
-                   bar.append("circle")
-                   .attr("cx",function(d, i) {
-                           return x(d.git_tag);
-                   })
-                   .attr("r", 5)
-                   .attr("transform", "translate("+margin.left+",45)")
-                   .attr("stroke",
-                         function(d) {
-                           if(d.light_color == "amber")
-                             {
-                               return "orange";
-                             }
-                             return d.light_color;
-                             })
-                             .style("fill","rgba(60,179,113, 0)")
-                             .attr("stroke-width", 3);
-
-
-
-
-                             chart.append("g")
-                             .attr("class", "x axis")
-                             .attr("transform", "translate("+margin.left+",60)")
-                             .call(xAxis)
-                             .selectAll("text")
-                             .attr("y", 6)
-                             .attr("height",10)
-                             // .attr("x", 6)
-                             .style("text-anchor", "start");
-
-
-                             var gBrush = chart.append("g")
-                             .attr("class", "brush")
-                             .call(brush)
-                             .call(brush.event);
-
-                             gBrush.selectAll("rect")
-                             .attr("height", 40)
-                             .attr("transform", "translate("+margin.left+",20)")
-                             ;
+                                         // Draw Line for compile points
+                                         var myLine = chart.append("svg:line")
+                                         .attr("x1", margin.left)
+                                         .attr("y1", 45)
+                                         .attr("x2" ,function(d, i) {
+                                                 return x(gon.compiles.length);
+                                         })
+                                         .attr("y2", 45)
+                                         .style("stroke", "#737373");
 
 
 
-                             function brushended()
-                             {
-
-                               if (!d3.event.sourceEvent) return; // only transition after input
-                                 console.log("BRUSH_END")
-                                 var extent0 = brush.extent();
+                                         //Draw Compile Points
+                                         var bar = chart.selectAll("g")
+                                         .data(data)
+                                         .enter().append("g");
 
 
-                                 var extent1 = extent0;
-                                 extent1[0] = Math.round(extent0[0]);
-                                 extent1[1] = Math.round(extent0[1]);
 
-                                 // console.log(extent0)
-                                 console.log(extent1[0]);
-                                 console.log(extent1[1]);
-                                 var start = extent1[0];
-                               var end = extent1[1];
-
-                               $.ajax({
-                                        url: "/viz/retrieve_session",
-                                        dataType:'json',
-                                        data: {
-                                          'start': start,
-                                          'end':end,
-                                          'cyberdojo_id':gon.cyberdojo_id,
-                                          'cyberdojo_avatar':gon.cyberdojo_avatar
-                                        },
-                                        success: function(data){
-                                          console.log(data);
-
-                                          // $.each(data, function(key, value) {
-                                                      //          // alert(key + ", " + $.param(value));
-                                                      //          console.log(key);
-                                                      //          console.log(value);
-                                          // });
-
-                                          // var currContents = $("#accordion").html();
-
-                                          var newDiv = "<h3>Q4 New Question<\/h3><div>New Content</div>";
-                                          $('#accordion').append(newDiv)
-                                          $('#accordion').accordion("refresh");
-                                        },
-                                        error: function(){
-                                          console.error("AJAX");
-                                        },
-                                        type: 'GET'
-                               });
-
-
-                               d3.select(this).transition()
-                               .call(brush.extent(extent1))
-                               .call(brush.event);
-                             }
+                                         bar.append("circle")
+                                         .attr("cx",function(d, i) {
+                                                 return x(d.git_tag);
+                                         })
+                                         .attr("r", 5)
+                                         .attr("transform", "translate("+margin.left+",45)")
+                                         .attr("stroke",
+                                               function(d) {
+                                                 if(d.light_color == "amber")
+                                                   {
+                                                     return "orange";
+                                                   }
+                                                   return d.light_color;
+                                                   })
+                                                   .style("fill","rgba(60,179,113, 0)")
+                                                   .attr("stroke-width", 3);
 
 
 
 
-                             </script>
+                                                   chart.append("g")
+                                                   .attr("class", "x axis")
+                                                   .attr("transform", "translate("+margin.left+",60)")
+                                                   .call(xAxis)
+                                                   .selectAll("text")
+                                                   .attr("y", 6)
+                                                   .attr("height",10)
+                                                   // .attr("x", 6)
+                                                   .style("text-anchor", "start");
+
+
+                                                   var gBrush = chart.append("g")
+                                                   .attr("class", "brush")
+                                                   .call(brush)
+                                                   .call(brush.event);
+
+                                                   gBrush.selectAll("rect")
+                                                   .attr("height", 40)
+                                                   .attr("transform", "translate("+margin.left+",20)")
+                                                   ;
+
+
+
+                                                   function brushended()
+                                                   {
+
+                                                     if (!d3.event.sourceEvent) return; // only transition after input
+                                                       console.log("BRUSH_END")
+                                                       var extent0 = brush.extent();
+
+
+                                                       var extent1 = extent0;
+                                                       extent1[0] = Math.round(extent0[0]);
+                                                       extent1[1] = Math.round(extent0[1]);
+
+                                                       // console.log(extent0)
+                                                       console.log(extent1[0]);
+                                                       console.log(extent1[1]);
+                                                       var start = extent1[0];
+                                                     var end = extent1[1];
+
+                                                     $.ajax({
+                                                              url: "/viz/retrieve_session",
+                                                              dataType:'json',
+                                                              data: {
+                                                                'start': start,
+                                                                'end':end,
+                                                                'cyberdojo_id':gon.cyberdojo_id,
+                                                                'cyberdojo_avatar':gon.cyberdojo_avatar
+                                                              },
+                                                              success: function(data){
+                                                                populateAccordion(data);
+                                                              },
+                                                              error: function(){
+                                                                console.error("AJAX");
+                                                              },
+                                                              type: 'GET'
+                                                     });
+
+
+                                                     d3.select(this).transition()
+                                                     .call(brush.extent(extent1))
+                                                     .call(brush.event);
+                                                   }
+
+
+
+
+                                                   </script>
