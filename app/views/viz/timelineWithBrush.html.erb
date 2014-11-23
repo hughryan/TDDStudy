@@ -2,15 +2,18 @@
 <meta charset="utf-8">
 <%= include_gon %>
 
-
-
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script> -->
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+
 <script>
+
 $(function() {
     $( "#accordion" ).accordion();
 });
+
 </script>
 
 
@@ -80,15 +83,33 @@ $(function() {
 <svg class="chart"></svg>
 
 <BR>
-
+<div id="compare" class="CodeMirror"></div>
 <BR>
 
 <div id="accordion">
 </div>
 
 
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
+
+
+var str1 = 'AAAAAAa';
+var str2 = 'AAAABbb';
+$(document).ready(function () {
+                    $('#compare').mergely({
+                                            cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
+                                            lhs: function(setValue) {
+                                              setValue(str1);
+                                            },
+                                            rhs: function(setValue) {
+                                              setValue(str2);
+                                            }
+                    });
+});
+
+
 
 function populateAccordion(data){
   var commonFiles = [];
@@ -123,178 +144,210 @@ function populateAccordion(data){
 
                     //console.log(data.start);
                     $('#accordion').html("");
-                    for(var key in data.start)
-                      {
-                        // console.log(key);
-                        // console.log(data.start[key]);
-                        var newDiv = "<h3>"+key+"<\/h3><div>"+data.start[key]+"</div>";
+                    // for(var key in data.start)
+                    //   {
+                      //     // console.log(key);
+                      //     // console.log(data.start[key]);
+                      //     var newDiv = "<h3>"+key+"<\/h3><div>"+data.start[key]+"</div>";
+                      //     $('#accordion').append(newDiv);
+                    //   }
+
+
+
+
+                    //Add Common Files
+                    commonFiles.forEach(
+                      function(element, index){
+                        console.log(element);
+                        console.log(data.start[element]);
+                        console.log(data.end[element]);
+
+                        var str1 = data.end[element];
+                        var str2 = data.end[element];
+
+                        var newDiv = "<h3>"+element+"<\/h3><div><div id='compare'></div></div>";
                         $('#accordion').append(newDiv);
-                      }
 
+                        // $('#compare').mergely({
+                                                   //                         cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
+                                                   //                         lhs: function(setValue) {
+                                                     //                           setValue(str1);
+                                                   //                         },
+                                                   //                         rhs: function(setValue) {
+                                                     //                           setValue(str2);
+                                                   //                         }
+                        // });
+                    })
+                    //Add unique start files
 
-                      $('#accordion').accordion("refresh");
-                      }
-
-                      var data = gon.compiles;
-                      console.log(gon.compiles);
-
-                      var phaseData = gon.phases;
-                      console.log(phaseData);
-
-                      var margin = {top: 20, right: 20, bottom: 30, left: 10},
-                        width = 530 - margin.left - margin.right,
-                        height = 500 - margin.top - margin.bottom;
-
-                      var  barHeight = 50,
-                        color = d3.scale.category20c();
-
-                      var x = d3.scale.linear()
-                      .domain([1, gon.compiles.length])
-                      .range([1, width-40]);
-
-                      var brush = d3.svg.brush()
-                      .x(x)
-                      .extent([3, 5])
-                      .on("brushend", brushended);
-
-                      var xAxis = d3.svg.axis()
-                      .scale(x)
-                      .orient("bottom");
-
-                      var chart = d3.select(".chart")
-                      .attr("width", width)
-                      .attr("height", barHeight *3);
-
-                      //Draw phase bars
-                      chart.selectAll("f")
-                      .data(phaseData)
-                      .enter().append("rect")
-                      .attr("x" ,function(d, i) {
-                              return x(d.first_compile_in_phase);
-                      })
-                      .attr("y", 10)
-                      .attr("width",
-                            function(d, i)
-                            {
-                              if(d.last_compile_in_phase == gon.compiles.length){
-                                  return x(d.last_compile_in_phase - d.first_compile_in_phase+1);
-                              }else{
-                                  return x(d.last_compile_in_phase - d.first_compile_in_phase+2);
-                                }
-                                })
-                                .attr("height", 10)
-                                .attr("stroke", "grey")
-                                .attr("fill",
-                                      function(d)
-                                      {if(d.tdd_color == "white"){return "gray";} else{return d.tdd_color;}})
-                                         .attr("transform", "translate("+margin.left+",10)");
-
-
-                                         // Draw Line for compile points
-                                         var myLine = chart.append("svg:line")
-                                         .attr("x1", margin.left)
-                                         .attr("y1", 45)
-                                         .attr("x2" ,function(d, i) {
-                                                 return x(gon.compiles.length);
-                                         })
-                                         .attr("y2", 45)
-                                         .style("stroke", "#737373");
-
-
-
-                                         //Draw Compile Points
-                                         var bar = chart.selectAll("g")
-                                         .data(data)
-                                         .enter().append("g");
-
-
-
-                                         bar.append("circle")
-                                         .attr("cx",function(d, i) {
-                                                 return x(d.git_tag);
-                                         })
-                                         .attr("r", 5)
-                                         .attr("transform", "translate("+margin.left+",45)")
-                                         .attr("stroke",
-                                               function(d) {
-                                                 if(d.light_color == "amber")
-                                                   {
-                                                     return "orange";
-                                                   }
-                                                   return d.light_color;
-                                                   })
-                                                   .style("fill","rgba(60,179,113, 0)")
-                                                   .attr("stroke-width", 3);
+                  //Add unique end files
 
 
 
 
-                                                   chart.append("g")
-                                                   .attr("class", "x axis")
-                                                   .attr("transform", "translate("+margin.left+",60)")
-                                                   .call(xAxis)
-                                                   .selectAll("text")
-                                                   .attr("y", 6)
-                                                   .attr("height",10)
-                                                   // .attr("x", 6)
-                                                   .style("text-anchor", "start");
+                  $('#accordion').accordion("refresh");
+                }
+
+                var data = gon.compiles;
+                console.log(gon.compiles);
+
+                var phaseData = gon.phases;
+                console.log(phaseData);
+
+                var margin = {top: 20, right: 20, bottom: 30, left: 10},
+                  width = 530 - margin.left - margin.right,
+                  height = 500 - margin.top - margin.bottom;
+
+                var  barHeight = 50,
+                  color = d3.scale.category20c();
+
+                var x = d3.scale.linear()
+                .domain([1, gon.compiles.length])
+                .range([1, width-40]);
+
+                var brush = d3.svg.brush()
+                .x(x)
+                .extent([3, 5])
+                .on("brushend", brushended);
+
+                var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+                var chart = d3.select(".chart")
+                .attr("width", width)
+                .attr("height", barHeight *3);
+
+                //Draw phase bars
+                chart.selectAll("f")
+                .data(phaseData)
+                .enter().append("rect")
+                .attr("x" ,function(d, i) {
+                        return x(d.first_compile_in_phase);
+                })
+                .attr("y", 10)
+                .attr("width",
+                      function(d, i)
+                      {
+                        if(d.last_compile_in_phase == gon.compiles.length){
+                            return x(d.last_compile_in_phase - d.first_compile_in_phase+1);
+                        }else{
+                            return x(d.last_compile_in_phase - d.first_compile_in_phase+2);
+                          }
+                          })
+                          .attr("height", 10)
+                          .attr("stroke", "grey")
+                          .attr("fill",
+                                function(d)
+                                {if(d.tdd_color == "white"){return "gray";} else{return d.tdd_color;}})
+                                   .attr("transform", "translate("+margin.left+",10)");
 
 
-                                                   var gBrush = chart.append("g")
-                                                   .attr("class", "brush")
-                                                   .call(brush)
-                                                   .call(brush.event);
-
-                                                   gBrush.selectAll("rect")
-                                                   .attr("height", 40)
-                                                   .attr("transform", "translate("+margin.left+",20)")
-                                                   ;
-
-
-
-                                                   function brushended()
-                                                   {
-
-                                                     if (!d3.event.sourceEvent) return; // only transition after input
-                                                       console.log("BRUSH_END")
-                                                       var extent0 = brush.extent();
+                                   // Draw Line for compile points
+                                   var myLine = chart.append("svg:line")
+                                   .attr("x1", margin.left)
+                                   .attr("y1", 45)
+                                   .attr("x2" ,function(d, i) {
+                                           return x(gon.compiles.length);
+                                   })
+                                   .attr("y2", 45)
+                                   .style("stroke", "#737373");
 
 
-                                                       var extent1 = extent0;
-                                                       extent1[0] = Math.round(extent0[0]);
-                                                       extent1[1] = Math.round(extent0[1]);
 
-                                                       // console.log(extent0)
-                                                       console.log(extent1[0]);
-                                                       console.log(extent1[1]);
-                                                       var start = extent1[0];
-                                                     var end = extent1[1];
-
-                                                     $.ajax({
-                                                              url: "/viz/retrieve_session",
-                                                              dataType:'json',
-                                                              data: {
-                                                                'start': start,
-                                                                'end':end,
-                                                                'cyberdojo_id':gon.cyberdojo_id,
-                                                                'cyberdojo_avatar':gon.cyberdojo_avatar
-                                                              },
-                                                              success: function(data){
-                                                                populateAccordion(data);
-                                                              },
-                                                              error: function(){
-                                                                console.error("AJAX");
-                                                              },
-                                                              type: 'GET'
-                                                     });
+                                   //Draw Compile Points
+                                   var bar = chart.selectAll("g")
+                                   .data(data)
+                                   .enter().append("g");
 
 
-                                                     d3.select(this).transition()
-                                                     .call(brush.extent(extent1))
-                                                     .call(brush.event);
-                                                   }
+
+                                   bar.append("circle")
+                                   .attr("cx",function(d, i) {
+                                           return x(d.git_tag);
+                                   })
+                                   .attr("r", 5)
+                                   .attr("transform", "translate("+margin.left+",45)")
+                                   .attr("stroke",
+                                         function(d) {
+                                           if(d.light_color == "amber")
+                                             {
+                                               return "orange";
+                                             }
+                                             return d.light_color;
+                                             })
+                                             .style("fill","rgba(60,179,113, 0)")
+                                             .attr("stroke-width", 3);
 
 
 
 
-                                                   </script>
+                                             chart.append("g")
+                                             .attr("class", "x axis")
+                                             .attr("transform", "translate("+margin.left+",60)")
+                                             .call(xAxis)
+                                             .selectAll("text")
+                                             .attr("y", 6)
+                                             .attr("height",10)
+                                             // .attr("x", 6)
+                                             .style("text-anchor", "start");
+
+
+                                             var gBrush = chart.append("g")
+                                             .attr("class", "brush")
+                                             .call(brush)
+                                             .call(brush.event);
+
+                                             gBrush.selectAll("rect")
+                                             .attr("height", 40)
+                                             .attr("transform", "translate("+margin.left+",20)")
+                                             ;
+
+
+
+                                             function brushended()
+                                             {
+
+                                               if (!d3.event.sourceEvent) return; // only transition after input
+                                                 console.log("BRUSH_END")
+                                                 var extent0 = brush.extent();
+
+
+                                                 var extent1 = extent0;
+                                                 extent1[0] = Math.round(extent0[0]);
+                                                 extent1[1] = Math.round(extent0[1]);
+
+                                                 // console.log(extent0)
+                                                 console.log(extent1[0]);
+                                                 console.log(extent1[1]);
+                                                 var start = extent1[0];
+                                               var end = extent1[1];
+
+                                               $.ajax({
+                                                        url: "/viz/retrieve_session",
+                                                        dataType:'json',
+                                                        data: {
+                                                          'start': start,
+                                                          'end':end,
+                                                          'cyberdojo_id':gon.cyberdojo_id,
+                                                          'cyberdojo_avatar':gon.cyberdojo_avatar
+                                                        },
+                                                        success: function(data){
+                                                          populateAccordion(data);
+                                                        },
+                                                        error: function(){
+                                                          console.error("AJAX");
+                                                        },
+                                                        type: 'GET'
+                                               });
+
+
+                                               d3.select(this).transition()
+                                               .call(brush.extent(extent1))
+                                               .call(brush.event);
+                                             }
+
+
+
+
+                                             </script>
