@@ -28,6 +28,11 @@ class VizController < ApplicationController
 		Rails.root.to_s + '/'
 	end
 
+	def allCorpus
+		@allSessions = Session.all
+	end
+
+
 	def timelineWithBrush
 		# Params to know what to drwa
 		@cyberdojo_id = params[:id]

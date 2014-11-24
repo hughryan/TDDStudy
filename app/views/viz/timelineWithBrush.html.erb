@@ -73,7 +73,9 @@ $(function() {
 
 
 </style>
-<h1>Timeline With Brush</h1>
+<h1>id: <%= params[:id] %>
+avatar: <%= params[:avatar] %>
+</h1>
 
 
 
@@ -144,7 +146,7 @@ function populateAccordion(data){
 
                         $('#compare_'+safeName)
                         .mergely({
-                                   width: 800,
+                                   width: 1100,
                                    // height: 'auto',
                                    cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
                                    lhs: function(setValue) {

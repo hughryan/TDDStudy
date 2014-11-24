@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+
+<script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css">
+
+
+<h1>List Of All Sessions</h1>
+
+<!--
+<% @allSessions.each do |session| %>
+  <tr>
+  <td>session.kata_name:<%= session.kata_name %></td><BR>
+  <td>session.cyberdojo_id:<%= session.cyberdojo_id %></td><BR>
+  <td>session.language_framework:<%= session.language_framework %></td><BR>
+  <td>session.path:<%= session.path %></td><BR>
+  <td>session.avatar:<%= session.avatar %></td><BR>
+  <td>session.computed_time_secs:<%= session.computed_time_secs %></td><BR>
+  <td>session.total_light_count:<%= session.total_light_count %></td><BR>
+  <td>session.red_light_count:<%= session.red_light_count %></td><BR>
+  <td>session.green_light_count:<%= session.green_light_count %></td><BR>
+  <td>session.amber_light_count:<%= session.amber_light_count %></td><BR>
+  <td>session.max_consecutive_red_chain_length:<%= session.max_consecutive_red_chain_length %></td><BR>
+  <td>session.total_sloc_count:<%= session.total_sloc_count %></td><BR>
+  <td>session.production_sloc_count:<%= session.production_sloc_count %></td><BR>
+  <td>session.test_sloc_count:<%= session.test_sloc_count %></td><BR>
+  <td>session.total_edited_line_count:<%= session.total_edited_line_count %></td><BR>
+  <td>session.production_edited_line_count:<%= session.production_edited_line_count %></td><BR>
+  <td>session.test_edited_line_count:<%= session.test_edited_line_count %></td><BR>
+  <td>session.final_test_method_count:<%= session.final_test_method_count %></td><BR>
+  <td>session.cumulative_test_run_count:<%= session.cumulative_test_run_count %></td><BR>
+  <td>session.cumulative_test_fail_count:<%= session.cumulative_test_fail_count %></td><BR>
+  <td>session.final_cyclomatic_complexity:<%= session.final_cyclomatic_complexity %></td><BR>
+  <td>session.final_branch_coverage:<%= session.final_branch_coverage %></td><BR>
+  <td>session.final_statement_coverage:<%= session.final_statement_coverage %></td><BR>
+  <td>session.total_cycle_count:<%= session.total_cycle_count %></td><BR>
+  <td>session.final_light_color:<%= session.final_light_color %></td><BR>
+  <td>session.tdd_score:<%= session.tdd_score %></td><BR>
+  <td>session.start_date:<%= session.start_date %></td><BR>
+  <td>session.total_light_count:<%= session.total_light_count %></td><BR>
+  <td>session.final_light_color:<%= session.final_light_color %></td><BR>
+  <BR>
+  <% session.compiles.each do |compile| %>
+    <td>compile.light_color:<%= compile.light_color %></td><BR>
+    <td>compile.git_tag:<%= compile.git_tag %></td><BR>
+    <td>compile.git_tag:<%= compile.git_tag %></td><BR>
+  <% end %>
+  <BR><BR>
+  </tr>
+<% end %> -->
+
+
+
+<table id="myTable" class="display" cellspacing="0" width="100%">
+<thead>
+<tr>
+<th>Kata Name</th>
+<th>Lang/Framework</th>
+<th>CyberDojo ID</th>
+<th>Avatar</th>
+<th>Path On Disk</th>
+<th>Total Lights</th>
+</tr>
+</thead>
+
+<tfoot>
+<tr>
+<th>Kata Name</th>
+<th>Lang/Framework</th>
+<th>CyberDojo ID</th>
+<th>Avatar</th>
+<th>Path On Disk</th>
+<th>Total Lights</th>
+</tr>
+</tfoot>
+
+<tbody>
+
+<% @allSessions.each do |session| %>
+  <tr>
+  <th class="kata_name"><%= session.kata_name %></th>
+  <th><%= session.language_framework %></th>
+  <th class="cyberdojo_id" ><%= session.cyberdojo_id %></th>
+  <th class="avatar" ><%= session.avatar %></th>
+  <th><%= session.path %></th>
+  <th><%= session.total_light_count %></th>
+  </tr>
+<% end %>
+
+</tbody>
+</table>
+
+<script>
+$(document).ready(function(){
+                    $('#myTable').DataTable();
+});
+
+$('#myTable tbody tr')
+.click( function () {
+          console.log("click");
+          console.log($(this).find(".kata_name").html());
+          var cyberdojo_id = $(this).find(".cyberdojo_id").html();
+          var avatar = $(this).find(".avatar").html();
+          window.location.href = "timelineWithBrush?id="+cyberdojo_id+"&avatar="+avatar
+} );
+</script>

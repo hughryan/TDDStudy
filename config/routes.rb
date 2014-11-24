@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   get 'viz/index'
 
+  get 'viz/allCorpus'
+
   get 'viz/timelineWithBrush'
 
   get 'viz/retrieve_session'

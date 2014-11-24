@@ -40,35 +40,24 @@ transform: translate(0px,30px);
 <BR><BR><BR>
 
 <%= @katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files['FizzBuzz.java'] %>
-<b>Users</b>
 
-<ul id="users">
-<%= render @users %>
-</ul>
 
-<br>
-
-<%= form_for(@user, remote: true) do |f| %>
-	<%= f.label :name %><br>
-	<%= f.text_field :name %>
-	<%= f.submit %>
-<% end %>
 </body>
 
 <script>
-// var str1 = '<%= @katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files['FizzBuzz.java'].to_s.gsub(/\n/, "\\n").html_safe %>';
-// var str2 = '<%= @katas['0A0D302A01'].avatars['cheetah'].lights[4].tag.visible_files['FizzBuzz.java'].to_s.gsub(/\n/, "\\n").html_safe %>';
-// $(document).ready(function () {
-						 // 	$('#compare').mergely({
-													 // 		cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
-													 // 		lhs: function(setValue) {
-														 // 			setValue(str1);
-													 // 		},
-													 // 		rhs: function(setValue) {
-														 // 			setValue(str2);
-													 // 		}
-						 // 	});
-// });
+var str1 = '<%= @katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files['FizzBuzz.java'].to_s.gsub(/\n/, "\\n").html_safe %>';
+var str2 = '<%= @katas['0A0D302A01'].avatars['cheetah'].lights[4].tag.visible_files['FizzBuzz.java'].to_s.gsub(/\n/, "\\n").html_safe %>';
+$(document).ready(function () {
+					$('#compare').mergely({
+												cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
+												lhs: function(setValue) {
+													setValue(str1);
+												},
+												rhs: function(setValue) {
+													setValue(str2);
+												}
+					});
+});
 
 var testData = [
 	{times: [{"starting_time": 1, "ending_time": 2}, {"starting_time": 3, "ending_time": 4}]},
@@ -80,26 +69,4 @@ var width = 500;
 
 
 
-function timelineRect() {
-	var chart = d3.timeline();
-
-	var svg = d3.select("#timeline1").append("svg").attr("width", width)
-	.datum(testData).call(chart);
-}
-
-function timelineCircle() {
-	var chart = d3.timeline()
-	.tickFormat( //
-				 {format: d3.time.format("%I %p"),
-				tickTime: d3.time.hours,
-				tickInterval: 1,
-				tickSize: 30})
-	.display("circle"); // toggle between rectangles and circles
-
-	var svg = d3.select("#timeline2").append("svg").attr("width", width)
-	.datum(testData).call(chart);
-}
-
-timelineRect();
-timelineCircle();
 </script>
