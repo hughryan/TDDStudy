@@ -6,7 +6,7 @@
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script> -->
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">  -->
 
 <script>
 
@@ -119,29 +119,20 @@ function populateAccordion(data){
                     }
                     }
 
-                    console.log(commonFiles);
-                    console.log(uniqueStart);
-                    console.log(uniqueEnd);
+                    // console.log(commonFiles);
+                    // console.log(uniqueStart);
+                    // console.log(uniqueEnd);
 
                     //console.log(data.start);
                     $('#accordion').html("");
-                    // for(var key in data.start)
-                    //   {
-                      //     // console.log(key);
-                      //     // console.log(data.start[key]);
-                      //     var newDiv = "<h3>"+key+"<\/h3><div>"+data.start[key]+"</div>";
-                      //     $('#accordion').append(newDiv);
-                    //   }
-
-
-
 
                     //Add Common Files
-                    commonFiles.forEach(
+                    commonFiles
+                    .forEach(
                       function(element, index){
-                        console.log(element);
-                        console.log(data.start[element]);
-                        console.log(data.end[element]);
+                        // console.log(element);
+                        // console.log(data.start[element]);
+                        // console.log(data.end[element]);
 
                         var str1 = data.start[element];
                         var str2 = data.end[element];
@@ -151,38 +142,76 @@ function populateAccordion(data){
                         var newDiv = "<h3>"+element+"<\/h3><div><div id='compare_"+safeName+"' class='CodeMirror'></div></div>";
                         $('#accordion').append(newDiv);
 
-                        $('#compare_'+safeName).mergely({
-                                                          width: 800,
-                                                          // height: 'auto',
-                                                          cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
-                                                          lhs: function(setValue) {
-                                                            setValue(str1);
-                                                          },
-                                                          rhs: function(setValue) {
-                                                            setValue(str2);
-                                                          }
+                        $('#compare_'+safeName)
+                        .mergely({
+                                   width: 800,
+                                   // height: 'auto',
+                                   cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
+                                   lhs: function(setValue) {
+                                     setValue(str1);
+                                   },
+                                   rhs: function(setValue) {
+                                     setValue(str2);
+                                   }
                         });
-
-
-
-                        // $('#compare').mergely({
-                                                   //                         cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
-                                                   //                         lhs: function(setValue) {
-                                                     //                           setValue(str1);
-                                                   //                         },
-                                                   //                         rhs: function(setValue) {
-                                                     //                           setValue(str2);
-                                                   //                         }
-                        // });
-
-
                     })
                     //Add unique start files
+                    uniqueStart.forEach(
+                      function(element, index){
+                        // console.log(element);
+                        // console.log(data.start[element]);
+                        // console.log(data.end[element]);
+
+                        var str1 = data.start[element];
+                        var str2 = data.start[element];
+
+                        var safeName = element.replace('.','');
+
+                        var newDiv = "<h3>"+element+"<\/h3><div><div id='compare_"+safeName+"' class='CodeMirror'></div></div>";
+                        $('#accordion').append(newDiv);
+
+                        $('#compare_'+safeName)
+                        .mergely({
+                                   width: 800,
+                                   // height: 'auto',
+                                   cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
+                                   lhs: function(setValue) {
+                                     setValue(str1);
+                                   },
+                                   rhs: function(setValue) {
+                                     setValue(str2);
+                                   }
+                        });
+                    })
 
                   //Add unique end files
+                  uniqueEnd.forEach(
+                    function(element, index){
+                      // console.log(element);
+                      // console.log(data.start[element]);
+                      // console.log(data.end[element]);
 
+                      var str1 = data.end[element];
+                      var str2 = data.end[element];
 
+                      var safeName = element.replace('.','');
 
+                      var newDiv = "<h3>"+element+"<\/h3><div><div id='compare_"+safeName+"' class='CodeMirror'></div></div>";
+                      $('#accordion').append(newDiv);
+
+                      $('#compare_'+safeName)
+                      .mergely({
+                                 width: 800,
+                                 // height: 'auto',
+                                 cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
+                                 lhs: function(setValue) {
+                                   setValue(str1);
+                                 },
+                                 rhs: function(setValue) {
+                                   setValue(str2);
+                                 }
+                      });
+                  })
 
                   $('#accordion').accordion("refresh");
                 }
