@@ -15,7 +15,7 @@ require_relative root + '/app/lib/ASTInterface'
 include ASTInterface
 
 # Set to true for debug prints
-DEBUG = false
+DEBUG = true
 CYCLE_DIAG = true
 
 def root_path
@@ -44,6 +44,9 @@ def build_cycle_data
   @katas.each do |kata|
     if(kata.language.name == "Java-1.8_JUnit")
       i+= 1
+      print "Number ACTIVE avatars:"
+      puts  kata.avatars.active.count
+      puts  kata.id
       kata.avatars.active.each do |avatar|
 
         #Initialize Data
@@ -213,6 +216,8 @@ def calc_cycles
 
   #For Each Light
   @avatar.lights.each_with_index do |curr, index|
+    puts "DEBUG CURR: #{curr}" if DEBUG
+    puts "DEBUG INDEX: #{index}" if DEBUG
     #New Compile
     curr_compile = Compile.new
 
@@ -316,16 +321,16 @@ def calc_cycles
     #TODO: Coverage, Total SLOC, Prod SLOC, Test SLOC
     #################################
 
-    puts "*************" if CYCLE_DIAG              
+    puts "*************" if CYCLE_DIAG
     puts "{" if CYCLE_DIAG
     puts "Light color: " + curr_compile.light_color.to_s if CYCLE_DIAG
     puts "Test edit: " + curr_compile.test_change.to_s if CYCLE_DIAG
     puts "Production edit: " + curr_compile.prod_change.to_s if CYCLE_DIAG
-    
+
     puts "Current Phase: " + curr_phase.tdd_color.to_s if CYCLE_DIAG
     puts "Expected Phase: " + expected_phase(curr_compile).to_s if CYCLE_DIAG
     puts "Current Phase Empty?: " + curr_phase.compiles.empty?.to_s if CYCLE_DIAG
-    
+
     #NEW LOGIC ============================
     case curr_phase.tdd_color
     when "red"
@@ -358,7 +363,7 @@ def calc_cycles
         curr_compile.save
         if curr_compile.light_color.to_s == "green" #the green phase has ended, move on to refactor (or test if need be)
           #save current compile to phase and phase to cycle
-          curr_cycle.phases << curr_phase   
+          curr_cycle.phases << curr_phase
           curr_phase.save
           puts "Saved Compile to green phase" if CYCLE_DIAG
           puts "Exit Green Phase" if CYCLE_DIAG
@@ -424,8 +429,8 @@ def calc_cycles
 
     #END NEW LOGIC =====================================
     puts "}" if CYCLE_DIAG
-    puts "*************" if CYCLE_DIAG              
-    
+    puts "*************" if CYCLE_DIAG
+
   end #End of For Each Light
 
   curr_cycle.phases << curr_phase
@@ -741,8 +746,13 @@ def copy_source_files_to_working_dir(curLight)
   justJavafilesDir = "#{currLightDir}/src"
   cloc_csv = `./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{justJavafilesDir}`
   sloc_csv = CSV.parse(cloc_csv)
-  @light_test_sloc = sloc_csv[2][4].to_i
-  @light_prod_sloc = sloc_csv[3][4].to_i
+  #TODO find a smarter way to do this: but this hack should work for short term
+  puts sloc_csv.length
+  puts "LENGTH"
+  if   sloc_csv.length < 3
+    @light_test_sloc = sloc_csv[2][4].to_i
+    @light_prod_sloc = sloc_csv[3][4].to_i
+  end
   @statement_coverage = calc_test_coverage(curLight,currTestClass,currLightDir)
 end
 
