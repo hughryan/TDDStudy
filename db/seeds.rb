@@ -15,7 +15,7 @@ require_relative root + '/app/lib/ASTInterface'
 include ASTInterface
 
 # Set to true for debug prints
-DEBUG = true
+DEBUG = false
 CYCLE_DIAG = false
 
 def root_path
@@ -48,9 +48,9 @@ def build_cycle_data
     print kata.language.name+ " " if DEBUG
     if(kata.language.name == "Java-1.8_JUnit")
       i+= 1
-      print "Number ACTIVE avatars:"
-      puts  kata.avatars.active.count
-      puts  kata.id
+#      print "Number ACTIVE avatars:"
+#      puts  kata.avatars.active.count
+#      puts  kata.id
       kata.avatars.active.each do |avatar|
         print avatar.name+ " " if DEBUG
         #Initialize Data
@@ -84,13 +84,13 @@ def import_all_katas
 
   i = 0
   @katas.each do |kata|
-    puts " " if DEBUG
-    print kata.id + " " if DEBUG
-    print  kata.language.name + " " if DEBUG
+#    puts " " if DEBUG
+#    print kata.id + " " if DEBUG
+#    print  kata.language.name + " " if DEBUG
     if(kata.language.name == "Java-1.8_JUnit")
       i+= 1
       kata.avatars.active.each do |avatar|
-        print avatar.name + " " if DEBUG
+#        print avatar.name + " " if DEBUG
 
         session = Session.new do |s|
           s.cyberdojo_id = kata.id
@@ -167,9 +167,9 @@ def import_all_katas
         #@compile = session.compiles.create(light_color: 'NO_COLOR')
       end
     end
-    # if(i > 4)
-    #   break
-    # end
+#     if(i > 4)
+#       break
+#     end
   end
 end
 
@@ -216,6 +216,7 @@ def calc_cycles
   puts "DEBUG: #{curr_session[0]}" if DEBUG
   curr_session = curr_session[0]
 
+#puts curr_session.inspect if DEBUG
   #New Cycle
   curr_cycle = Cycle.new(cycle_position: pos)
 
@@ -755,8 +756,8 @@ def copy_source_files_to_working_dir(curLight)
   cloc_csv = `./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{justJavafilesDir}`
   sloc_csv = CSV.parse(cloc_csv)
   #TODO find a smarter way to do this: but this hack should work for short term
-  puts sloc_csv.length
-  puts "LENGTH"
+  #puts sloc_csv.length
+  #puts "LENGTH"
   if   sloc_csv.length < 3
     @light_test_sloc = sloc_csv[2][4].to_i
     @light_prod_sloc = sloc_csv[3][4].to_i
