@@ -82,11 +82,17 @@ class VizController < ApplicationController
 		names["start"] = dojo.katas[cyberdojo_id].avatars[cyberdojo_avatar].lights[start_id.to_i].tag.visible_files
 		names["end"] = dojo.katas[cyberdojo_id].avatars[cyberdojo_avatar].lights[end_id.to_i].tag.visible_files
 
+		names["start"].delete("output")
+		names["end"].delete("output")
+		names["start"].delete("instructions")
+		names["end"].delete("instructions")
+		names["start"].delete("cyber-dojo.sh")
+		names["end"].delete("cyber-dojo.sh")
 		puts names
 
 		# <%= @katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files['FizzBuzz.java'] %>
 		# @katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files['FizzBuzz.java']
-		puts dojo.katas['0A0D302A01']
+		# puts dojo.katas['0A0D302A01']
 
 		@oneSession = Session.all.first
 		respond_to do |format|

@@ -102,6 +102,7 @@ $('#myTable tbody tr')
           console.log($(this).find(".kata_name").html());
           var cyberdojo_id = $(this).find(".cyberdojo_id").html();
           var avatar = $(this).find(".avatar").html();
-          window.location.href = "timelineWithBrush?id="+cyberdojo_id+"&avatar="+avatar
+          var kata_name = $(this).find(".kata_name").html();
+          window.location.href = "timelineWithBrush?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
 } );
 </script>
