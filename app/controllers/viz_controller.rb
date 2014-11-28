@@ -42,8 +42,10 @@ class VizController < ApplicationController
 
 		allPhases = Array.new
 		@currSession.cycles.each do |cycle|
+			puts cycle.inspect
 			cycleStart = 0
 			cycleEnd = 0
+			puts cycle.phases.inspect
 			cycle.phases.each do |phase|
 				phase.first_compile_in_phase = phase.compiles.first.git_tag
 				phase.last_compile_in_phase = phase.compiles.last.git_tag

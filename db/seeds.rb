@@ -16,7 +16,7 @@ include ASTInterface
 
 # Set to true for debug prints
 DEBUG = true
-CYCLE_DIAG = true
+CYCLE_DIAG = false
 
 def root_path
   Rails.root.to_s + '/'
@@ -32,6 +32,8 @@ def dojo
 end
 
 def build_cycle_data
+  puts "build_cycle_data " if DEBUG
+
   Cycle.delete_all
 
   @NEW_EDIT_COUNT = true
@@ -42,13 +44,15 @@ def build_cycle_data
   i = 0
   @katas = dojo.katas
   @katas.each do |kata|
+    print kata.id+ " " if DEBUG
+    print kata.language.name+ " " if DEBUG
     if(kata.language.name == "Java-1.8_JUnit")
       i+= 1
       print "Number ACTIVE avatars:"
       puts  kata.avatars.active.count
       puts  kata.id
       kata.avatars.active.each do |avatar|
-
+        print avatar.name+ " " if DEBUG
         #Initialize Data
         @start_date = kata.created
         @total_time = 0
@@ -66,9 +70,9 @@ def build_cycle_data
         calc_cycles
 
       end
-      if(i > 2)
-        break
-      end
+      # if(i > 2)
+      #   break
+      # end
     end
   end
 end
@@ -80,10 +84,14 @@ def import_all_katas
 
   i = 0
   @katas.each do |kata|
-    puts kata if DEBUG
+    puts " " if DEBUG
+    print kata.id + " " if DEBUG
+    print  kata.language.name + " " if DEBUG
     if(kata.language.name == "Java-1.8_JUnit")
       i+= 1
       kata.avatars.active.each do |avatar|
+        print avatar.name + " " if DEBUG
+
         session = Session.new do |s|
           s.cyberdojo_id = kata.id
           s.avatar = avatar.name
@@ -135,7 +143,7 @@ def import_all_katas
             currRedString = 1
           end
 
-          puts "*********************DEBUG*********************" if DEBUG
+          # puts "*********************DEBUG*********************" if DEBUG
           #puts curr_light.tag.diff(0)
           # puts curr_light.tag.visible_files.first if DEBUG
           # @compile = s.compiles.create(light_color: curr_light.colour.to_s, git_tag: curr_light.number.to_s)
@@ -159,9 +167,9 @@ def import_all_katas
         #@compile = session.compiles.create(light_color: 'NO_COLOR')
       end
     end
-    if(i > 4)
-      break
-    end
+    # if(i > 4)
+    #   break
+    # end
   end
 end
 

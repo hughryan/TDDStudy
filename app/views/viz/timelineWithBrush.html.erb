@@ -12,6 +12,24 @@
 
 $(function() {
     $( "#accordion" ).accordion();
+
+    $.ajax({
+             url: "/viz/retrieve_session",
+             dataType:'json',
+             data: {
+               'start': 2,
+               'end':4,
+               'cyberdojo_id':gon.cyberdojo_id,
+               'cyberdojo_avatar':gon.cyberdojo_avatar
+             },
+             success: function(data){
+               populateAccordion(data);
+             },
+             error: function(){
+               console.error("AJAX");
+             },
+             type: 'GET'
+    });
 });
 
 </script>
@@ -225,8 +243,8 @@ function populateAccordion(data){
                 console.log(phaseData);
 
                 var margin = {top: 20, right: 20, bottom: 30, left: 10},
-                  width = 530 - margin.left - margin.right,
-                  height = 500 - margin.top - margin.bottom;
+                  width = $( window ).width() - margin.left - margin.right,
+                  height = 100 - margin.top - margin.bottom;
 
                 var  barHeight = 50,
                   color = d3.scale.category20c();
@@ -296,7 +314,7 @@ function populateAccordion(data){
                                    .attr("cx",function(d, i) {
                                            return x(d.git_tag);
                                    })
-                                   .attr("r", 5)
+                                   .attr("r", 2)
                                    .attr("transform", "translate("+margin.left+",45)")
                                    .attr("stroke",
                                          function(d) {
