@@ -13,6 +13,7 @@
 $(function() {
     $( "#accordion" ).accordion();
 
+
     $.ajax({
              url: "/viz/retrieve_session",
              dataType:'json',
@@ -31,6 +32,7 @@ $(function() {
              type: 'GET'
     });
 });
+
 
 </script>
 
@@ -234,7 +236,9 @@ function populateAccordion(data){
                       });
                   })
 
+
                   $('#accordion').accordion("refresh");
+                  $( "#accordion" ).accordion( "option", "active", 0 );
                 }
 
                 var data = gon.compiles;
