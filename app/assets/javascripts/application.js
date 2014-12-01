@@ -24,3 +24,5 @@
 //= require clike
 //= require d3.v3.min
 //= require d3-timeline
+//= require d3.hive
+//= require PulsePlot
