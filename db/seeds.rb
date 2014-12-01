@@ -15,7 +15,7 @@ require_relative root + '/app/lib/ASTInterface'
 include ASTInterface
 
 # Set to true for debug prints
-DEBUG = false
+DEBUG = true
 CYCLE_DIAG = false
 
 def root_path
@@ -48,9 +48,9 @@ def build_cycle_data
     print kata.language.name+ " " if DEBUG
     if(kata.language.name == "Java-1.8_JUnit")
       i+= 1
-#      print "Number ACTIVE avatars:"
-#      puts  kata.avatars.active.count
-#      puts  kata.id
+      #      print "Number ACTIVE avatars:"
+      #      puts  kata.avatars.active.count
+      #      puts  kata.id
       kata.avatars.active.each do |avatar|
         print avatar.name+ " " if DEBUG
         #Initialize Data
@@ -84,13 +84,13 @@ def import_all_katas
 
   i = 0
   @katas.each do |kata|
-#    puts " " if DEBUG
-#    print kata.id + " " if DEBUG
-#    print  kata.language.name + " " if DEBUG
+    #    puts " " if DEBUG
+    #    print kata.id + " " if DEBUG
+    #    print  kata.language.name + " " if DEBUG
     if(kata.language.name == "Java-1.8_JUnit")
       i+= 1
       kata.avatars.active.each do |avatar|
-#        print avatar.name + " " if DEBUG
+        #        print avatar.name + " " if DEBUG
 
         session = Session.new do |s|
           s.cyberdojo_id = kata.id
@@ -167,9 +167,9 @@ def import_all_katas
         #@compile = session.compiles.create(light_color: 'NO_COLOR')
       end
     end
-#     if(i > 4)
-#       break
-#     end
+    #     if(i > 4)
+    #       break
+    #     end
   end
 end
 
@@ -216,7 +216,7 @@ def calc_cycles
   puts "DEBUG: #{curr_session[0]}" if DEBUG
   curr_session = curr_session[0]
 
-#puts curr_session.inspect if DEBUG
+  #puts curr_session.inspect if DEBUG
   #New Cycle
   curr_cycle = Cycle.new(cycle_position: pos)
 
@@ -755,11 +755,16 @@ def copy_source_files_to_working_dir(curLight)
   justJavafilesDir = "#{currLightDir}/src"
   cloc_csv = `./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{justJavafilesDir}`
   sloc_csv = CSV.parse(cloc_csv)
+  puts cloc_csv if DEBUG
   #TODO find a smarter way to do this: but this hack should work for short term
-  #puts sloc_csv.length
+  print "SLOC_CSV.length " if DEBUG
+  puts sloc_csv.length if DEBUG
   #puts "LENGTH"
-  if   sloc_csv.length < 3
+  if sloc_csv.length > 2
     @light_test_sloc = sloc_csv[2][4].to_i
+
+  end
+  if sloc_csv.length > 3
     @light_prod_sloc = sloc_csv[3][4].to_i
   end
   @statement_coverage = calc_test_coverage(curLight,currTestClass,currLightDir)
@@ -792,6 +797,33 @@ def calc_test_coverage(curLight,currTestClass,currLightDir)
   end
 end
 
+def calculate_phase_totals()
+  puts "calculate_phase_totals" if DEBUG
+  phases = Phase.all
+  phases.each do |phase|
+    puts "Phase"
+    compiles = phase.compiles
+    puts "compile"
+    totalTime = 0
+    totalSLOC = 0
+    compiles.each do |compile|
+      # puts compile.inspect
+      totalTime = totalTime + compile.seconds_since_last_light
+      totalSLOC = totalSLOC + compile.total_sloc_count
+    end
+    puts "PHASE"
+    puts phase
+    puts "TotalSLOC"
+    puts totalSLOC
+    puts "totalTime"
+    puts totalTime
+    phase.total_sloc_count = totalSLOC
+    phase.seconds_in_phase = totalTime
+    phase.save
+  end
+end
+
 
 import_all_katas
 build_cycle_data
+calculate_phase_totals
