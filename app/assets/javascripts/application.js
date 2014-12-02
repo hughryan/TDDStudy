@@ -26,3 +26,4 @@
 //= require d3-timeline
 //= require d3.hive
 //= require PulsePlot
+//= require kata.viz

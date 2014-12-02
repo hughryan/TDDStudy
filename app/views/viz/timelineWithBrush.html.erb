@@ -3,550 +3,97 @@
 <%= include_gon %>
 
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-<!-- <script src="http://d3js.org/d3.v3.js"></script>
-<script src="http://d3js.org/d3.hive.v0.min.js1"></script>
 
--->
+<style>
 
-<!-- <script type="text/javascript" src="PulsePlot.js"></script> -->
+.chart {
+  background-color: #efefef;
+}
+.chart text {
+  fill: black;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+.axis text {
+  font: 11px sans-serif;
+}
+
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.grid-background {
+  fill: #ddd;
+}
+
+.grid line,
+.grid path {
+  fill: none;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+.grid .minor.tick line {
+  stroke-opacity: .5;
+}
+
+.brush .extent {
+  stroke: #000;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+#PulseAreaDetail{
+width:100px;
+height:100px;
+
+}
+
+</style>
+<h3>CyberDojo Id: <%= params[:id] %>
+Avatar: <%= params[:avatar] %>
+Kata Name: <%= params[:kataName] %>
+</h3>
+
+
+<body>
+<div id="PulseAreaDetail"></div>
+<BR>
+<div id="viz"></div>
+<svg class="chart"></svg>
+
+<div id="accordion">
+</div>
+
 <script>
 
-$(function() {
-    $( "#accordion" ).accordion();
+var data = gon.compiles;
+var phaseData = gon.phases;
+console.log(phaseData);
+compiles = gon.compiles;
 
-    $.ajax({
-             url: "/viz/retrieve_session",
-             dataType:'json',
-             data: {
-               'start': 2,
-               'end':4,
-               'cyberdojo_id':gon.cyberdojo_id,
-               'cyberdojo_avatar':gon.cyberdojo_avatar
-             },
-             success: function(data){
-               populateAccordion(data);
-             },
-             error: function(){
-               console.error("AJAX");
-             },
-             type: 'GET'
-    });
-});
+pageSetup();
 
 
+console.log(gon.normalizedPhaseTime);
+console.log(gon.normalizedPhaseSLOC);
 
 
-function createHiveData(red,green,blue){
-  if(blue == 0 || isNaN(blue)){
-      blue = 0.001;
-    }
-    if(red == 0 || isNaN(red)){
-        red = 0.001;
-      }
-      if(green == 0 || isNaN(green)){
-          green = 0.001;
-        }
+drawKataViz();
+buildpulseChart(gon.normalizedPhaseSLOC);
 
-        var data = [
-          {source: {x: 0, y0: 0.0, y1: red}, target: {x: 1, y0: 0.0, y1: red}, group:  3},
-          {source: {x: 1, y0: 0.0, y1: green}, target: {x: 2, y0: 0.0, y1: green}, group:  7},
-          {source: {x: 2, y0: 0.0, y1: blue}, target: {x: 0, y0: 0.0, y1: blue}, group: 11}
-        ];
-        return data;
-        }
-
-
-
-        console.log(gon.normalizedPhaseTime);
-        console.log(gon.normalizedPhaseSLOC);
-
-        </script>
-
-
-
-
-        <style>
-
-        .chart {
-          background-color: #efefef;
-        }
-        .chart text {
-          fill: black;
-          font: 10px sans-serif;
-          text-anchor: end;
-        }
-
-        .axis text {
-          font: 11px sans-serif;
-        }
-
-        .axis line {
-          fill: none;
-          stroke: #000;
-          shape-rendering: crispEdges;
-        }
-
-        .grid-background {
-          fill: #ddd;
-        }
-
-        .grid line,
-        .grid path {
-          fill: none;
-          stroke: #fff;
-          shape-rendering: crispEdges;
-        }
-
-        .grid .minor.tick line {
-          stroke-opacity: .5;
-        }
-
-        .brush .extent {
-          stroke: #000;
-          fill-opacity: .125;
-          shape-rendering: crispEdges;
-        }
-
-        .axis text {
-          font: 10px sans-serif;
-        }
-
-        .axis line,
-        .axis path {
-          fill: none;
-          stroke: #000;
-          shape-rendering: crispEdges;
-        }
-
-        #PulseAreaDetail{
-        width:100px;
-        height:100px;
-
-        }
-
-        </style>
-        <h3>CyberDojo Id: <%= params[:id] %>
-        Avatar: <%= params[:avatar] %>
-        Kata Name: <%= params[:kataName] %>
-        </h3>
-
-
-
-        <body>
-        <div id="PulseAreaDetail"></div>
-        <BR>
-        <div id="viz"></div>
-        <svg class="chart"></svg>
-
-
-        <div id="accordion">
-        </div>
-
-
-
-
-
-
-        <script>
-
-        var width = 960,
-          height = 500,
-          innerRadius = 40,
-          outerRadius = 240;
-
-        var angle = d3.scale.ordinal().domain(d3.range(4)).rangePoints([0, 2 * Math.PI]),
-          radius = d3.scale.linear().range([innerRadius, outerRadius]),
-          color = d3.scale.category20c().domain(d3.range(20));
-
-        var links = [
-          // {source: {x: 0, y0: 0.9, y1: 1.0}, target: {x: 1, y0: 0.5, y1: 1.0}, group:  0},
-          // {source: {x: 0, y0: 0.7, y1: 0.9}, target: {x: 1, y0: 0.4, y1: 0.5}, group:  1},
-          // {source: {x: 0, y0: 0.4, y1: 0.7}, target: {x: 1, y0: 0.2, y1: 0.4}, group:  2},
-          {source: {x: 0, y0: 0.0, y1: 0.4}, target: {x: 1, y0: 0.0, y1: 0.4}, group:  3},
-          // {source: {x: 1, y0: 0.8, y1: 1.0}, target: {x: 2, y0: 0.5, y1: 1.0}, group:  4},
-          // {source: {x: 1, y0: 0.5, y1: 0.8}, target: {x: 2, y0: 0.2, y1: 0.5}, group:  5},
-          // {source: {x: 1, y0: 0.3, y1: 0.5}, target: {x: 2, y0: 0.1, y1: 0.2}, group:  6},
-          {source: {x: 1, y0: 0.0, y1: 0.3}, target: {x: 2, y0: 0.0, y1: 0.3}, group:  7},
-          // {source: {x: 2, y0: 0.8, y1: 1.0}, target: {x: 0, y0: 0.5, y1: 1.0}, group:  8},
-          // {source: {x: 2, y0: 0.5, y1: 0.8}, target: {x: 0, y0: 0.2, y1: 0.5}, group:  9},
-          // {source: {x: 2, y0: 0.1, y1: 0.5}, target: {x: 0, y0: 0.1, y1: 0.2}, group: 10},
-          {source: {x: 2, y0: 0.0, y1: 0.1}, target: {x: 0, y0: 0.0, y1: 0.1}, group: 11}
-        ];
-
-        var svg = d3.select("body").append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .append("g")
-        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-        svg.selectAll(".link")
-        .data(links)
-        .enter().append("path")
-        .attr("class", "link")
-        .attr("d", d3.hive.link()
-              .angle(function(d) {
-                       return angle(d.x);
-              })
-              .startRadius(function(d) {
-                             return radius(d.y0);
-              })
-              .endRadius(function(d) {
-                           return radius(d.y1);
-        }))
-        .style("fill", function(d) {
-                 return color(d.group);
-        });
-
-        svg.selectAll(".axis")
-        .data(d3.range(3))
-        .enter().append("g")
-        .attr("class", "axis")
-        .attr("transform", function(d) { return "rotate(" + degrees(angle(d)) + ")"; })
-        .selectAll("line")
-        .data(["stroke", "fill"])
-        .enter().append("line")
-        .attr("class", function(d) { return d; })
-        .attr("x1", radius.range()[0])
-        .attr("x2", radius.range()[1]);
-
-        function degrees(radians) {
-          return radians / Math.PI * 180 - 90;
-        }
-
-
-        function buildpulseChart(TDDData){
-          // var metrics = mapPulseArrayToMetrics(TDDPulse, metricFunction);
-          var my_pulsePlot =
-          pulsePlot()
-          .width(100)
-          .height(100)
-          .innerRadius(10)
-          .outerRadius(50);
-
-          $('#PulseAreaDetail').append("<div class='pulseChart' id='pulse'></div>");
-          var data = createHiveData(TDDData[0].red,TDDData[0].green,TDDData[0].blue);
-          d3.select("#pulse")
-          .datum(data)
-          .call(my_pulsePlot);
-
-          // TDDPulse.forEach(function(pulse, index){
-                                //                       $('#PulseAreaDetail').append("<div class='pulseChart' id='pulse" + index + "'></div>");
-                                //                       var data = createHiveData(metrics[index].red,metrics[index].green,metrics[index].blue);
-                                //                       d3.select("#pulse" + index + "")
-                                //                       .datum(TDDData[0])
-                                //                       .call(my_pulsePlot);
-          // // });
-
-          // var my_pulsePlotSummary =
-          // pulsePlot()
-          // .width(350)
-          // .height(350)
-          // .innerRadius(30)
-          // .outerRadius(175);
-
-          // $('#PulseAreaSummary').append("<div class='pulseChart' id='pulseAll'></div>");
-          // var dataAll = createAggHiveData(metrics);
-          // d3.select("#pulseAll")
-          // .datum(dataAll)
-          // .call(my_pulsePlotSummary);
-
-        }
-
-        buildpulseChart(gon.normalizedPhaseSLOC);
-
-        function brushended()
-        {
-
-          if (!d3.event.sourceEvent) return; // only transition after input
-            console.log("BRUSH_END")
-            var extent0 = brush.extent();
-
-
-            var extent1 = extent0;
-            extent1[0] = Math.round(extent0[0]);
-            extent1[1] = Math.round(extent0[1]);
-
-            // console.log(extent0)
-            console.log(extent1[0]);
-            console.log(extent1[1]);
-            var start = extent1[0];
-          var end = extent1[1];
-
-          $.ajax({
-                   url: "/viz/retrieve_session",
-                   dataType:'json',
-                   data: {
-                     'start': start,
-                     'end':end,
-                     'cyberdojo_id':gon.cyberdojo_id,
-                     'cyberdojo_avatar':gon.cyberdojo_avatar
-                   },
-                   success: function(data){
-                     populateAccordion(data);
-                   },
-                   error: function(){
-                     console.error("AJAX");
-                   },
-                   type: 'GET'
-          });
-
-
-          d3.select(this).transition()
-          .call(brush.extent(extent1))
-          .call(brush.event);
-        }
-
-
-        var data = gon.compiles;
-        console.log(gon.compiles);
-
-        var phaseData = gon.phases;
-        console.log(phaseData);
-
-        var margin = {top: 20, right: 20, bottom: 30, left: 10},
-          width = $( window ).width() - margin.left - margin.right,
-          height = 100 - margin.top - margin.bottom;
-
-        var  barHeight = 50,
-          color = d3.scale.category20c();
-
-        var x = d3.scale.linear()
-        .domain([0, gon.compiles.length])
-        .range([1, width-40]);
-
-        var brush = d3.svg.brush()
-        .x(x)
-        .extent([3, 5])
-        .on("brushend", brushended);
-
-        var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom");
-
-        var chart = d3.select(".chart")
-        .attr("width", width)
-        .attr("height", barHeight *3);
-
-
-        // Draw Line for compile points
-        var myLine = chart.append("svg:line")
-        .attr("x1", margin.left)
-        .attr("y1", 45)
-        .attr("x2" ,function(d, i) {
-                return x(gon.compiles.length)+5;
-        })
-        .attr("y2", 45)
-        .style("stroke", "#737373");
-
-        // Draw left start line
-        var startLine = chart.append("svg:line")
-        .attr("x1", margin.left+1)
-        .attr("y1", 45-6)
-        .attr("x2", margin.left+1)
-        .attr("y2", 45+6)
-        .style("stroke", "#737373");
-
-
-        //Draw phase bars
-        chart.selectAll("f")
-        .data(phaseData)
-        .enter().append("rect")
-        .attr("x" ,function(d, i) {
-                return x(d.first_compile_in_phase-1);
-        })
-        .attr("y", 10)
-        .attr("width",
-              function(d, i)
-              {
-                if(d.last_compile_in_phase == gon.compiles.length){
-                    return x(d.last_compile_in_phase - d.first_compile_in_phase+1);
-                }else{
-                    return x(d.last_compile_in_phase - d.first_compile_in_phase+2);
-                  }
-                  })
-                  .attr("height", 10)
-                  .attr("stroke", "grey")
-                  .attr("fill",
-                        function(d)
-                        {
-                          if(d.tdd_color == "white"){return "gray";} else{return d.tdd_color;}})
-                            .attr("transform", "translate("+margin.left+",10)");
-
-
-
-
-
-                            //Draw Compile Points
-                            var bar = chart.selectAll("g")
-                            .data(data)
-                            .enter().append("g");
-
-
-
-                            bar.append("circle")
-                            .attr("cx",function(d, i) {
-                                    return x(d.git_tag);
-                            })
-                            .attr("r", 4)
-                            .attr("transform", "translate("+margin.left+",45)")
-                            .attr("stroke",function(d) {
-                                    if(d.light_color == "amber"){return "orange";}
-                                      return d.light_color})
-                                      .attr("fill",function(d) {
-                                              if(d.light_color == "amber"){return "orange";}
-                                                return d.light_color})
-                                                // .style("fill","rgba(60,179,113, 0)")
-                                                .attr("stroke-width",2);
-
-
-                                                chart.append("g")
-                                                .attr("class", "x axis")
-                                                .attr("transform", "translate("+margin.left+",60)")
-                                                .call(xAxis)
-                                                .selectAll("text")
-                                                .attr("y", 6)
-                                                .attr("height",10)
-                                                // .attr("x", 6)
-                                                .style("text-anchor", "start");
-
-
-                                                var gBrush = chart.append("g")
-                                                .attr("class", "brush")
-                                                .call(brush)
-                                                .call(brush.event);
-
-                                                gBrush.selectAll("rect")
-                                                .attr("height", 40)
-                                                .attr("transform", "translate("+margin.left+",20)");
-
-
-
-
-                                                function populateAccordion(data)
-                                                {
-                                                  var commonFiles = [];
-                                                  var uniqueStart = [];
-                                                  var uniqueEnd = [];
-                                                  for(var start_key in data.start)
-                                                    {
-                                                      var found = 0;
-                                                      for(var end_key in data.end)
-                                                        {
-                                                          if(start_key == end_key){
-                                                              commonFiles.push(start_key)
-                                                              found = 1;
-                                                            }
-                                                            }
-                                                            if(found < 1){
-                                                                uniqueStart.push(start_key)
-                                                              }
-                                                              }
-
-                                                              for(var end_key in data.end)
-                                                                {
-                                                                  if(commonFiles.indexOf(end_key)<0)
-                                                                    {
-                                                                      uniqueEnd.push(end_key);
-                                                                    }
-                                                                    }
-
-                                                                    // console.log(commonFiles);
-                                                                    // console.log(uniqueStart);
-                                                                    // console.log(uniqueEnd);
-
-                                                                    //console.log(data.start);
-                                                                    $('#accordion').html("");
-
-                                                                    //Add Common Files
-                                                                    commonFiles
-                                                                    .forEach(
-                                                                      function(element, index){
-                                                                        // console.log(element);
-                                                                        // console.log(data.start[element]);
-                                                                        // console.log(data.end[element]);
-
-                                                                        var str1 = data.start[element];
-                                                                        var str2 = data.end[element];
-
-                                                                        var safeName = element.replace('.','');
-
-                                                                        var newDiv = "<h3>"+element+"<\/h3><div><div id='compare_"+safeName+"' class='CodeMirror'></div></div>";
-                                                                        $('#accordion').append(newDiv);
-
-                                                                        $('#compare_'+safeName)
-                                                                        .mergely({
-                                                                                   width: 1100,
-                                                                                   // height: 'auto',
-                                                                                   cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
-                                                                                   lhs: function(setValue) {
-                                                                                     setValue(str1);
-                                                                                   },
-                                                                                   rhs: function(setValue) {
-                                                                                     setValue(str2);
-                                                                                   }
-                                                                        });
-                                                                    })
-                                                                    //Add unique start files
-                                                                    uniqueStart.forEach(
-                                                                      function(element, index){
-                                                                        // console.log(element);
-                                                                        // console.log(data.start[element]);
-                                                                        // console.log(data.end[element]);
-
-                                                                        var str1 = data.start[element];
-                                                                        var str2 = data.start[element];
-
-                                                                        var safeName = element.replace('.','');
-
-                                                                        var newDiv = "<h3>"+element+"<\/h3><div><div id='compare_"+safeName+"' class='CodeMirror'></div></div>";
-                                                                        $('#accordion').append(newDiv);
-
-                                                                        $('#compare_'+safeName)
-                                                                        .mergely({
-                                                                                   width: 800,
-                                                                                   // height: 'auto',
-                                                                                   cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
-                                                                                   lhs: function(setValue) {
-                                                                                     setValue(str1);
-                                                                                   },
-                                                                                   rhs: function(setValue) {
-                                                                                     setValue(str2);
-                                                                                   }
-                                                                        });
-                                                                    })
-
-                                                                  //Add unique end files
-                                                                  uniqueEnd.forEach(
-                                                                    function(element, index){
-                                                                      // console.log(element);
-                                                                      // console.log(data.start[element]);
-                                                                      // console.log(data.end[element]);
-
-                                                                      var str1 = data.end[element];
-                                                                      var str2 = data.end[element];
-
-                                                                      var safeName = element.replace('.','');
-
-                                                                      var newDiv = "<h3>"+element+"<\/h3><div><div id='compare_"+safeName+"' class='CodeMirror'></div></div>";
-                                                                      $('#accordion').append(newDiv);
-
-                                                                      $('#compare_'+safeName)
-                                                                      .mergely({
-                                                                                 width: 800,
-                                                                                 // height: 'auto',
-                                                                                 cmsettings: { readOnly: true, lineNumbers: true, mode: "text/x-java"},
-                                                                                 lhs: function(setValue) {
-                                                                                   setValue(str1);
-                                                                                 },
-                                                                                 rhs: function(setValue) {
-                                                                                   setValue(str2);
-                                                                                 }
-                                                                      });
-                                                                  })
-
-
-                                                                  $('#accordion').accordion("refresh");
-                                                                  $( "#accordion" ).accordion( "option", "active", 0 );
-                                                                }
-
-                                                                </script>
+</script>
