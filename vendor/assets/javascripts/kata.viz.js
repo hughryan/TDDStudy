@@ -156,141 +156,209 @@ function brushended() {
     .call(brush.event);
 }
 
- function drawKataViz(){
+function TDDColor(color) {
+  if (color == "red") {
+    return "#af292e";
+  } else if (color == "green") {
+    return "#4e7300";
+  } else if (color == "blue") {
+    return "#385e86";
+  } else if (color == "amber") {
+    return "orange";
+  } else if (color == "white") {
+    return "#efefef";
+  }
+
+}
+
+function drawKataViz() {
 
 
-// console.log(gon.compiles);
+  // console.log(gon.compiles);
+
+  var phaseHeight = 50;
+  var lineHeight = 90;
+  var margin = {
+      top: 20,
+      right: 20,
+      bottom: 30,
+      left: 10
+    },
+    width = $(window).width() - margin.left - margin.right,
+    height = 100 - margin.top - margin.bottom;
+
+  var barHeight = 50,
+    color = d3.scale.category20c();
+
+  var x = d3.scale.linear()
+    .domain([0, compiles.length])
+    .range([1, width - 40]);
+
+  brush = d3.svg.brush()
+    .x(x)
+    .extent([3, 5])
+    .on("brushend", brushended);
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+  var chart = d3.select(".chart")
+    .attr("width", width)
+    .attr("height", barHeight * 3);
 
 
-
-var margin = {
-    top: 20,
-    right: 20,
-    bottom: 30,
-    left: 10
-  },
-  width = $(window).width() - margin.left - margin.right,
-  height = 100 - margin.top - margin.bottom;
-
-var barHeight = 50,
-  color = d3.scale.category20c();
-
-var x = d3.scale.linear()
-  .domain([0, compiles.length])
-  .range([1, width - 40]);
-
-brush = d3.svg.brush()
-  .x(x)
-  .extent([3, 5])
-  .on("brushend", brushended);
-
-var xAxis = d3.svg.axis()
-  .scale(x)
-  .orient("bottom");
-
-var chart = d3.select(".chart")
-  .attr("width", width)
-  .attr("height", barHeight * 3);
-
-
-// Draw Line for compile points
-var myLine = chart.append("svg:line")
-  .attr("x1", margin.left)
-  .attr("y1", 45)
-  .attr("x2", function(d, i) {
-    return x(compiles.length) + 5;
-  })
-  .attr("y2", 45)
-  .style("stroke", "#737373");
-
-// Draw left start line
-var startLine = chart.append("svg:line")
-  .attr("x1", margin.left + 1)
-  .attr("y1", 45 - 6)
-  .attr("x2", margin.left + 1)
-  .attr("y2", 45 + 6)
-  .style("stroke", "#737373");
-
-
-//Draw phase bars
-chart.selectAll("f")
-  .data(phaseData)
-  .enter().append("rect")
-  .attr("x", function(d, i) {
-    return x(d.first_compile_in_phase - 1);
-  })
-  .attr("y", 10)
-  .attr("width",
-    function(d, i) {
-      if (d.last_compile_in_phase == compiles.length) {
-        return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
-      } else {
-        return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
-      }
+  // Draw Line for compile points
+  var myLine = chart.append("svg:line")
+    .attr("x1", margin.left)
+    .attr("y1", lineHeight)
+    .attr("x2", function(d, i) {
+      return x(compiles.length) + 5;
     })
-  .attr("height", 10)
-  .attr("stroke", "grey")
-  .attr("fill",
-    function(d) {
-      if (d.tdd_color == "white") {
-        return "gray";
-      } else {
-        return d.tdd_color;
+    .attr("y2", lineHeight)
+    .style("stroke", "#737373")
+    .style("stroke-width", "1");
+
+  // Draw left start line
+  var startLine = chart.append("svg:line")
+    .attr("x1", margin.left + 1)
+    .attr("y1", lineHeight - 6)
+    .attr("x2", margin.left + 1)
+    .attr("y2", lineHeight + 6)
+    .style("stroke", "#737373");
+
+
+  //Draw phase bars
+  chart.selectAll("f")
+    .data(phaseData)
+    .enter().append("rect")
+    .attr("x", function(d, i) {
+      return x(d.first_compile_in_phase - 1);
+    })
+    .attr("y", phaseHeight)
+    .attr("width",
+      function(d, i) {
+        if (d.last_compile_in_phase == compiles.length) {
+          return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
+        } else {
+          return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
+        }
+      })
+    .attr("height", 10)
+    .attr("stroke", "grey")
+    .attr("fill",
+      function(d) {
+        return TDDColor(d.tdd_color);
+      })
+    .attr("transform", "translate(" + margin.left + ",10)");
+
+
+
+  //Draw Compile Points
+  var bar = chart.selectAll("g")
+    .data(data)
+    .enter().append("g");
+
+
+
+  bar.append("circle")
+    .attr("cx", function(d, i) {
+      return x(d.git_tag);
+    })
+    .attr("r", 4)
+    .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
+    .attr("fill", function(d) {
+      return TDDColor(d.light_color);
+    })
+    // .attr("fill",
+    //   function(d) {
+    //     return TDDColor(d.tdd_color);
+    //   })
+    // .style("fill","rgba(60,179,113, 0)")
+    .attr("stroke-width", 2);
+
+
+  chart.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(" + margin.left + ",110)")
+    .call(xAxis)
+    .selectAll("text")
+    .attr("y", 6)
+    .attr("height", 10)
+    // .attr("x", 6)
+    .style("text-anchor", "start")
+    .style("font-size", "16px");
+
+
+  chart.selectAll("h")
+    .data(cycles)
+    .enter().append("rect")
+    .attr("x", function(d, i) {
+      return x(d.startCompile - 1);
+    })
+    .attr("y", 10)
+    .attr("width",
+      function(d, i) {
+        if (d.endCompile == compiles.length) {
+          return x(d.endCompile - d.startCompile + 1);
+        } else {
+          return x(d.endCompile - d.startCompile + 2);
+        }
+      })
+    .attr("height", 10)
+    .attr("stroke", "grey")
+    .attr("fill", function(d) {
+      if (d.valid_tdd == "true") {
+        return "orange";
       }
+        return "green";
+      
     })
   .attr("transform", "translate(" + margin.left + ",10)");
 
+  // endCompile: 15 
+  //startCompile: 1
+  //valid_tdd: true
 
 
-//Draw Compile Points
-var bar = chart.selectAll("g")
-  .data(data)
-  .enter().append("g");
+  // //Draw phase bars
+  //   chart.selectAll("f")
+  //     .data(phaseData)
+  //     .enter().append("rect")
+  //     .attr("x", function(d, i) {
+  //       return x(d.first_compile_in_phase - 1);
+  //     })
+  //     .attr("y", phaseHeight)
+  //     .attr("width",
+  //       function(d, i) {
+  //         if (d.last_compile_in_phase == compiles.length) {
+  //           return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
+  //         } else {
+  //           return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
+  //         }
+  //       })
+  //     .attr("height", 10)
+  //     .attr("stroke", "grey")
+  //     .attr("fill",
+  //       function(d) {
+  //         return TDDColor(d.tdd_color);
+  //       })
+  //     .attr("transform", "translate(" + margin.left + ",10)");
 
 
 
-bar.append("circle")
-  .attr("cx", function(d, i) {
-    return x(d.git_tag);
-  })
-  .attr("r", 4)
-  .attr("transform", "translate(" + margin.left + ",45)")
-  .attr("stroke", function(d) {
-    if (d.light_color == "amber") {
-      return "orange";
-    }
-    return d.light_color
-  })
-  .attr("fill", function(d) {
-    if (d.light_color == "amber") {
-      return "orange";
-    }
-    return d.light_color
-  })
-  // .style("fill","rgba(60,179,113, 0)")
-  .attr("stroke-width", 2);
+  var gBrush = chart.append("g")
+    .attr("class", "brush")
+    .call(brush)
+    .call(brush.event);
+
+  gBrush.selectAll("rect")
+    .attr("height", 51)
+    .attr("transform", "translate(" + margin.left + ",59)");
 
 
-chart.append("g")
-  .attr("class", "x axis")
-  .attr("transform", "translate(" + margin.left + ",60)")
-  .call(xAxis)
-  .selectAll("text")
-  .attr("y", 6)
-  .attr("height", 10)
-  // .attr("x", 6)
-  .style("text-anchor", "start");
 
-
-var gBrush = chart.append("g")
-  .attr("class", "brush")
-  .call(brush)
-  .call(brush.event);
-
-gBrush.selectAll("rect")
-  .attr("height", 40)
-  .attr("transform", "translate(" + margin.left + ",20)");
- }
+}
 
 
 function populateAccordion(data) {
@@ -426,5 +494,3 @@ function populateAccordion(data) {
   $('#accordion').accordion("refresh");
   $("#accordion").accordion("option", "active", 0);
 }
-
-
