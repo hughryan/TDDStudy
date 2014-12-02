@@ -259,8 +259,6 @@ function drawKataViz() {
     .data(data)
     .enter().append("g");
 
-
-
   bar.append("circle")
     .attr("cx", function(d, i) {
       return x(d.git_tag);
@@ -270,11 +268,6 @@ function drawKataViz() {
     .attr("fill", function(d) {
       return TDDColor(d.light_color);
     })
-    // .attr("fill",
-    //   function(d) {
-    //     return TDDColor(d.tdd_color);
-    //   })
-    // .style("fill","rgba(60,179,113, 0)")
     .attr("stroke-width", 2);
 
 
@@ -290,31 +283,103 @@ function drawKataViz() {
     .style("font-size", "16px");
 
 
+
+// //Draw Compile Points
+//   var cycleBars = chart.selectAll("h")
+//     .data(cycles)
+//     .enter().append("h");
+
+//   // cycleBars.append("circle")
+//   //   .attr("cx", function(d, i) {
+//   //     return x(d.git_tag);
+//   //   })
+//   //   .attr("r", 4)
+//   //   .attr("transform", "translate(" + margin.left + ",1)")
+//   //   .attr("fill", "black")
+//   //   .attr("stroke-width", 2);
+
+
+//   //     var cycleBoxes = chart.selectAll("h")
+//   //     .data(cycles)
+//   //     .enter().append("h");
+//   //     //  .attr("transform", function(d, i) { 
+//   //     //   return "translate(10,10)"; 
+//   //     // });
+
+//   cycleBars.append("rect")
+//    .attr("x", function(d, i) {
+//         return x(d.startCompile - 1);
+//       })
+//       .attr("y", 10)
+//       .attr("width",
+//         function(d, i) {
+//           if (d.endCompile == compiles.length) {
+//             return x(d.endCompile - d.startCompile + 1);
+//           } else {
+//             return x(d.endCompile - d.startCompile + 2);
+//           }
+//         })
+//       .attr("height", 10)
+//       .attr("stroke", "grey")
+//       .attr("fill","orange");
+//   //     // .attr("transform", "translate(" + margin.left + ",10)");
+
+
   chart.selectAll("h")
     .data(cycles)
     .enter().append("rect")
     .attr("x", function(d, i) {
-      return x(d.startCompile - 1);
+      return x(d.startCompile -1);
     })
-    .attr("y", 10)
+    .attr("y", 20)
     .attr("width",
       function(d, i) {
-        if (d.endCompile == compiles.length) {
-          return x(d.endCompile - d.startCompile + 1);
-        } else {
-          return x(d.endCompile - d.startCompile + 2);
-        }
+        return x(d.endCompile - d.startCompile +1);
       })
-    .attr("height", 10)
+    .attr("height", 40)
+    .attr("rx", 6)
+    .attr("ry", 6)
     .attr("stroke", "grey")
     .attr("fill", function(d) {
-      if (d.valid_tdd == "true") {
-        return "orange";
+      if (d.valid_tdd == true) {
+        return "#BABABA";
       }
-        return "green";
-      
+      if(d.valid_tdd == false) {
+        return "#6F6F6F";
+      }
+
     })
-  .attr("transform", "translate(" + margin.left + ",10)");
+  .attr("transform", "translate(" + margin.left + ",-10)");
+
+
+
+  // chart.selectAll("h")
+  //   .data(cycles)
+  //   .enter().append("rect")
+  //   .attr("x", function(d, i) {
+  //     return x(d.startCompile - 1);
+  //   })
+  //   .attr("y", 10)
+  //   .attr("width",
+  //     function(d, i) {
+  //       if (d.endCompile == compiles.length) {
+  //         return x(d.endCompile - d.startCompile + 1);
+  //       } else {
+  //         return x(d.endCompile - d.startCompile + 2);
+  //       }
+  //     })
+  //   .attr("height", 10)
+  //   .attr("stroke", "grey")
+  //   .attr("fill", function(d) {
+  //     if (d.valid_tdd == "true") {
+  //       return "orange";
+  //     }
+  //       return "green";
+
+  //   })
+  // .attr("transform", "translate(" + margin.left + ",10)");
+
+
 
   // endCompile: 15 
   //startCompile: 1
