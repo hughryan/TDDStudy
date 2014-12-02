@@ -83,14 +83,16 @@ Kata Name: <%= params[:kataName] %>
 
 var data = gon.compiles;
 var phaseData = gon.phases;
-console.log(phaseData);
+// console.log(phaseData);
 compiles = gon.compiles;
+
+console.log(gon.cycles)
 
 pageSetup();
 
 
-console.log(gon.normalizedPhaseTime);
-console.log(gon.normalizedPhaseSLOC);
+// console.log(gon.normalizedPhaseTime);
+// console.log(gon.normalizedPhaseSLOC);
 
 
 drawKataViz();

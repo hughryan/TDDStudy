@@ -40,11 +40,18 @@ class VizController < ApplicationController
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
 		gon.compiles = @currSession.compiles
 
+		allCycles = Array.new
 		allPhases = Array.new
 		normalizedPhaseTime = Array.new
 		normalizedPhaseSLOC = Array.new
 		@currSession.cycles.each do |cycle|
 			puts cycle.inspect
+			currCycle = Hash.new
+			currCycle[:valid_tdd] = cycle.valid_tdd
+			currCycle[:startCompile] = cycle.phases.first.compiles.first.git_tag
+			currCycle[:endCompile] = cycle.phases.last.compiles.last.git_tag
+			allCycles << currCycle
+
 			cycleStart = 0
 			cycleEnd = 0
 			puts cycle.phases.inspect
@@ -87,6 +94,7 @@ class VizController < ApplicationController
 		gon.cyberdojo_avatar = @cyberdojo_avatar
 		gon.normalizedPhaseTime = normalizedPhaseTime
 		gon.normalizedPhaseSLOC = normalizedPhaseSLOC
+		gon.cycles = allCycles
 
 	end
 
