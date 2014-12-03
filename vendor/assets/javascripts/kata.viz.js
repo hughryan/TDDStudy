@@ -271,7 +271,7 @@ function drawKataViz() {
     .attr("stroke-width", 2);
 
 
-  chart.append("g")
+ var currTDDBar =  chart.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(" + margin.left + ",110)")
     .call(xAxis)
@@ -281,6 +281,79 @@ function drawKataViz() {
     // .attr("x", 6)
     .style("text-anchor", "start")
     .style("font-size", "16px");
+
+//START HIVE PLOT
+    // selection.each(function(data) {
+
+//       var margin = {top: 20, right: 20, bottom: 30, left: 50},
+//   width = 200,
+//     height = 200,
+//     innerRadius = 10,
+//     outerRadius = 100;
+
+
+//  var hive_data = createHiveData(TDDData[0].red, TDDData[0].green, TDDData[0].blue);
+
+//     var opacity = 3/ hive_data.length ;
+
+//     var angle = d3.scale.ordinal().domain(d3.range(4)).rangePoints([0, 2 * Math.PI]),
+//     radius = d3.scale.linear().range([innerRadius, outerRadius]),
+//     color = d3.scale.ordinal().range(["#af292e","#4e7300","#385e86"]);
+
+// var hive = chart.selectAll("i")
+// .data(hive_data)
+// .enter()
+// .append("i");
+
+//     // Select the svg element, if it exists.
+//       // var svg = currTDDBar.data([hive_data]);
+
+//       // Otherwise, create the skeletal chart.
+//       // var gEnter = svg.enter().append("svg").append("g");
+
+//       // Update the outer dimensions.
+//       // svg .attr("width", width)
+//       //     .attr("height", height);
+
+//       // Update the inner dimensions.
+//       var i = hive.select("i")
+//           .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+//     i.selectAll(".link")
+//       .data(hive_data)
+//     .enter().append("path")
+//       .attr("class", "link")
+//       .attr("d", d3.hive.link()
+//       .angle(function(d) { 
+//         return angle(d.x);
+//       })
+//       .startRadius(function(d) { 
+//         return radius(d.y0); })
+//       .endRadius(function(d) { return radius(d.y1); 
+//       }))
+//       .style("fill", function(d) { return color(d.group);
+//     }).style("opacity",opacity);
+
+//       //END HIVEPLOT
+
+
+// //setup for plot
+//   var my_pulsePlot =
+//     pulsePlot()
+//     .width(100)
+//     .height(100)
+//     .innerRadius(10)
+//     .outerRadius(50)
+//     .attr("transform", "translate(" + margin.left + "," + lineHeight + ")");
+
+// //put on page
+//   // $('#PulseAreaDetail').append("<div class='pulseChart' id='pulse'></div>");
+//   var data = createHiveData(TDDData[0].red, TDDData[0].green, TDDData[0].blue);
+//   d3.select("#pulse")
+//     .datum(data)
+//     .call(my_pulsePlot);
+
+
 
 
 
@@ -558,4 +631,17 @@ function populateAccordion(data) {
 
   $('#accordion').accordion("refresh");
   $("#accordion").accordion("option", "active", 0);
+}
+
+function checkLogin(){
+
+$( "#logout" ).click(function() {
+  document.cookie = "*";
+  console.log("DOCUMENt.COOKIE");
+  console.log(document.cookie);
+
+  location.reload();
+});
+
+$('#username').html("Hello "+document.cookie);
 }
