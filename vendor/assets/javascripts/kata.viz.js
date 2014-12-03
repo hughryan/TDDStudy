@@ -230,7 +230,7 @@ function drawUncatagorizedKata() {
 
 
   //Draw phase bars
-  chart.selectAll("f")
+  phaseBars = chart.selectAll("f")
     .data(phaseData)
     .enter().append("rect")
     .attr("x", function(d, i) {
@@ -772,10 +772,16 @@ function checkLogin() {
 }
 
 function redrawPhaseBars() {
+  // phaseBars.exit().remove();
+phaseBars.remove();
+
+  console.log("redrawPhaseBars");
   //Draw phase bars
-  chart.selectAll("f")
+  phaseBars = chart.selectAll(".phase")
     .data(phaseData)
-    .enter().append("rect")
+    .enter().append("g");
+
+    phaseBars.append("rect")
     .attr("x", function(d, i) {
       return x(d.first_compile_in_phase);
     })
@@ -791,6 +797,9 @@ function redrawPhaseBars() {
         return TDDColor(d.tdd_color);
       })
     .attr("transform", "translate(" + margin.left + ",10)");
+
+   
+    // phaseBars.remove();
 
 }
 
@@ -841,26 +850,68 @@ function initializeKeyBindings() {
         break;
 
       case 37: // left
-        if (e.shiftKey) {
-          console.log("SHIFTED");
+        if (brush.extent()[0] < 1) {
+          break
         }
-        currLocation = brush.extent();
-        brush.extent([currLocation[0] - 1, currLocation[1] - 1])
-        brush(d3.select(".brush").transition());
-        // brush.event(d3.select(".brush").transition().delay(1000));
+        if (brush.extent()[0] >= brush.extent()[1]) {
+          break
+        }
+        if (e.shiftKey) {
+          currLocation = brush.extent();
+          brush.extent([currLocation[0] - 1, currLocation[1]]);
+          brush(d3.select(".brush").transition());
+        } else if (e.altKey) {
+          currLocation = brush.extent();
+          brush.extent([currLocation[0], currLocation[1] - 1]);
+          brush(d3.select(".brush").transition());
+        } else {
+          currLocation = brush.extent();
+          brush.extent([currLocation[0] - 1, currLocation[1] - 1]);
+          brush(d3.select(".brush").transition());
+        }
         break;
 
       case 38: // up
         break;
 
       case 39: // right
-        currLocation = brush.extent();
-        brush.extent([currLocation[0] + 1, currLocation[1] + 1])
-        brush(d3.select(".brush").transition());
-        // brush.event(d3.select(".brush").transition().delay(1000));
+        if (brush.extent()[1] > (gon.compiles.length - 1)) {
+          break
+        }
+        if (brush.extent()[1] <= brush.extent()[0]) {
+          break
+        }
+        if (e.shiftKey) {
+          currLocation = brush.extent();
+          brush.extent([currLocation[0], currLocation[1] + 1]);
+          brush(d3.select(".brush").transition());
+        } else if (e.altKey) {
+          currLocation = brush.extent();
+          brush.extent([currLocation[0] + 1, currLocation[1]]);
+          brush(d3.select(".brush").transition());
+        } else {
+          currLocation = brush.extent();
+          brush.extent([currLocation[0] + 1, currLocation[1] + 1]);
+          brush(d3.select(".brush").transition());
+        }
         break;
 
       case 40: // down
+        break;
+
+      case 88: // down
+        currLocation = brush.extent();
+        phaseData = phaseData.filter(function(element) {
+          if (currLocation[0] >= element.first_compile_in_phase && currLocation[0] <= element.last_compile_in_phase ) {
+            console.log("WOOHOO");
+            console.log(element);
+            return false;
+          }else{
+            return true;
+          }
+        });
+        redrawPhaseBars();
+         // phaseBars.data(phaseData).exit().remove();
         break;
 
       default:
