@@ -171,8 +171,135 @@ function TDDColor(color) {
 
 }
 
-function drawKataViz() {
 
+
+function drawUncatagorizedKata() {
+
+  // console.log(gon.compiles);
+
+  phaseHeight = 50;
+  var lineHeight = 90;
+  margin = {
+      top: 20,
+      right: 20,
+      bottom: 30,
+      left: 10
+    },
+    width = $(window).width() - margin.left - margin.right,
+    height = 100 - margin.top - margin.bottom;
+
+  var barHeight = 50,
+    color = d3.scale.category20c();
+
+  x = d3.scale.linear()
+    .domain([0, compiles.length])
+    .range([1, width - 40]);
+
+  brush = d3.svg.brush()
+    .x(x)
+    .extent([3, 5])
+    .on("brushend", brushended);
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+  chart = d3.select(".chart")
+    .attr("width", width)
+    .attr("height", barHeight * 3);
+
+
+  // Draw Line for compile points
+  var myLine = chart.append("svg:line")
+    .attr("x1", margin.left)
+    .attr("y1", lineHeight)
+    .attr("x2", function(d, i) {
+      return x(compiles.length) + 5;
+    })
+    .attr("y2", lineHeight)
+    .style("stroke", "#737373")
+    .style("stroke-width", "1");
+
+  // Draw left start line
+  var startLine = chart.append("svg:line")
+    .attr("x1", margin.left + 1)
+    .attr("y1", lineHeight - 6)
+    .attr("x2", margin.left + 1)
+    .attr("y2", lineHeight + 6)
+    .style("stroke", "#737373");
+
+
+  //Draw phase bars
+  chart.selectAll("f")
+    .data(phaseData)
+    .enter().append("rect")
+    .attr("x", function(d, i) {
+      return x(d.first_compile_in_phase - 1);
+    })
+    .attr("y", phaseHeight)
+    .attr("width",
+      function(d, i) {
+        if (d.last_compile_in_phase == compiles.length) {
+          return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
+        } else {
+          return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
+        }
+      })
+    .attr("height", 10)
+    .attr("stroke", "grey")
+    .attr("fill",
+      function(d) {
+        return TDDColor(d.tdd_color);
+      })
+    .attr("transform", "translate(" + margin.left + ",10)");
+
+
+
+  //Draw Compile Points
+  var bar = chart.selectAll("g")
+    .data(data)
+    .enter().append("g");
+
+  bar.append("circle")
+    .attr("cx", function(d, i) {
+      return x(d.git_tag);
+    })
+    .attr("r", 4)
+    .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
+    .attr("fill", function(d) {
+      return TDDColor(d.light_color);
+    })
+    .attr("stroke-width", 2);
+
+  var currTDDBar = chart.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(" + margin.left + ",110)")
+    .call(xAxis)
+    .selectAll("text")
+    .attr("y", 6)
+    .attr("height", 10)
+    // .attr("x", 6)
+    .style("text-anchor", "start")
+    .style("font-size", "16px");
+
+
+
+  var gBrush = chart.append("g")
+    .attr("class", "brush")
+    .call(brush)
+    .call(brush.event);
+
+  gBrush.selectAll("rect")
+    .attr("height", 51)
+    .attr("transform", "translate(" + margin.left + ",59)");
+
+
+
+}
+
+
+
+function drawKataViz() {
 
   // console.log(gon.compiles);
 
@@ -271,7 +398,7 @@ function drawKataViz() {
     .attr("stroke-width", 2);
 
 
- var currTDDBar =  chart.append("g")
+  var currTDDBar = chart.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(" + margin.left + ",110)")
     .call(xAxis)
@@ -282,132 +409,130 @@ function drawKataViz() {
     .style("text-anchor", "start")
     .style("font-size", "16px");
 
-//START HIVE PLOT
-    // selection.each(function(data) {
+  //START HIVE PLOT
+  // selection.each(function(data) {
 
-//       var margin = {top: 20, right: 20, bottom: 30, left: 50},
-//   width = 200,
-//     height = 200,
-//     innerRadius = 10,
-//     outerRadius = 100;
-
-
-//  var hive_data = createHiveData(TDDData[0].red, TDDData[0].green, TDDData[0].blue);
-
-//     var opacity = 3/ hive_data.length ;
-
-//     var angle = d3.scale.ordinal().domain(d3.range(4)).rangePoints([0, 2 * Math.PI]),
-//     radius = d3.scale.linear().range([innerRadius, outerRadius]),
-//     color = d3.scale.ordinal().range(["#af292e","#4e7300","#385e86"]);
-
-// var hive = chart.selectAll("i")
-// .data(hive_data)
-// .enter()
-// .append("i");
-
-//     // Select the svg element, if it exists.
-//       // var svg = currTDDBar.data([hive_data]);
-
-//       // Otherwise, create the skeletal chart.
-//       // var gEnter = svg.enter().append("svg").append("g");
-
-//       // Update the outer dimensions.
-//       // svg .attr("width", width)
-//       //     .attr("height", height);
-
-//       // Update the inner dimensions.
-//       var i = hive.select("i")
-//           .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-//     i.selectAll(".link")
-//       .data(hive_data)
-//     .enter().append("path")
-//       .attr("class", "link")
-//       .attr("d", d3.hive.link()
-//       .angle(function(d) { 
-//         return angle(d.x);
-//       })
-//       .startRadius(function(d) { 
-//         return radius(d.y0); })
-//       .endRadius(function(d) { return radius(d.y1); 
-//       }))
-//       .style("fill", function(d) { return color(d.group);
-//     }).style("opacity",opacity);
-
-//       //END HIVEPLOT
+  //       var margin = {top: 20, right: 20, bottom: 30, left: 50},
+  //   width = 200,
+  //     height = 200,
+  //     innerRadius = 10,
+  //     outerRadius = 100;
 
 
-// //setup for plot
-//   var my_pulsePlot =
-//     pulsePlot()
-//     .width(100)
-//     .height(100)
-//     .innerRadius(10)
-//     .outerRadius(50)
-//     .attr("transform", "translate(" + margin.left + "," + lineHeight + ")");
+  //  var hive_data = createHiveData(TDDData[0].red, TDDData[0].green, TDDData[0].blue);
 
-// //put on page
-//   // $('#PulseAreaDetail').append("<div class='pulseChart' id='pulse'></div>");
-//   var data = createHiveData(TDDData[0].red, TDDData[0].green, TDDData[0].blue);
-//   d3.select("#pulse")
-//     .datum(data)
-//     .call(my_pulsePlot);
+  //     var opacity = 3/ hive_data.length ;
+
+  //     var angle = d3.scale.ordinal().domain(d3.range(4)).rangePoints([0, 2 * Math.PI]),
+  //     radius = d3.scale.linear().range([innerRadius, outerRadius]),
+  //     color = d3.scale.ordinal().range(["#af292e","#4e7300","#385e86"]);
+
+  // var hive = chart.selectAll("i")
+  // .data(hive_data)
+  // .enter()
+  // .append("i");
+
+  //     // Select the svg element, if it exists.
+  //       // var svg = currTDDBar.data([hive_data]);
+
+  //       // Otherwise, create the skeletal chart.
+  //       // var gEnter = svg.enter().append("svg").append("g");
+
+  //       // Update the outer dimensions.
+  //       // svg .attr("width", width)
+  //       //     .attr("height", height);
+
+  //       // Update the inner dimensions.
+  //       var i = hive.select("i")
+  //           .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+  //     i.selectAll(".link")
+  //       .data(hive_data)
+  //     .enter().append("path")
+  //       .attr("class", "link")
+  //       .attr("d", d3.hive.link()
+  //       .angle(function(d) { 
+  //         return angle(d.x);
+  //       })
+  //       .startRadius(function(d) { 
+  //         return radius(d.y0); })
+  //       .endRadius(function(d) { return radius(d.y1); 
+  //       }))
+  //       .style("fill", function(d) { return color(d.group);
+  //     }).style("opacity",opacity);
+
+  //       //END HIVEPLOT
 
 
+  // //setup for plot
+  //   var my_pulsePlot =
+  //     pulsePlot()
+  //     .width(100)
+  //     .height(100)
+  //     .innerRadius(10)
+  //     .outerRadius(50)
+  //     .attr("transform", "translate(" + margin.left + "," + lineHeight + ")");
+
+  // //put on page
+  //   // $('#PulseAreaDetail').append("<div class='pulseChart' id='pulse'></div>");
+  //   var data = createHiveData(TDDData[0].red, TDDData[0].green, TDDData[0].blue);
+  //   d3.select("#pulse")
+  //     .datum(data)
+  //     .call(my_pulsePlot);
 
 
 
-// //Draw Compile Points
-//   var cycleBars = chart.selectAll("h")
-//     .data(cycles)
-//     .enter().append("h");
+  // //Draw Compile Points
+  //   var cycleBars = chart.selectAll("h")
+  //     .data(cycles)
+  //     .enter().append("h");
 
-//   // cycleBars.append("circle")
-//   //   .attr("cx", function(d, i) {
-//   //     return x(d.git_tag);
-//   //   })
-//   //   .attr("r", 4)
-//   //   .attr("transform", "translate(" + margin.left + ",1)")
-//   //   .attr("fill", "black")
-//   //   .attr("stroke-width", 2);
+  //   // cycleBars.append("circle")
+  //   //   .attr("cx", function(d, i) {
+  //   //     return x(d.git_tag);
+  //   //   })
+  //   //   .attr("r", 4)
+  //   //   .attr("transform", "translate(" + margin.left + ",1)")
+  //   //   .attr("fill", "black")
+  //   //   .attr("stroke-width", 2);
 
 
-//   //     var cycleBoxes = chart.selectAll("h")
-//   //     .data(cycles)
-//   //     .enter().append("h");
-//   //     //  .attr("transform", function(d, i) { 
-//   //     //   return "translate(10,10)"; 
-//   //     // });
+  //   //     var cycleBoxes = chart.selectAll("h")
+  //   //     .data(cycles)
+  //   //     .enter().append("h");
+  //   //     //  .attr("transform", function(d, i) { 
+  //   //     //   return "translate(10,10)"; 
+  //   //     // });
 
-//   cycleBars.append("rect")
-//    .attr("x", function(d, i) {
-//         return x(d.startCompile - 1);
-//       })
-//       .attr("y", 10)
-//       .attr("width",
-//         function(d, i) {
-//           if (d.endCompile == compiles.length) {
-//             return x(d.endCompile - d.startCompile + 1);
-//           } else {
-//             return x(d.endCompile - d.startCompile + 2);
-//           }
-//         })
-//       .attr("height", 10)
-//       .attr("stroke", "grey")
-//       .attr("fill","orange");
-//   //     // .attr("transform", "translate(" + margin.left + ",10)");
+  //   cycleBars.append("rect")
+  //    .attr("x", function(d, i) {
+  //         return x(d.startCompile - 1);
+  //       })
+  //       .attr("y", 10)
+  //       .attr("width",
+  //         function(d, i) {
+  //           if (d.endCompile == compiles.length) {
+  //             return x(d.endCompile - d.startCompile + 1);
+  //           } else {
+  //             return x(d.endCompile - d.startCompile + 2);
+  //           }
+  //         })
+  //       .attr("height", 10)
+  //       .attr("stroke", "grey")
+  //       .attr("fill","orange");
+  //   //     // .attr("transform", "translate(" + margin.left + ",10)");
 
 
   chart.selectAll("h")
     .data(cycles)
     .enter().append("rect")
     .attr("x", function(d, i) {
-      return x(d.startCompile -1);
+      return x(d.startCompile - 1);
     })
     .attr("y", 20)
     .attr("width",
       function(d, i) {
-        return x(d.endCompile - d.startCompile +1);
+        return x(d.endCompile - d.startCompile + 1);
       })
     .attr("height", 40)
     .attr("rx", 6)
@@ -417,12 +542,12 @@ function drawKataViz() {
       if (d.valid_tdd == true) {
         return "#BABABA";
       }
-      if(d.valid_tdd == false) {
+      if (d.valid_tdd == false) {
         return "#6F6F6F";
       }
 
     })
-  .attr("transform", "translate(" + margin.left + ",-10)");
+    .attr("transform", "translate(" + margin.left + ",-10)");
 
 
 
@@ -633,15 +758,116 @@ function populateAccordion(data) {
   $("#accordion").accordion("option", "active", 0);
 }
 
-function checkLogin(){
+function checkLogin() {
 
-$( "#logout" ).click(function() {
-  document.cookie = "*";
-  console.log("DOCUMENt.COOKIE");
-  console.log(document.cookie);
+  $("#logout").click(function() {
+    document.cookie = "*";
+    console.log("DOCUMENt.COOKIE");
+    console.log(document.cookie);
 
-  location.reload();
-});
+    location.reload();
+  });
 
-$('#username').html("Hello "+document.cookie);
+  $('#username').html("Hello " + document.cookie);
+}
+
+function redrawPhaseBars() {
+  //Draw phase bars
+  chart.selectAll("f")
+    .data(phaseData)
+    .enter().append("rect")
+    .attr("x", function(d, i) {
+      return x(d.first_compile_in_phase);
+    })
+    .attr("y", phaseHeight)
+    .attr("width",
+      function(d, i) {
+        return x(d.last_compile_in_phase - d.first_compile_in_phase);
+      })
+    .attr("height", 10)
+    .attr("stroke", "grey")
+    .attr("fill",
+      function(d) {
+        return TDDColor(d.tdd_color);
+      })
+    .attr("transform", "translate(" + margin.left + ",10)");
+
+}
+
+function initializeKeyBindings() {
+
+  console.log("INIT BINDINGS");
+  $(document).keydown(function(e) {
+    console.log(e.which);
+    switch (e.which) {
+      case 65: //a
+        console.log(brush.extent());
+        var newPhase = new Object();
+        newPhase.first_compile_in_phase = brush.extent()[0];
+        newPhase.last_compile_in_phase = brush.extent()[1];
+        newPhase.tdd_color = "red";
+        phaseData.push(newPhase);
+        redrawPhaseBars();
+        break;
+
+      case 83: //s
+        console.log(brush.extent());
+        var newPhase = new Object();
+        newPhase.first_compile_in_phase = brush.extent()[0];
+        newPhase.last_compile_in_phase = brush.extent()[1];
+        newPhase.tdd_color = "green";
+        phaseData.push(newPhase);
+        redrawPhaseBars();
+        break;
+
+      case 68: //d
+        console.log(brush.extent());
+        var newPhase = new Object();
+        newPhase.first_compile_in_phase = brush.extent()[0];
+        newPhase.last_compile_in_phase = brush.extent()[1];
+        newPhase.tdd_color = "blue";
+        phaseData.push(newPhase);
+        redrawPhaseBars();
+        break;
+
+      case 70: //f
+        console.log(brush.extent());
+        var newPhase = new Object();
+        newPhase.first_compile_in_phase = brush.extent()[0];
+        newPhase.last_compile_in_phase = brush.extent()[1];
+        newPhase.tdd_color = "white";
+        phaseData.push(newPhase);
+        redrawPhaseBars();
+        break;
+
+      case 37: // left
+        if (e.shiftKey) {
+          console.log("SHIFTED");
+        }
+        currLocation = brush.extent();
+        brush.extent([currLocation[0] - 1, currLocation[1] - 1])
+        brush(d3.select(".brush").transition());
+        // brush.event(d3.select(".brush").transition().delay(1000));
+        break;
+
+      case 38: // up
+        break;
+
+      case 39: // right
+        currLocation = brush.extent();
+        brush.extent([currLocation[0] + 1, currLocation[1] + 1])
+        brush(d3.select(".brush").transition());
+        // brush.event(d3.select(".brush").transition().delay(1000));
+        break;
+
+      case 40: // down
+        break;
+
+      default:
+        return; // exit this handler for other keys
+    }
+
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+  });
+
 }

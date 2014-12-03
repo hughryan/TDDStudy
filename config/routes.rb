@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   get 'viz/allCorpus'
 
+  get 'viz/manualCatTool'
+
   get 'viz/timelineWithBrush'
 
   get 'viz/retrieve_session'

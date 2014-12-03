@@ -100,8 +100,7 @@ Kata Name: <%= params[:kataName] %>
 
 
 <body>
-<div id="PulseAreaDetail"></div>
-<BR>
+
 <div id="viz"></div>
 <svg class="chart"></svg>
 
@@ -116,6 +115,7 @@ Please Enter your name:
 
 <script>
 
+initializeKeyBindings();
 
 var data = gon.compiles;
 var phaseData = gon.phases;
@@ -152,8 +152,8 @@ if(document.cookie == "" || document.cookie == "*"){
   }
 
 
-  TDDData = gon.normalizedPhaseSLOC;
-  drawKataViz();
-  buildpulseChart(gon.normalizedPhaseSLOC);
+  // TDDData = gon.normalizedPhaseSLOC;
+  drawUncatagorizedKata();
+  // buildpulseChart(gon.normalizedPhaseSLOC);
 
   </script>
