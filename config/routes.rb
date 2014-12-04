@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   get 'viz/index'
 
+  post 'viz/store_markup'
+
   get 'viz/allCorpus'
 
   get 'viz/manualCatTool'

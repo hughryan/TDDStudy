@@ -203,4 +203,30 @@ class VizController < ApplicationController
 	end
 
 
+	def store_markup
+
+		puts params[:phaseDataJSON]
+
+
+		# @client = Client.new(params[:client])
+		# if @client.save
+		# 	redirect_to @client
+		# else
+		# 	# This line overrides the default rendering behavior, which
+		# 	# would have been to render the "create" view.
+		# 	render "new"
+		# end
+
+		# puts "Store Markup"
+		# puts parmas[:start];
+		names = Array.new
+		respond_to do |format|
+			format.html
+			# format.json { render :json => @oneSession }
+			format.json { render :json => names }
+		end
+	end
+
+
+
 end

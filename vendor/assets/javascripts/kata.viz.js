@@ -773,7 +773,7 @@ function checkLogin() {
 
 function redrawPhaseBars() {
   // phaseBars.exit().remove();
-phaseBars.remove();
+  phaseBars.remove();
 
   console.log("redrawPhaseBars");
   //Draw phase bars
@@ -781,7 +781,7 @@ phaseBars.remove();
     .data(phaseData)
     .enter().append("g");
 
-    phaseBars.append("rect")
+  phaseBars.append("rect")
     .attr("x", function(d, i) {
       return x(d.first_compile_in_phase);
     })
@@ -798,9 +798,21 @@ phaseBars.remove();
       })
     .attr("transform", "translate(" + margin.left + ",10)");
 
-   
-    // phaseBars.remove();
 
+  // phaseBars.remove();
+  saveMarkup();
+}
+
+function saveMarkup() {
+
+phaseDataJSON = {phaseData: phaseData};
+
+  $.ajax({
+    url: 'store_markup',
+    type: 'post',
+    data: phaseDataJSON,
+    dataType: 'JSON'
+  });
 }
 
 function initializeKeyBindings() {
@@ -902,16 +914,16 @@ function initializeKeyBindings() {
       case 88: // down
         currLocation = brush.extent();
         phaseData = phaseData.filter(function(element) {
-          if (currLocation[0] >= element.first_compile_in_phase && currLocation[0] <= element.last_compile_in_phase ) {
+          if (currLocation[0] >= element.first_compile_in_phase && currLocation[0] <= element.last_compile_in_phase) {
             console.log("WOOHOO");
             console.log(element);
             return false;
-          }else{
+          } else {
             return true;
           }
         });
         redrawPhaseBars();
-         // phaseBars.data(phaseData).exit().remove();
+        // phaseBars.data(phaseData).exit().remove();
         break;
 
       default:
