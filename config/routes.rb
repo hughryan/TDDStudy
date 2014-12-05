@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   post 'viz/store_markup'
 
+  post 'viz/del_markup'
+
   get 'viz/allCorpus'
 
   get 'viz/manualCatTool'

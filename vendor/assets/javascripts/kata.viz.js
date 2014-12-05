@@ -295,34 +295,33 @@ function drawUncatagorizedKata() {
 
 
 
-//DRAW handcoded phases
+  //DRAW handcoded phases
 
-// chart.selectAll("h")
-//     .data(cycles)
-//     .enter().append("rect")
-//     .attr("x", function(d, i) {
-//       return x(d.startCompile - 1);
-//     })
-//     .attr("y", 20)
-//     .attr("width",
-//       function(d, i) {
-//         return x(d.endCompile - d.startCompile + 1);
-//       })
-//     .attr("height", 40)
-//     .attr("rx", 6)
-//     .attr("ry", 6)
-//     .attr("stroke", "grey")
-//     .attr("fill", function(d) {
-//       if (d.valid_tdd == true) {
-//         return "#BABABA";
-//       }
-//       if (d.valid_tdd == false) {
-//         return "#6F6F6F";
-//       }
+  // chart.selectAll("h")
+  //     .data(cycles)
+  //     .enter().append("rect")
+  //     .attr("x", function(d, i) {
+  //       return x(d.startCompile - 1);
+  //     })
+  //     .attr("y", 20)
+  //     .attr("width",
+  //       function(d, i) {
+  //         return x(d.endCompile - d.startCompile + 1);
+  //       })
+  //     .attr("height", 40)
+  //     .attr("rx", 6)
+  //     .attr("ry", 6)
+  //     .attr("stroke", "grey")
+  //     .attr("fill", function(d) {
+  //       if (d.valid_tdd == true) {
+  //         return "#BABABA";
+  //       }
+  //       if (d.valid_tdd == false) {
+  //         return "#6F6F6F";
+  //       }
 
-//     })
-//     .attr("transform", "translate(" + margin.left + ",-10)");
-
+  //     })
+  //     .attr("transform", "translate(" + margin.left + ",-10)");
 
 
 
@@ -853,10 +852,14 @@ function saveMarkup() {
 function saveNewPhase(start, end, color) {
 
   phaseDataJSON = {
-    phaseData: {start : start, end : end, color: color},
+    phaseData: {
+      start: start,
+      end: end,
+      color: color
+    },
     cyberdojo_id: gon.cyberdojo_id,
     cyberdojo_avatar: gon.cyberdojo_avatar,
-    user:document.cookie
+    user: document.cookie
   };
 
   $.ajax({
@@ -877,6 +880,59 @@ function addNewPhase(start, end, color) {
   redrawPhaseBars();
   saveNewPhase(start, end, color);
 }
+
+
+function deleteMatchingPhases(start, end) {
+  // phaseData = phaseData.filter(function(element) {
+  //   if (currLocation[0] >= element.first_compile_in_phase && currLocation[0] <= element.last_compile_in_phase) {
+  //     console.log("WOOHOO");
+  //     console.log(element);
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // });
+  // redrawPhaseBars();
+
+
+for(var i = phaseData.length; i-- ; i > 0)
+{
+  console.log(phaseData[i]);
+  currStart = phaseData[i].first_compile_in_phase
+  currEnd = phaseData[i].last_compile_in_phase
+  if(currStart >= start && currStart < end){
+    deletePhase(phaseData[i],i);
+  }else if(currEnd > start && currEnd <= end){
+    deletePhase(phaseData[i],i);
+  }
+}
+ redrawPhaseBars();
+
+}
+
+function deletePhase(currPhase,i){
+
+  phaseDataJSON = {
+    phaseData: {
+      start: currPhase.first_compile_in_phase,
+      end: currPhase.last_compile_in_phase,
+      color: currPhase.tdd_color
+    },
+    cyberdojo_id: gon.cyberdojo_id,
+    cyberdojo_avatar: gon.cyberdojo_avatar,
+    user: document.cookie
+  };
+
+  phaseData.splice(i,1);
+    $.ajax({
+    url: 'del_markup',
+    type: 'post',
+    data: phaseDataJSON,
+    dataType: 'JSON'
+  });
+
+}
+
 
 function initializeKeyBindings() {
 
@@ -982,18 +1038,9 @@ function initializeKeyBindings() {
       case 40: // down
         break;
 
-      case 88: // down
+      case 88: // x
         currLocation = brush.extent();
-        phaseData = phaseData.filter(function(element) {
-          if (currLocation[0] >= element.first_compile_in_phase && currLocation[0] <= element.last_compile_in_phase) {
-            console.log("WOOHOO");
-            console.log(element);
-            return false;
-          } else {
-            return true;
-          }
-        });
-        redrawPhaseBars();
+        deleteMatchingPhases(brush.extent()[0], brush.extent()[1]);
         // phaseBars.data(phaseData).exit().remove();
         break;
 
