@@ -1,5 +1,16 @@
 class OneMigrationToRuleThemAll < ActiveRecord::Migration
   def change
+
+    create_table :markups do |t|
+      t.references :session, index: true
+      t.string :user
+      t.string :tdd_color
+      t.integer :first_compile_in_phase
+      t.integer :last_compile_in_phase
+      t.timestamps
+    end
+
+
     create_table :compiles do |t|
       t.references :phase, index: true
       t.references :session, index: true

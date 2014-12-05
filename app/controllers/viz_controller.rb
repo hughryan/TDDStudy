@@ -205,8 +205,45 @@ class VizController < ApplicationController
 
 	def store_markup
 
-		puts params[:phaseDataJSON]
+		puts params[:phaseData]
+		puts params[:cyberdojo_id]
+		puts params[:cyberdojo_avatar]
+		this_phase_data = params[:phaseData]
+		this_cyberdojo_id = params[:cyberdojo_id]
+		this_cyberdojo_avatar = params[:cyberdojo_avatar]
 
+		currSession = Session.where(cyberdojo_id: this_cyberdojo_id, avatar: this_cyberdojo_avatar).first
+
+
+		# currMarkup = Markup.new
+		# currMarkup.first_compile_in_phase =this_phase_data.first_compile_in_phase
+		# currMarkup.last_compile_in_phase = this_phase_data.last_compile_in_phase
+		# currMarkup.tdd_color = this_phase_data.tdd_color
+		# currMarkup.session = currSession
+		# currMarkup.save
+
+
+		# puts "DATA"
+		# puts this_phase_data
+		# puts "session"
+		# puts currSession
+		# puts this_cyberdojo_id
+		# puts this_cyberdojo_avatar
+
+
+		markup = Markup.new
+		markup.tdd_color = this_phase_data["color"]
+		markup.first_compile_in_phase = this_phase_data["start"]
+		markup.last_compile_in_phase = this_phase_data["end"]
+		markup.session = currSession
+		markup.save
+
+		# currMarkup = Markup.new do |m|
+		# 	m.first_compile_in_phase =this_phase_data.first_compile_in_phase
+		# 	m.last_compile_in_phase = this_phase_data.last_compile_in_phase
+		# 	m.tdd_color = this_phase_data.tdd_color
+		# 	m.session = currSession
+		# end
 
 		# @client = Client.new(params[:client])
 		# if @client.save

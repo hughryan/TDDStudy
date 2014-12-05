@@ -56,6 +56,18 @@ ActiveRecord::Schema.define(version: 20140925220227) do
 
   add_index "cycles", ["session_id"], name: "index_cycles_on_session_id"
 
+  create_table "markups", force: true do |t|
+    t.integer  "session_id"
+    t.string   "user"
+    t.string   "tdd_color"
+    t.integer  "first_compile_in_phase"
+    t.integer  "last_compile_in_phase"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "markups", ["session_id"], name: "index_markups_on_session_id"
+
   create_table "phases", force: true do |t|
     t.integer  "cycle_id"
     t.string   "tdd_color"

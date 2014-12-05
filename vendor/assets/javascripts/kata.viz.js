@@ -800,12 +800,16 @@ function redrawPhaseBars() {
 
 
   // phaseBars.remove();
-  saveMarkup();
+  //saveMarkup();
 }
 
 function saveMarkup() {
 
-phaseDataJSON = {phaseData: phaseData};
+  phaseDataJSON = {
+    phaseData: phaseData,
+    cyberdojo_id: gon.cyberdojo_id,
+    cyberdojo_avatar: gon.cyberdojo_avatar
+  };
 
   $.ajax({
     url: 'store_markup',
@@ -815,6 +819,33 @@ phaseDataJSON = {phaseData: phaseData};
   });
 }
 
+function saveNewPhase(start, end, color) {
+
+  phaseDataJSON = {
+    phaseData: {start : start, end : end, color: color},
+    cyberdojo_id: gon.cyberdojo_id,
+    cyberdojo_avatar: gon.cyberdojo_avatar
+  };
+
+  $.ajax({
+    url: 'store_markup',
+    type: 'post',
+    data: phaseDataJSON,
+    dataType: 'JSON'
+  });
+}
+
+function addNewPhase(start, end, color) {
+  console.log(brush.extent());
+  var newPhase = new Object();
+  newPhase.first_compile_in_phase = start;
+  newPhase.last_compile_in_phase = end;
+  newPhase.tdd_color = color;
+  phaseData.push(newPhase);
+  redrawPhaseBars();
+  saveNewPhase(start, end, color);
+}
+
 function initializeKeyBindings() {
 
   console.log("INIT BINDINGS");
@@ -822,43 +853,51 @@ function initializeKeyBindings() {
     console.log(e.which);
     switch (e.which) {
       case 65: //a
-        console.log(brush.extent());
-        var newPhase = new Object();
-        newPhase.first_compile_in_phase = brush.extent()[0];
-        newPhase.last_compile_in_phase = brush.extent()[1];
-        newPhase.tdd_color = "red";
-        phaseData.push(newPhase);
-        redrawPhaseBars();
+        // console.log(brush.extent());
+        // var newPhase = new Object();
+        // newPhase.first_compile_in_phase = brush.extent()[0];
+        // newPhase.last_compile_in_phase = brush.extent()[1];
+        // newPhase.tdd_color = "red";
+        // phaseData.push(newPhase);
+        // redrawPhaseBars();
+
+        addNewPhase(brush.extent()[0], brush.extent()[1], "red");
         break;
 
       case 83: //s
-        console.log(brush.extent());
-        var newPhase = new Object();
-        newPhase.first_compile_in_phase = brush.extent()[0];
-        newPhase.last_compile_in_phase = brush.extent()[1];
-        newPhase.tdd_color = "green";
-        phaseData.push(newPhase);
-        redrawPhaseBars();
+        // console.log(brush.extent());
+        // var newPhase = new Object();
+        // newPhase.first_compile_in_phase = brush.extent()[0];
+        // newPhase.last_compile_in_phase = brush.extent()[1];
+        // newPhase.tdd_color = "green";
+        // phaseData.push(newPhase);
+        // redrawPhaseBars();
+
+        addNewPhase(brush.extent()[0], brush.extent()[1], "green");
         break;
 
       case 68: //d
-        console.log(brush.extent());
-        var newPhase = new Object();
-        newPhase.first_compile_in_phase = brush.extent()[0];
-        newPhase.last_compile_in_phase = brush.extent()[1];
-        newPhase.tdd_color = "blue";
-        phaseData.push(newPhase);
-        redrawPhaseBars();
+        // console.log(brush.extent());
+        // var newPhase = new Object();
+        // newPhase.first_compile_in_phase = brush.extent()[0];
+        // newPhase.last_compile_in_phase = brush.extent()[1];
+        // newPhase.tdd_color = "blue";
+        // phaseData.push(newPhase);
+        // redrawPhaseBars();
+
+        addNewPhase(brush.extent()[0], brush.extent()[1], "blue");
         break;
 
       case 70: //f
-        console.log(brush.extent());
-        var newPhase = new Object();
-        newPhase.first_compile_in_phase = brush.extent()[0];
-        newPhase.last_compile_in_phase = brush.extent()[1];
-        newPhase.tdd_color = "white";
-        phaseData.push(newPhase);
-        redrawPhaseBars();
+        // console.log(brush.extent());
+        // var newPhase = new Object();
+        // newPhase.first_compile_in_phase = brush.extent()[0];
+        // newPhase.last_compile_in_phase = brush.extent()[1];
+        // newPhase.tdd_color = "white";
+        // phaseData.push(newPhase);
+        // redrawPhaseBars();
+
+        addNewPhase(brush.extent()[0], brush.extent()[1], "white");
         break;
 
       case 37: // left
