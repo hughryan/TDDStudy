@@ -295,6 +295,37 @@ function drawUncatagorizedKata() {
 
 
 
+//DRAW handcoded phases
+
+// chart.selectAll("h")
+//     .data(cycles)
+//     .enter().append("rect")
+//     .attr("x", function(d, i) {
+//       return x(d.startCompile - 1);
+//     })
+//     .attr("y", 20)
+//     .attr("width",
+//       function(d, i) {
+//         return x(d.endCompile - d.startCompile + 1);
+//       })
+//     .attr("height", 40)
+//     .attr("rx", 6)
+//     .attr("ry", 6)
+//     .attr("stroke", "grey")
+//     .attr("fill", function(d) {
+//       if (d.valid_tdd == true) {
+//         return "#BABABA";
+//       }
+//       if (d.valid_tdd == false) {
+//         return "#6F6F6F";
+//       }
+
+//     })
+//     .attr("transform", "translate(" + margin.left + ",-10)");
+
+
+
+
 }
 
 
@@ -824,7 +855,8 @@ function saveNewPhase(start, end, color) {
   phaseDataJSON = {
     phaseData: {start : start, end : end, color: color},
     cyberdojo_id: gon.cyberdojo_id,
-    cyberdojo_avatar: gon.cyberdojo_avatar
+    cyberdojo_avatar: gon.cyberdojo_avatar,
+    user:document.cookie
   };
 
   $.ajax({

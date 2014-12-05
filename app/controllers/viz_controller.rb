@@ -39,55 +39,55 @@ class VizController < ApplicationController
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
 		gon.compiles = @currSession.compiles
 
-		allCycles = Array.new
-		allPhases = Array.new
-		normalizedPhaseTime = Array.new
-		normalizedPhaseSLOC = Array.new
-		@currSession.cycles.each do |cycle|
-			puts cycle.inspect
-			currCycle = Hash.new
-			currCycle[:valid_tdd] = cycle.valid_tdd
-			currCycle[:startCompile] = cycle.phases.first.compiles.first.git_tag
-			currCycle[:endCompile] = cycle.phases.last.compiles.last.git_tag
-			allCycles << currCycle
+		# allCycles = Array.new
+		# allPhases = Array.new
+		# normalizedPhaseTime = Array.new
+		# normalizedPhaseSLOC = Array.new
+		# @currSession.cycles.each do |cycle|
+		# 	puts cycle.inspect
+		# 	currCycle = Hash.new
+		# 	currCycle[:valid_tdd] = cycle.valid_tdd
+		# 	currCycle[:startCompile] = cycle.phases.first.compiles.first.git_tag
+		# 	currCycle[:endCompile] = cycle.phases.last.compiles.last.git_tag
+		# 	allCycles << currCycle
 
-			cycleStart = 0
-			cycleEnd = 0
-			puts cycle.phases.inspect
-			totalCycleTime = 0
-			totalCycleSloc = 0
-			currPhaseTime = Hash.new
-			currPhaseSloc = Hash.new
-			cycle.phases.each do |phase|
-				phase.first_compile_in_phase = phase.compiles.first.git_tag
-				phase.last_compile_in_phase = phase.compiles.last.git_tag
-				print  "cycleStart:"
-				puts cycleStart
-				print  "cycleEnd:"
-				puts cycleEnd
+		# 	cycleStart = 0
+		# 	cycleEnd = 0
+		# 	puts cycle.phases.inspect
+		# 	totalCycleTime = 0
+		# 	totalCycleSloc = 0
+		# 	currPhaseTime = Hash.new
+		# 	currPhaseSloc = Hash.new
+		# 	cycle.phases.each do |phase|
+		# 		phase.first_compile_in_phase = phase.compiles.first.git_tag
+		# 		phase.last_compile_in_phase = phase.compiles.last.git_tag
+		# 		print  "cycleStart:"
+		# 		puts cycleStart
+		# 		print  "cycleEnd:"
+		# 		puts cycleEnd
 
-				totalCycleSloc = totalCycleSloc + phase.total_sloc_count
-				totalCycleTime = totalCycleTime + phase.seconds_in_phase
+		# 		totalCycleSloc = totalCycleSloc + phase.total_sloc_count
+		# 		totalCycleTime = totalCycleTime + phase.seconds_in_phase
 
-				allPhases << phase
-			end
-			cycle.phases.each do |phase|
-				print "totalCycleSloc"
-				puts totalCycleSloc
-				print  "totalCycleTime"
-				puts totalCycleTime
-				currPhaseTime[phase.tdd_color] = phase.total_sloc_count.to_f/totalCycleSloc.to_f
-				currPhaseSloc[phase.tdd_color] = phase.seconds_in_phase.to_f/totalCycleTime.to_f
-				normalizedPhaseTime.push(currPhaseTime)
-				normalizedPhaseSLOC.push(currPhaseSloc)
-				print "currPhaseTime::"
-				puts currPhaseTime.inspect
-				print "currPhaseSloc::"
-				puts currPhaseSloc.inspect
-			end
-		end
-		puts allPhases.size
-		puts allPhases
+		# 		allPhases << phase
+		# 	end
+		# 	cycle.phases.each do |phase|
+		# 		print "totalCycleSloc"
+		# 		puts totalCycleSloc
+		# 		print  "totalCycleTime"
+		# 		puts totalCycleTime
+		# 		currPhaseTime[phase.tdd_color] = phase.total_sloc_count.to_f/totalCycleSloc.to_f
+		# 		currPhaseSloc[phase.tdd_color] = phase.seconds_in_phase.to_f/totalCycleTime.to_f
+		# 		normalizedPhaseTime.push(currPhaseTime)
+		# 		normalizedPhaseSLOC.push(currPhaseSloc)
+		# 		print "currPhaseTime::"
+		# 		puts currPhaseTime.inspect
+		# 		print "currPhaseSloc::"
+		# 		puts currPhaseSloc.inspect
+		# 	end
+		# end
+		# puts allPhases.size
+		# puts allPhases
 		gon.phases = Array.new
 		gon.cyberdojo_id = @cyberdojo_id
 		gon.cyberdojo_avatar = @cyberdojo_avatar
@@ -236,6 +236,7 @@ class VizController < ApplicationController
 		markup.first_compile_in_phase = this_phase_data["start"]
 		markup.last_compile_in_phase = this_phase_data["end"]
 		markup.session = currSession
+		markup.user = params[:user]
 		markup.save
 
 		# currMarkup = Markup.new do |m|
