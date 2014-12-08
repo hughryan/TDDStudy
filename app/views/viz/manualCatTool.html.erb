@@ -122,8 +122,8 @@ var phaseData = gon.phases;
 // console.log(phaseData);
 compiles = gon.compiles;
 cycles = gon.cycles;
-username = gon.username;
-
+// username = gon.username;
+username  = $.cookie('username');
 console.log(gon.cycles);
 
 checkLogin();
@@ -146,8 +146,11 @@ if(username == null){
                                   var username = $( "#usernameInput" ).val();
                                   console.log(username);
 
-                                  setUserNameCookie(username);
+                                  // setUserNameCookie(username);
                                   // document.cookie = value;
+
+                                  $.cookie('username', username, { expires: 7, path: '/' });
+
                                   $('#username').html("Hello "+username);
                                   $( this ).dialog( "close" );
                                 }
@@ -161,5 +164,9 @@ if(username == null){
   // TDDData = gon.normalizedPhaseSLOC;
   drawUncatagorizedKata();
   // buildpulseChart(gon.normalizedPhaseSLOC);
-  addAllPrexistingMarkup(gon.allMarkups.hilton);
+  addAllPrexistingMarkup(gon.allMarkups[username]);
+
+  // $.cookie('username', 'the_value', { expires: 7, path: '/' });
+
+
   </script>

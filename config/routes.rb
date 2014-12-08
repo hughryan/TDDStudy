@@ -7,10 +7,6 @@ Rails.application.routes.draw do
 
   post 'viz/del_markup'
 
-  post 'viz/del_cookie'
-
-  post 'viz/set_cookie'
-
   get 'viz/allCorpus'
 
   get 'viz/manualCatTool'

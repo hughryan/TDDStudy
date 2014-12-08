@@ -19,6 +19,7 @@
 
 //= require codemirror.min
 //= require jquery-2.1.1.min
+//= require jquery.cookie.js
 //= require mergely.min
 //= require searchcursor
 //= require clike

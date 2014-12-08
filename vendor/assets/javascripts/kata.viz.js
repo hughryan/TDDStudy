@@ -791,14 +791,17 @@ function populateAccordion(data) {
 function checkLogin() {
 
   $("#logout").click(function() {
-    $.ajax({
-      url: 'del_cookie',
-      type: 'post',
-      data: username,
-      dataType: 'JSON'
-    }).done(function() {
+    // $.ajax({
+    //   url: 'del_cookie',
+    //   type: 'post',
+    //   data: username,
+    //   dataType: 'JSON'
+    // }).done(function() {
+    // location.reload();
+    // });
+    // $.removeCookie('username');
+    $.removeCookie('username', { path: '/' });
     location.reload();
-    });
   });
 
   $('#username').html("Hello " + username);
@@ -935,7 +938,7 @@ function deletePhase(currPhase, i) {
     },
     cyberdojo_id: gon.cyberdojo_id,
     cyberdojo_avatar: gon.cyberdojo_avatar,
-    user: "hilton"
+    user: username
   };
 
   phaseData.splice(i, 1);
@@ -948,20 +951,20 @@ function deletePhase(currPhase, i) {
 
 }
 
-function addAllPrexistingMarkup(markupArr){
-  if(markupArr == undefined){
+function addAllPrexistingMarkup(markupArr) {
+  if (markupArr == undefined) {
     return;
   }
-  markupArr.forEach(function(element, index, array){
+  markupArr.forEach(function(element, index, array) {
     console.log(element.tdd_color);
     // element.tdd_color;
     // addNewPhase(element.first_compile_in_phase, element.last_compile_in_phase, element.tdd_color);
- 
- phaseData.push(element);
-  // redrawPhaseBars();
+
+    phaseData.push(element);
+    // redrawPhaseBars();
 
   });
-   redrawPhaseBars();
+  redrawPhaseBars();
 }
 
 function initializeKeyBindings() {

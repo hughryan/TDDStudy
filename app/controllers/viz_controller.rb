@@ -38,8 +38,13 @@ class VizController < ApplicationController
 	end
 
 	def manualCatTool
-		puts "cookies[:username]"
-		gon.username = cookies[:user_name]
+
+		puts "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+		username =  cookies[:username]
+
+
+		# puts "cookies[:username]"
+		# gon.username = cookies[:user_name]
 
 		# Params to know what to drwa
 		@cyberdojo_id = params[:id]
@@ -262,7 +267,6 @@ class VizController < ApplicationController
 	end
 
 	def del_markup
-
 		puts params[:phaseData]
 		puts params[:cyberdojo_id]
 		puts params[:cyberdojo_avatar]
@@ -283,57 +287,5 @@ class VizController < ApplicationController
 			format.json { render :json => names }
 		end
 	end
-
-	def set_cookie
-
-		puts "SET COOKIE:"
-		puts "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
-		puts params[:username]
-		# cookies[:username] = "{ value: params[:username], expires: 10.days.from_now }"
-
-		# puts "cookies[:username]"
-		# puts cookies[:username]
-
-		cookies[:user_name] = params[:username]
-
-
-		names = Array.new
-		respond_to do |format|
-			format.html
-			# format.json { render :json => @oneSession }
-			format.json { render :json => names }
-		end
-	end
-
-	def del_cookie
-
-		# puts "USERNAME:"
-		# puts params[:username]
-		# # cookies[:username] = "{ value: params[:username], expires: 10.days.from_now }"
-
-		# # puts "cookies[:username]"
-		# puts cookies[:username]
-
-		# cookies[:user_name] = params[:username]
-
-		puts "del"
-		puts cookies[:username]
-
-		cookies.delete :user_name
-
-		puts "del"
-		puts cookies[:username]
-		# cookies.delete :user_name
-
-
-		names = Array.new
-		respond_to do |format|
-			format.html
-			# format.json { render :json => @oneSession }
-			format.json { render :json => names }
-		end
-	end
-
-
 
 end
