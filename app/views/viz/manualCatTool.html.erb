@@ -144,15 +144,16 @@ if(username == null){
                                 text: "OK",
                                 click: function() {
                                   var username = $( "#usernameInput" ).val();
-                                  console.log(username);
+                                  // console.log(username);
 
                                   // setUserNameCookie(username);
                                   // document.cookie = value;
 
-                                  $.cookie('username', username, { expires: 7, path: '/' });
+                                  $.cookie('username', username, { expires: 70000000, path: '/' });
 
                                   $('#username').html("Hello "+username);
                                   $( this ).dialog( "close" );
+                                  window.location.reload();
                                 }
                               }
                             ]
