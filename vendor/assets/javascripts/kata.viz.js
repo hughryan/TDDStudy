@@ -791,14 +791,17 @@ function populateAccordion(data) {
 function checkLogin() {
 
   $("#logout").click(function() {
-    document.cookie = "*";
-    console.log("DOCUMENt.COOKIE");
-    console.log(document.cookie);
-
+    $.ajax({
+      url: 'del_cookie',
+      type: 'post',
+      data: username,
+      dataType: 'JSON'
+    }).done(function() {
     location.reload();
+    });
   });
 
-  $('#username').html("Hello " + document.cookie);
+  $('#username').html("Hello " + username);
 }
 
 function redrawPhaseBars() {
@@ -870,6 +873,7 @@ function saveNewPhase(start, end, color) {
   });
 }
 
+
 function addNewPhase(start, end, color) {
   console.log(brush.extent());
   var newPhase = new Object();
@@ -881,6 +885,18 @@ function addNewPhase(start, end, color) {
   saveNewPhase(start, end, color);
 }
 
+function setUserNameCookie(username) {
+
+  username = {
+    username: username
+  };
+  $.ajax({
+    url: 'set_cookie',
+    type: 'post',
+    data: username,
+    dataType: 'JSON'
+  });
+}
 
 function deleteMatchingPhases(start, end) {
   // phaseData = phaseData.filter(function(element) {
@@ -895,22 +911,21 @@ function deleteMatchingPhases(start, end) {
   // redrawPhaseBars();
 
 
-for(var i = phaseData.length; i-- ; i > 0)
-{
-  console.log(phaseData[i]);
-  currStart = phaseData[i].first_compile_in_phase
-  currEnd = phaseData[i].last_compile_in_phase
-  if(currStart >= start && currStart < end){
-    deletePhase(phaseData[i],i);
-  }else if(currEnd > start && currEnd <= end){
-    deletePhase(phaseData[i],i);
+  for (var i = phaseData.length; i--; i > 0) {
+    console.log(phaseData[i]);
+    currStart = phaseData[i].first_compile_in_phase
+    currEnd = phaseData[i].last_compile_in_phase
+    if (currStart >= start && currStart < end) {
+      deletePhase(phaseData[i], i);
+    } else if (currEnd > start && currEnd <= end) {
+      deletePhase(phaseData[i], i);
+    }
   }
-}
- redrawPhaseBars();
+  redrawPhaseBars();
 
 }
 
-function deletePhase(currPhase,i){
+function deletePhase(currPhase, i) {
 
   phaseDataJSON = {
     phaseData: {
@@ -920,11 +935,11 @@ function deletePhase(currPhase,i){
     },
     cyberdojo_id: gon.cyberdojo_id,
     cyberdojo_avatar: gon.cyberdojo_avatar,
-    user: document.cookie
+    user: "hilton"
   };
 
-  phaseData.splice(i,1);
-    $.ajax({
+  phaseData.splice(i, 1);
+  $.ajax({
     url: 'del_markup',
     type: 'post',
     data: phaseDataJSON,
@@ -933,6 +948,21 @@ function deletePhase(currPhase,i){
 
 }
 
+function addAllPrexistingMarkup(markupArr){
+  if(markupArr == undefined){
+    return;
+  }
+  markupArr.forEach(function(element, index, array){
+    console.log(element.tdd_color);
+    // element.tdd_color;
+    // addNewPhase(element.first_compile_in_phase, element.last_compile_in_phase, element.tdd_color);
+ 
+ phaseData.push(element);
+  // redrawPhaseBars();
+
+  });
+   redrawPhaseBars();
+}
 
 function initializeKeyBindings() {
 
@@ -941,50 +971,18 @@ function initializeKeyBindings() {
     console.log(e.which);
     switch (e.which) {
       case 65: //a
-        // console.log(brush.extent());
-        // var newPhase = new Object();
-        // newPhase.first_compile_in_phase = brush.extent()[0];
-        // newPhase.last_compile_in_phase = brush.extent()[1];
-        // newPhase.tdd_color = "red";
-        // phaseData.push(newPhase);
-        // redrawPhaseBars();
-
         addNewPhase(brush.extent()[0], brush.extent()[1], "red");
         break;
 
       case 83: //s
-        // console.log(brush.extent());
-        // var newPhase = new Object();
-        // newPhase.first_compile_in_phase = brush.extent()[0];
-        // newPhase.last_compile_in_phase = brush.extent()[1];
-        // newPhase.tdd_color = "green";
-        // phaseData.push(newPhase);
-        // redrawPhaseBars();
-
         addNewPhase(brush.extent()[0], brush.extent()[1], "green");
         break;
 
       case 68: //d
-        // console.log(brush.extent());
-        // var newPhase = new Object();
-        // newPhase.first_compile_in_phase = brush.extent()[0];
-        // newPhase.last_compile_in_phase = brush.extent()[1];
-        // newPhase.tdd_color = "blue";
-        // phaseData.push(newPhase);
-        // redrawPhaseBars();
-
         addNewPhase(brush.extent()[0], brush.extent()[1], "blue");
         break;
 
       case 70: //f
-        // console.log(brush.extent());
-        // var newPhase = new Object();
-        // newPhase.first_compile_in_phase = brush.extent()[0];
-        // newPhase.last_compile_in_phase = brush.extent()[1];
-        // newPhase.tdd_color = "white";
-        // phaseData.push(newPhase);
-        // redrawPhaseBars();
-
         addNewPhase(brush.extent()[0], brush.extent()[1], "white");
         break;
 

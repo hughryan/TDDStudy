@@ -29,15 +29,46 @@ class VizController < ApplicationController
 	end
 
 	def allCorpus
+		cookies[:user_name] = "Hilton"
+		# puts "cookies[:username]"
+		# puts cookies[:user_name]
+		# cookies.delete :user_name
+
 		@allSessions = Session.all
 	end
 
 	def manualCatTool
+		puts "cookies[:username]"
+		gon.username = cookies[:user_name]
+
 		# Params to know what to drwa
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
 		gon.compiles = @currSession.compiles
+
+
+		# gon.username = cookies[:username]
+		allMarkups = Hash.new
+
+		# markups = Markup.where(session: @currSession, user: )
+		@currSession.markups.each do |markup|
+
+			if allMarkups.has_key?(markup.user)
+				# puts allMarkups[markup.user]
+				allMarkups[markup.user] << markup
+			else
+				currMarkup = Array.new
+				currMarkup << markup
+				allMarkups[markup.user] = currMarkup
+			end
+			puts "MARKUP"
+			puts markup.user
+			puts markup.inspect
+		end
+
+		gon.allMarkups = allMarkups
+		# markups = Markup.where(session: )
 
 		# allCycles = Array.new
 		# allPhases = Array.new
@@ -240,22 +271,60 @@ class VizController < ApplicationController
 		this_cyberdojo_avatar = params[:cyberdojo_avatar]
 
 		currSession = Session.where(cyberdojo_id: this_cyberdojo_id, avatar: this_cyberdojo_avatar).first
-
-
 		markup = Markup.find_by(session: currSession, user: params[:user], tdd_color: this_phase_data["color"],first_compile_in_phase: this_phase_data["start"], last_compile_in_phase: this_phase_data["end"])
 		markup.destroy
 		puts "MARKUP"
 		puts markup.inspect
 
-		# currSession = Session.where(cyberdojo_id: this_cyberdojo_id, avatar: this_cyberdojo_avatar).first
+		names = Array.new
+		respond_to do |format|
+			format.html
+			# format.json { render :json => @oneSession }
+			format.json { render :json => names }
+		end
+	end
 
-		# markup = Markup.new
-		# markup.tdd_color = this_phase_data["color"]
-		# markup.first_compile_in_phase = this_phase_data["start"]
-		# markup.last_compile_in_phase = this_phase_data["end"]
-		# markup.session = currSession
-		# markup.user = params[:user]
-		# markup.save
+	def set_cookie
+
+		puts "SET COOKIE:"
+		puts "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+		puts params[:username]
+		# cookies[:username] = "{ value: params[:username], expires: 10.days.from_now }"
+
+		# puts "cookies[:username]"
+		# puts cookies[:username]
+
+		cookies[:user_name] = params[:username]
+
+
+		names = Array.new
+		respond_to do |format|
+			format.html
+			# format.json { render :json => @oneSession }
+			format.json { render :json => names }
+		end
+	end
+
+	def del_cookie
+
+		# puts "USERNAME:"
+		# puts params[:username]
+		# # cookies[:username] = "{ value: params[:username], expires: 10.days.from_now }"
+
+		# # puts "cookies[:username]"
+		# puts cookies[:username]
+
+		# cookies[:user_name] = params[:username]
+
+		puts "del"
+		puts cookies[:username]
+
+		cookies.delete :user_name
+
+		puts "del"
+		puts cookies[:username]
+		# cookies.delete :user_name
+
 
 		names = Array.new
 		respond_to do |format|

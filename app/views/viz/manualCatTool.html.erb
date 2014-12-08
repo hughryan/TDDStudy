@@ -122,6 +122,7 @@ var phaseData = gon.phases;
 // console.log(phaseData);
 compiles = gon.compiles;
 cycles = gon.cycles;
+username = gon.username;
 
 console.log(gon.cycles);
 
@@ -129,10 +130,12 @@ checkLogin();
 pageSetup();
 
 
+
 // console.log(gon.normalizedPhaseTime);
 // console.log(gon.normalizedPhaseSLOC);
-console.log(document.cookie);
-if(document.cookie == "" || document.cookie == "*"){
+console.log(username);
+
+if(username == null){
     $( "#dialog" ).dialog({
                             dialogClass: "no-close",
                             modal: "true",
@@ -140,20 +143,23 @@ if(document.cookie == "" || document.cookie == "*"){
                               {
                                 text: "OK",
                                 click: function() {
-                                  var value = $( "#usernameInput" ).val();
-                                  console.log(value);
-                                  document.cookie = value;
-                                  $('#username').html("Hello "+document.cookie);
+                                  var username = $( "#usernameInput" ).val();
+                                  console.log(username);
+
+                                  setUserNameCookie(username);
+                                  // document.cookie = value;
+                                  $('#username').html("Hello "+username);
                                   $( this ).dialog( "close" );
                                 }
                               }
                             ]
     });
   }
+  // }
 
 
   // TDDData = gon.normalizedPhaseSLOC;
   drawUncatagorizedKata();
   // buildpulseChart(gon.normalizedPhaseSLOC);
-
+  addAllPrexistingMarkup(gon.allMarkups.hilton);
   </script>
