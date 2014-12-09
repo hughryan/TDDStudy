@@ -119,21 +119,13 @@ initializeKeyBindings();
 
 var data = gon.compiles;
 var phaseData = gon.phases;
-// console.log(phaseData);
 compiles = gon.compiles;
 cycles = gon.cycles;
-// username = gon.username;
 username  = $.cookie('username');
-console.log(gon.cycles);
+// console.log(gon.cycles);
 
 checkLogin();
 pageSetup();
-
-
-
-// console.log(gon.normalizedPhaseTime);
-// console.log(gon.normalizedPhaseSLOC);
-console.log(username);
 
 if(username == null){
     $( "#dialog" ).dialog({
@@ -144,13 +136,7 @@ if(username == null){
                                 text: "OK",
                                 click: function() {
                                   var username = $( "#usernameInput" ).val();
-                                  // console.log(username);
-
-                                  // setUserNameCookie(username);
-                                  // document.cookie = value;
-
                                   $.cookie('username', username, { expires: 70000000, path: '/' });
-
                                   $('#username').html("Hello "+username);
                                   $( this ).dialog( "close" );
                                   window.location.reload();
@@ -159,15 +145,7 @@ if(username == null){
                             ]
     });
   }
-  // }
-
-
-  // TDDData = gon.normalizedPhaseSLOC;
   drawUncatagorizedKata();
-  // buildpulseChart(gon.normalizedPhaseSLOC);
   addAllPrexistingMarkup(gon.allMarkups[username]);
-
-  // $.cookie('username', 'the_value', { expires: 7, path: '/' });
-
 
   </script>
