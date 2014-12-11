@@ -55,23 +55,30 @@
 <table id="myTable" class="display" cellspacing="0" width="100%">
 <thead>
 <tr>
+<th>TDD Cycles</th>
 <th>Kata Name</th>
 <th>Lang/Framework</th>
 <th>CyberDojo ID</th>
 <th>Avatar</th>
-<th>Path On Disk</th>
+<!-- <th>Path On Disk</th> -->
 <th>Total Lights</th>
+<th>Manual Markups</th>
+<th>Markup</th>
 </tr>
 </thead>
 
 <tfoot>
 <tr>
+<th>TDD Cycles</th>
 <th>Kata Name</th>
 <th>Lang/Framework</th>
 <th>CyberDojo ID</th>
 <th>Avatar</th>
-<th>Path On Disk</th>
+<!-- <th>Path On Disk</th> -->
 <th>Total Lights</th>
+<th>Manual Markups</th>
+<th>Markup</th>
+
 </tr>
 </tfoot>
 
@@ -79,12 +86,16 @@
 
 <% @allSessions.each do |session| %>
   <tr>
+  <th><a href='timelineWithBrush?id=<%= session.cyberdojo_id %>&avatar=<%= session.avatar %>&kataName=<%= session.kata_name %>'>View TDD Cycles</a> </th>
   <th class="kata_name"><%= session.kata_name %></th>
   <th><%= session.language_framework %></th>
   <th class="cyberdojo_id" ><%= session.cyberdojo_id %></th>
   <th class="avatar" ><%= session.avatar %></th>
-  <th><%= session.path %></th>
+  <!--   <th><%= session.path %></th> -->
   <th><%= session.total_light_count %></th>
+  <th><%= session.markups.count %></th>
+  <th><a href='manualCatTool?id=<%= session.cyberdojo_id %>&avatar=<%= session.avatar %>&kataName=<%= session.kata_name %>'>Markup</a> <%= session.markups.count %> </th>
+
   </tr>
 <% end %>
 
@@ -96,13 +107,13 @@ $(document).ready(function(){
                     $('#myTable').DataTable();
 });
 
-$('#myTable tbody tr')
-.click( function () {
-          console.log("click");
-          console.log($(this).find(".kata_name").html());
-          var cyberdojo_id = $(this).find(".cyberdojo_id").html();
-          var avatar = $(this).find(".avatar").html();
-          var kata_name = $(this).find(".kata_name").html();
-          window.location.href = "timelineWithBrush?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
-} );
+// $('#myTable tbody tr')
+// .click( function () {
+             //           console.log("click");
+             //           console.log($(this).find(".kata_name").html());
+             //           var cyberdojo_id = $(this).find(".cyberdojo_id").html();
+             //           var avatar = $(this).find(".avatar").html();
+             //           var kata_name = $(this).find(".kata_name").html();
+             //           window.location.href = "timelineWithBrush?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
+// } );
 </script>

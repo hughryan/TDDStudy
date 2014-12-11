@@ -37,6 +37,7 @@ class VizController < ApplicationController
 		@allSessions = Session.all
 	end
 
+
 	def manualCatTool
 
 		puts "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
@@ -67,9 +68,9 @@ class VizController < ApplicationController
 				currMarkup << markup
 				allMarkups[markup.user] = currMarkup
 			end
-			# puts "MARKUP"
-			# puts markup.user
-			# puts markup.inspect
+			puts "MARKUP"
+			puts markup.user
+			puts markup.inspect
 		end
 
 		gon.allMarkups = allMarkups

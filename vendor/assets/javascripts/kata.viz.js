@@ -50,12 +50,11 @@ function createHiveData(red, green, blue) {
 }
 
 function pageSetup() {
-  $("body").height($(window).height() - 30);
-
   $(function() {
-    $("#accordion").accordion({
-      heightStyle: "fill"
-    });
+
+  //   $("#accordion").accordion({
+  //     heightStyle: "fill"
+  //   });
 
     $.ajax({
       url: "/viz/retrieve_session",
@@ -122,7 +121,7 @@ function buildpulseChart(TDDData) {
 function brushended() {
 
   if (!d3.event.sourceEvent) return; // only transition after input
-  // console.log("BRUSH_END")
+  console.log("BRUSH_END")
   var extent0 = brush.extent();
 
 
@@ -131,8 +130,8 @@ function brushended() {
   extent1[1] = Math.round(extent0[1]);
 
   // console.log(extent0)
-  // console.log(extent1[0]);
-  // console.log(extent1[1]);
+  console.log(extent1[0]);
+  console.log(extent1[1]);
   var start = extent1[0];
   var end = extent1[1];
 
@@ -264,54 +263,16 @@ function drawUncatagorizedKata() {
     .data(data)
     .enter().append("g");
 
-  // bar.append("circle")
-  //   .attr("cx", function(d, i) {
-  //     return x(d.git_tag);
-  //   })
-  //   .attr("r", 4)
-  //   .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
-  //   .attr("fill", function(d) {
-  //     return TDDColor(d.light_color);
-  //   })
-  //   .attr("stroke-width", 2);
-
-  bar.append("rect")
-    .attr("x", function(d, i) {
+  bar.append("circle")
+    .attr("cx", function(d, i) {
       return x(d.git_tag);
     })
-
-  .attr("y", -6)
-    .attr("width", 12)
-    .attr("height", 12)
-    .attr("rx", 2)
-    .attr("ry", 2)
-  // .attr("width", 4)
+    .attr("r", 4)
     .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
     .attr("fill", function(d) {
       return TDDColor(d.light_color);
     })
     .attr("stroke-width", 2);
-
-  // bar.append("rect")
-  // .attr("x", function(d, i) {
-  //    return x(d.first_compile_in_phase - 1);
-  //  })
-  // .attr("width",4)
-  // .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
-  //  .attr("fill", function(d) {
-  //    return TDDColor(d.light_color);
-  //  })
-  //  .attr("stroke-width", 2);
-
-  //   .attr("cx", function(d, i) {
-  //     return x(d.git_tag);
-  //   })
-  //   .attr("r", 4)
-  //   .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
-  //   .attr("fill", function(d) {
-  //     return TDDColor(d.light_color);
-  //   })
-  //   .attr("stroke-width", 2);
 
   var currTDDBar = chart.append("g")
     .attr("class", "x axis")
@@ -333,8 +294,6 @@ function drawUncatagorizedKata() {
 
   gBrush.selectAll("rect")
     .attr("height", 51)
-    // .attr("rx", 6)
-    // .attr("ry", 6)
     .attr("transform", "translate(" + margin.left + ",59)");
 
 
@@ -726,6 +685,13 @@ function populateAccordion(data) {
   // console.log(uniqueEnd);
 
   //console.log(data.start);
+
+
+
+    $("#accordion").accordion({
+      heightStyle: "fill"
+    });
+
   $('#accordion').html("");
 
   //Add Common Files
@@ -827,9 +793,8 @@ function populateAccordion(data) {
         });
     })
 
-  // $('#accordion').height(800);
+
   $('#accordion').accordion("refresh");
-  // $("#accordion").accordion("heightStyle", "fill", 0);
   $("#accordion").accordion("option", "active", 0);
 }
 
@@ -845,9 +810,7 @@ function checkLogin() {
     // location.reload();
     // });
     // $.removeCookie('username');
-    $.removeCookie('username', {
-      path: '/'
-    });
+    $.removeCookie('username', { path: '/' });
     location.reload();
   });
 
@@ -858,7 +821,7 @@ function redrawPhaseBars() {
   // phaseBars.exit().remove();
   phaseBars.remove();
 
-  // console.log("redrawPhaseBars");
+  console.log("redrawPhaseBars");
   //Draw phase bars
   phaseBars = chart.selectAll(".phase")
     .data(phaseData)
@@ -925,7 +888,7 @@ function saveNewPhase(start, end, color) {
 
 
 function addNewPhase(start, end, color) {
-  // console.log(brush.extent());
+  console.log(brush.extent());
   var newPhase = new Object();
   newPhase.first_compile_in_phase = start;
   newPhase.last_compile_in_phase = end;
@@ -949,8 +912,20 @@ function setUserNameCookie(username) {
 }
 
 function deleteMatchingPhases(start, end) {
+  // phaseData = phaseData.filter(function(element) {
+  //   if (currLocation[0] >= element.first_compile_in_phase && currLocation[0] <= element.last_compile_in_phase) {
+  //     console.log("WOOHOO");
+  //     console.log(element);
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // });
+  // redrawPhaseBars();
+
+
   for (var i = phaseData.length; i--; i > 0) {
-    // console.log(phaseData[i]);
+    console.log(phaseData[i]);
     currStart = phaseData[i].first_compile_in_phase
     currEnd = phaseData[i].last_compile_in_phase
     if (currStart >= start && currStart < end) {
@@ -991,16 +966,22 @@ function addAllPrexistingMarkup(markupArr) {
     return;
   }
   markupArr.forEach(function(element, index, array) {
+    console.log(element.tdd_color);
+    // element.tdd_color;
+    // addNewPhase(element.first_compile_in_phase, element.last_compile_in_phase, element.tdd_color);
+
     phaseData.push(element);
+    // redrawPhaseBars();
+
   });
   redrawPhaseBars();
 }
 
 function initializeKeyBindings() {
 
-  // console.log("INIT BINDINGS");
+  console.log("INIT BINDINGS");
   $(document).keydown(function(e) {
-    // console.log(e.which);
+    console.log(e.which);
     switch (e.which) {
       case 65: //a
         addNewPhase(brush.extent()[0], brush.extent()[1], "red");

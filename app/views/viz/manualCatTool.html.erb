@@ -84,6 +84,11 @@ height:100px;
 
 }
 
+#instructions{
+color: gray;
+font-family: sans-serif;
+}
+
 </style>
 
 <div id="loginInfo">
@@ -100,6 +105,10 @@ Kata Name: <%= params[:kataName] %>
 
 
 <body>
+<div id="instructions">'a' - mark red cycle : 's' - mark as green cycle : 'd' - mark as blue cycle : 'f' mark as white cycle<br>
+left and right arrow - move entire brush left and right <br>
+shift + arrow - grow that side : alt (option) + arrow - shrink that side<br>
+</div>
 
 <div id="viz"></div>
 <svg class="chart"></svg>
@@ -119,13 +128,21 @@ initializeKeyBindings();
 
 var data = gon.compiles;
 var phaseData = gon.phases;
+// console.log(phaseData);
 compiles = gon.compiles;
 cycles = gon.cycles;
+// username = gon.username;
 username  = $.cookie('username');
-// console.log(gon.cycles);
+console.log(gon.cycles);
 
 checkLogin();
 pageSetup();
+
+
+
+// console.log(gon.normalizedPhaseTime);
+// console.log(gon.normalizedPhaseSLOC);
+console.log(username);
 
 if(username == null){
     $( "#dialog" ).dialog({
@@ -136,7 +153,13 @@ if(username == null){
                                 text: "OK",
                                 click: function() {
                                   var username = $( "#usernameInput" ).val();
+                                  // console.log(username);
+
+                                  // setUserNameCookie(username);
+                                  // document.cookie = value;
+
                                   $.cookie('username', username, { expires: 70000000, path: '/' });
+
                                   $('#username').html("Hello "+username);
                                   $( this ).dialog( "close" );
                                   window.location.reload();
@@ -145,7 +168,15 @@ if(username == null){
                             ]
     });
   }
+  // }
+
+
+  // TDDData = gon.normalizedPhaseSLOC;
   drawUncatagorizedKata();
+  // buildpulseChart(gon.normalizedPhaseSLOC);
   addAllPrexistingMarkup(gon.allMarkups[username]);
+
+  // $.cookie('username', 'the_value', { expires: 7, path: '/' });
+
 
   </script>
