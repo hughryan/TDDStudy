@@ -13,20 +13,15 @@ $(function() {
     $( "button" )
     .button()
     .click(function( event ) {
-             console.log("WOOHOO");
+             var numRows = table.data().length;
+             var randomRowNum = Math.floor(Math.random()*numRows);
+             var currSession = table.data()[randomRowNum].session;
+             console.log(currSession.cyberdojo_id);
 
-             // document.getElementById("myTable").rows[Math.floor(Math.random()*document.getElementById("myTable").rows.length)]
-
-             // var numRows = document.getElementById("myTable").rows.length-2;
-             // var randomRowNum = (Math.floor(Math.random()*numRows))+1;
-             // var randomRow = document.getElementById("myTable").rows[randomRowNum];
-             // // console.log(randomRow);
-             // // console.log(document.getElementById("myTable").rows[randomRow]);
-             // console.log(randomRow)
-
-             //http://localhost:3000/assets/icons/action_back.gif
-             var table = $('#myTable').DataTable();
-
+             var cyberdojo_id = currSession.cyberdojo_id;
+             var avatar = currSession.avatar;
+             var kata_name = currSession.kata_name;
+             window.location.href = "manualCatTool?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
     });
 });
 </script>
@@ -56,15 +51,13 @@ Find me a random kata with no Markup
 
 
 <table id="myTable" class="display" cellspacing="0" width="100%">
-<!-- <thead>
+<thead>
 <tr>
-<th>TDD Cycles</th>
-<th>Kata Name</th>
-<th>Lang/Framework</th>
+<th>Display Cycles</th>
 <th>CyberDojo ID</th>
 <th>Avatar</th>
-
-<th>Total Lights</th>
+<th>Kata Name</th>
+<th>Lang/Framework</th>
 <th>Manual Markups</th>
 <th>Markup</th>
 </tr>
@@ -72,19 +65,16 @@ Find me a random kata with no Markup
 
 <tfoot>
 <tr>
-<th>TDD Cycles</th>
-<th>Kata Name</th>
-<th>Lang/Framework</th>
+<th>Display Cycles</th>
 <th>CyberDojo ID</th>
 <th>Avatar</th>
-
-<th>Total Lights</th>
+<th>Kata Name</th>
+<th>Lang/Framework</th>
 <th>Manual Markups</th>
 <th>Markup</th>
-
 </tr>
 </tfoot>
--->
+
 </table>
 
 <script>
@@ -93,29 +83,29 @@ $(document).ready(function(){
                     console.log(gon);
                     // $('#myTable').DataTable();
 
-                    var table = $('#myTable').DataTable( {
-                                                           data: gon.allSessionsAndMarkup,
-                                                           columns: [
-                                                             {
-                                                               "className":      'details-control',
-                                                               "orderable":      false,
-                                                               "data":           null,
-                                                               "defaultContent": ''
-                                                             },
-                                                             { "className":      'cyberdojo_id',
-                                                               data: 'session.cyberdojo_id' },
-                                                             { data: 'session.avatar' ,
-                                                               "className":      'avatar'},
-                                                             { "className":      'kata_name',data: 'session.kata_name' },
-                                                             { "className":      'language_framework',data: 'session.language_framework' },
-                                                             { "className":      'markup_length',data: 'markup.length' },
-                                                             {
-                                                               "className":      'markup',
-                                                               "orderable":      false,
-                                                               "data":           null,
-                                                               "defaultContent": ''
-                                                             }
-                                                           ]
+                    table = $('#myTable').DataTable( {
+                                                       data: gon.allSessionsAndMarkup,
+                                                       columns: [
+                                                         {
+                                                           "className":      'details-control',
+                                                           "orderable":      false,
+                                                           "data":           null,
+                                                           "defaultContent": ''
+                                                         },
+                                                         { "className":      'cyberdojo_id',
+                                                           data: 'session.cyberdojo_id' },
+                                                         { data: 'session.avatar' ,
+                                                           "className":      'avatar'},
+                                                         { "className":      'kata_name',data: 'session.kata_name' },
+                                                         { "className":      'language_framework',data: 'session.language_framework' },
+                                                         { "className":      'markup_length',data: 'markup.length' },
+                                                         {
+                                                           "className":      'markup',
+                                                           "orderable":      false,
+                                                           "data":           null,
+                                                           "defaultContent": ''
+                                                         }
+                                                       ]
                     } );
 });
 
@@ -123,59 +113,16 @@ $(document).ready(function(){
 
 // Add event listener for opening and closing details
 $('#myTable').on('click', 'td.details-control', function () {
-                   // var tr = $(this).closest('tr');
-                   // var row = table.row( tr );
-
-                   // console.log($(this).parent().find(".cyberdojo_id").html());
                    var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
                    var avatar = $(this).parent().find(".avatar").html();
                    var kata_name = $(this).parent().find(".kata_name").html();
                    window.location.href = "timelineWithBrush?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
-
-
-                   // if ( row.child.isShown() ) {
-                     //     // This row is already open - close it
-                     //     row.child.hide();
-                     //     tr.removeClass('shown');
-                   //   }
-                   // else {
-                     //     // Open this row
-                     //     row.child( format(row.data()) ).show();
-                     //     tr.addClass('shown');
-                   //   }
 } );
 
 $('#myTable').on('click', 'td.markup', function () {
-                   // var tr = $(this).closest('tr');
-                   // var row = table.row( tr );
-
-                   // console.log($(this).parent().find(".cyberdojo_id").html());
                    var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
                    var avatar = $(this).parent().find(".avatar").html();
                    var kata_name = $(this).parent().find(".kata_name").html();
                    window.location.href = "manualCatTool?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
-
-
-                   // if ( row.child.isShown() ) {
-                     //     // This row is already open - close it
-                     //     row.child.hide();
-                     //     tr.removeClass('shown');
-                   //   }
-                   // else {
-                     //     // Open this row
-                     //     row.child( format(row.data()) ).show();
-                     //     tr.addClass('shown');
-                   //   }
 } );
-
-
-// $('#myTable tbody tr')
-// .click( function () {
-             //           console.log("click");
-             //           console.log($(this).find(".kata_name").html());
-             //           var cyberdojo_id = $(this).find(".cyberdojo_id").html();
-             //           var avatar = $(this).find(".avatar").html();
-             //           var kata_name = $(this).find(".kata_name").html();
-             //           window.location.href = "timelineWithBrush?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
-// } );
 </script>
