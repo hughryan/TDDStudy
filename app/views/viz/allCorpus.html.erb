@@ -1,66 +1,69 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<%= include_gon %>
 
 
 <script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 
+<script>
+$(function() {
+    $( "button" )
+    .button()
+    .click(function( event ) {
+             console.log("WOOHOO");
 
-<h1>List Of All Sessions</h1>
+             // document.getElementById("myTable").rows[Math.floor(Math.random()*document.getElementById("myTable").rows.length)]
 
-<!--
-<% @allSessions.each do |session| %>
-  <tr>
-  <td>session.kata_name:<%= session.kata_name %></td><BR>
-  <td>session.cyberdojo_id:<%= session.cyberdojo_id %></td><BR>
-  <td>session.language_framework:<%= session.language_framework %></td><BR>
-  <td>session.path:<%= session.path %></td><BR>
-  <td>session.avatar:<%= session.avatar %></td><BR>
-  <td>session.computed_time_secs:<%= session.computed_time_secs %></td><BR>
-  <td>session.total_light_count:<%= session.total_light_count %></td><BR>
-  <td>session.red_light_count:<%= session.red_light_count %></td><BR>
-  <td>session.green_light_count:<%= session.green_light_count %></td><BR>
-  <td>session.amber_light_count:<%= session.amber_light_count %></td><BR>
-  <td>session.max_consecutive_red_chain_length:<%= session.max_consecutive_red_chain_length %></td><BR>
-  <td>session.total_sloc_count:<%= session.total_sloc_count %></td><BR>
-  <td>session.production_sloc_count:<%= session.production_sloc_count %></td><BR>
-  <td>session.test_sloc_count:<%= session.test_sloc_count %></td><BR>
-  <td>session.total_edited_line_count:<%= session.total_edited_line_count %></td><BR>
-  <td>session.production_edited_line_count:<%= session.production_edited_line_count %></td><BR>
-  <td>session.test_edited_line_count:<%= session.test_edited_line_count %></td><BR>
-  <td>session.final_test_method_count:<%= session.final_test_method_count %></td><BR>
-  <td>session.cumulative_test_run_count:<%= session.cumulative_test_run_count %></td><BR>
-  <td>session.cumulative_test_fail_count:<%= session.cumulative_test_fail_count %></td><BR>
-  <td>session.final_cyclomatic_complexity:<%= session.final_cyclomatic_complexity %></td><BR>
-  <td>session.final_branch_coverage:<%= session.final_branch_coverage %></td><BR>
-  <td>session.final_statement_coverage:<%= session.final_statement_coverage %></td><BR>
-  <td>session.total_cycle_count:<%= session.total_cycle_count %></td><BR>
-  <td>session.final_light_color:<%= session.final_light_color %></td><BR>
-  <td>session.tdd_score:<%= session.tdd_score %></td><BR>
-  <td>session.start_date:<%= session.start_date %></td><BR>
-  <td>session.total_light_count:<%= session.total_light_count %></td><BR>
-  <td>session.final_light_color:<%= session.final_light_color %></td><BR>
-  <BR>
-  <% session.compiles.each do |compile| %>
-    <td>compile.light_color:<%= compile.light_color %></td><BR>
-    <td>compile.git_tag:<%= compile.git_tag %></td><BR>
-    <td>compile.git_tag:<%= compile.git_tag %></td><BR>
-  <% end %>
-  <BR><BR>
-  </tr>
-<% end %> -->
+             // var numRows = document.getElementById("myTable").rows.length-2;
+             // var randomRowNum = (Math.floor(Math.random()*numRows))+1;
+             // var randomRow = document.getElementById("myTable").rows[randomRowNum];
+             // // console.log(randomRow);
+             // // console.log(document.getElementById("myTable").rows[randomRow]);
+             // console.log(randomRow)
 
+             //http://localhost:3000/assets/icons/action_back.gif
+             var table = $('#myTable').DataTable();
+
+    });
+});
+</script>
+
+<style>
+td.details-control {
+  background: url('http://localhost:3000/assets/icons/icon_component.gif') no-repeat center center;
+  cursor: pointer;
+}
+td.markup {
+  background: url('http://localhost:3000/assets/icons/pencil.png') no-repeat center center;
+  cursor: pointer;
+}
+tr.shown td.details-control {
+  background: url('../resources/details_close.png') no-repeat center center;
+}
+</style>
+
+<h2>List Of All Sessions</h3>
+
+<div>
+
+Find me a random kata with no Markup
+<button>GO!</button>
+</div>
+<BR><BR>
 
 
 <table id="myTable" class="display" cellspacing="0" width="100%">
-<thead>
+<!-- <thead>
 <tr>
 <th>TDD Cycles</th>
 <th>Kata Name</th>
 <th>Lang/Framework</th>
 <th>CyberDojo ID</th>
 <th>Avatar</th>
-<!-- <th>Path On Disk</th> -->
+
 <th>Total Lights</th>
 <th>Manual Markups</th>
 <th>Markup</th>
@@ -74,38 +77,97 @@
 <th>Lang/Framework</th>
 <th>CyberDojo ID</th>
 <th>Avatar</th>
-<!-- <th>Path On Disk</th> -->
+
 <th>Total Lights</th>
 <th>Manual Markups</th>
 <th>Markup</th>
 
 </tr>
 </tfoot>
-
-<tbody>
-
-<% @allSessions.each do |session| %>
-  <tr>
-  <th><a href='timelineWithBrush?id=<%= session.cyberdojo_id %>&avatar=<%= session.avatar %>&kataName=<%= session.kata_name %>'>View TDD Cycles</a> </th>
-  <th class="kata_name"><%= session.kata_name %></th>
-  <th><%= session.language_framework %></th>
-  <th class="cyberdojo_id" ><%= session.cyberdojo_id %></th>
-  <th class="avatar" ><%= session.avatar %></th>
-  <!--   <th><%= session.path %></th> -->
-  <th><%= session.total_light_count %></th>
-  <th><%= session.markups.count %></th>
-  <th><a href='manualCatTool?id=<%= session.cyberdojo_id %>&avatar=<%= session.avatar %>&kataName=<%= session.kata_name %>'>Markup</a> <%= session.markups.count %> </th>
-
-  </tr>
-<% end %>
-
-</tbody>
+-->
 </table>
 
 <script>
 $(document).ready(function(){
-                    $('#myTable').DataTable();
+
+                    console.log(gon);
+                    // $('#myTable').DataTable();
+
+                    var table = $('#myTable').DataTable( {
+                                                           data: gon.allSessionsAndMarkup,
+                                                           columns: [
+                                                             {
+                                                               "className":      'details-control',
+                                                               "orderable":      false,
+                                                               "data":           null,
+                                                               "defaultContent": ''
+                                                             },
+                                                             { "className":      'cyberdojo_id',
+                                                               data: 'session.cyberdojo_id' },
+                                                             { data: 'session.avatar' ,
+                                                               "className":      'avatar'},
+                                                             { "className":      'kata_name',data: 'session.kata_name' },
+                                                             { "className":      'language_framework',data: 'session.language_framework' },
+                                                             { "className":      'markup_length',data: 'markup.length' },
+                                                             {
+                                                               "className":      'markup',
+                                                               "orderable":      false,
+                                                               "data":           null,
+                                                               "defaultContent": ''
+                                                             }
+                                                           ]
+                    } );
 });
+
+
+
+// Add event listener for opening and closing details
+$('#myTable').on('click', 'td.details-control', function () {
+                   // var tr = $(this).closest('tr');
+                   // var row = table.row( tr );
+
+                   // console.log($(this).parent().find(".cyberdojo_id").html());
+                   var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
+                   var avatar = $(this).parent().find(".avatar").html();
+                   var kata_name = $(this).parent().find(".kata_name").html();
+                   window.location.href = "timelineWithBrush?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
+
+
+                   // if ( row.child.isShown() ) {
+                     //     // This row is already open - close it
+                     //     row.child.hide();
+                     //     tr.removeClass('shown');
+                   //   }
+                   // else {
+                     //     // Open this row
+                     //     row.child( format(row.data()) ).show();
+                     //     tr.addClass('shown');
+                   //   }
+} );
+
+$('#myTable').on('click', 'td.markup', function () {
+                   // var tr = $(this).closest('tr');
+                   // var row = table.row( tr );
+
+                   // console.log($(this).parent().find(".cyberdojo_id").html());
+                   var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
+                   var avatar = $(this).parent().find(".avatar").html();
+                   var kata_name = $(this).parent().find(".kata_name").html();
+                   window.location.href = "manualCatTool?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
+
+
+                   // if ( row.child.isShown() ) {
+                     //     // This row is already open - close it
+                     //     row.child.hide();
+                     //     tr.removeClass('shown');
+                   //   }
+                   // else {
+                     //     // Open this row
+                     //     row.child( format(row.data()) ).show();
+                     //     tr.addClass('shown');
+                   //   }
+} );
+
 
 // $('#myTable tbody tr')
 // .click( function () {

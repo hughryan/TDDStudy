@@ -29,12 +29,34 @@ class VizController < ApplicationController
 	end
 
 	def allCorpus
-		cookies[:user_name] = "Hilton"
+		# cookies[:user_name] = "Hilton"
 		# puts "cookies[:username]"
 		# puts cookies[:user_name]
 		# cookies.delete :user_name
 
 		@allSessions = Session.all
+		# gon.allSessions = Session.all
+
+		# @currSession.markups.each do |markup|
+
+		allSessionsAndMarkup = Array.new
+		@allSessions.each do |session|
+			# gon.push({
+			# 			 :session => session,
+			# 			 :markup => session.markups
+			# });
+
+			currSessionAndMarkup = Hash.new
+			currSessionAndMarkup["session"] = session
+			currSessionAndMarkup["markup"] = session.markups
+			allSessionsAndMarkup << currSessionAndMarkup
+			# 	Markups.where()
+			# puts session.markups.inspect
+
+		end
+		gon.allSessionsAndMarkup = allSessionsAndMarkup
+
+
 	end
 
 
