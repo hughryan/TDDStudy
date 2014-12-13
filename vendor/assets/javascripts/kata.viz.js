@@ -875,7 +875,7 @@ function saveNewPhase(start, end, color) {
     },
     cyberdojo_id: gon.cyberdojo_id,
     cyberdojo_avatar: gon.cyberdojo_avatar,
-    user: document.cookie
+    user: $.cookie('username')
   };
 
   $.ajax({
@@ -898,18 +898,18 @@ function addNewPhase(start, end, color) {
   saveNewPhase(start, end, color);
 }
 
-function setUserNameCookie(username) {
+// function setUserNameCookie(username) {
 
-  username = {
-    username: username
-  };
-  $.ajax({
-    url: 'set_cookie',
-    type: 'post',
-    data: username,
-    dataType: 'JSON'
-  });
-}
+//   username = {
+//     username: username
+//   };
+//   $.ajax({
+//     url: 'set_cookie',
+//     type: 'post',
+//     data: username,
+//     dataType: 'JSON'
+//   });
+// }
 
 function deleteMatchingPhases(start, end) {
   // phaseData = phaseData.filter(function(element) {
@@ -981,7 +981,7 @@ function initializeKeyBindings() {
 
   console.log("INIT BINDINGS");
   $(document).keydown(function(e) {
-    console.log(e.which);
+    // console.log(e.which);
     switch (e.which) {
       case 65: //a
         addNewPhase(brush.extent()[0], brush.extent()[1], "red");

@@ -29,30 +29,13 @@ class VizController < ApplicationController
 	end
 
 	def allCorpus
-		# cookies[:user_name] = "Hilton"
-		# puts "cookies[:username]"
-		# puts cookies[:user_name]
-		# cookies.delete :user_name
-
 		@allSessions = Session.all
-		# gon.allSessions = Session.all
-
-		# @currSession.markups.each do |markup|
-
 		allSessionsAndMarkup = Array.new
 		@allSessions.each do |session|
-			# gon.push({
-			# 			 :session => session,
-			# 			 :markup => session.markups
-			# });
-
 			currSessionAndMarkup = Hash.new
 			currSessionAndMarkup["session"] = session
 			currSessionAndMarkup["markup"] = session.markups
 			allSessionsAndMarkup << currSessionAndMarkup
-			# 	Markups.where()
-			# puts session.markups.inspect
-
 		end
 		gon.allSessionsAndMarkup = allSessionsAndMarkup
 
@@ -62,28 +45,16 @@ class VizController < ApplicationController
 
 	def manualCatTool
 
-		puts "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
-		username =  cookies[:username]
-
-
-		# puts "cookies[:username]"
-		# gon.username = cookies[:user_name]
-
-		# Params to know what to drwa
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
 		gon.compiles = @currSession.compiles
 
 
-		# gon.username = cookies[:username]
 		allMarkups = Hash.new
-
-		# markups = Markup.where(session: @currSession, user: )
 		@currSession.markups.each do |markup|
 
 			if allMarkups.has_key?(markup.user)
-				# puts allMarkups[markup.user]
 				allMarkups[markup.user] << markup
 			else
 				currMarkup = Array.new
@@ -96,63 +67,10 @@ class VizController < ApplicationController
 		end
 
 		gon.allMarkups = allMarkups
-		# markups = Markup.where(session: )
 
-		# allCycles = Array.new
-		# allPhases = Array.new
-		# normalizedPhaseTime = Array.new
-		# normalizedPhaseSLOC = Array.new
-		# @currSession.cycles.each do |cycle|
-		# 	puts cycle.inspect
-		# 	currCycle = Hash.new
-		# 	currCycle[:valid_tdd] = cycle.valid_tdd
-		# 	currCycle[:startCompile] = cycle.phases.first.compiles.first.git_tag
-		# 	currCycle[:endCompile] = cycle.phases.last.compiles.last.git_tag
-		# 	allCycles << currCycle
-
-		# 	cycleStart = 0
-		# 	cycleEnd = 0
-		# 	puts cycle.phases.inspect
-		# 	totalCycleTime = 0
-		# 	totalCycleSloc = 0
-		# 	currPhaseTime = Hash.new
-		# 	currPhaseSloc = Hash.new
-		# 	cycle.phases.each do |phase|
-		# 		phase.first_compile_in_phase = phase.compiles.first.git_tag
-		# 		phase.last_compile_in_phase = phase.compiles.last.git_tag
-		# 		print  "cycleStart:"
-		# 		puts cycleStart
-		# 		print  "cycleEnd:"
-		# 		puts cycleEnd
-
-		# 		totalCycleSloc = totalCycleSloc + phase.total_sloc_count
-		# 		totalCycleTime = totalCycleTime + phase.seconds_in_phase
-
-		# 		allPhases << phase
-		# 	end
-		# 	cycle.phases.each do |phase|
-		# 		print "totalCycleSloc"
-		# 		puts totalCycleSloc
-		# 		print  "totalCycleTime"
-		# 		puts totalCycleTime
-		# 		currPhaseTime[phase.tdd_color] = phase.total_sloc_count.to_f/totalCycleSloc.to_f
-		# 		currPhaseSloc[phase.tdd_color] = phase.seconds_in_phase.to_f/totalCycleTime.to_f
-		# 		normalizedPhaseTime.push(currPhaseTime)
-		# 		normalizedPhaseSLOC.push(currPhaseSloc)
-		# 		print "currPhaseTime::"
-		# 		puts currPhaseTime.inspect
-		# 		print "currPhaseSloc::"
-		# 		puts currPhaseSloc.inspect
-		# 	end
-		# end
-		# puts allPhases.size
-		# puts allPhases
 		gon.phases = Array.new
 		gon.cyberdojo_id = @cyberdojo_id
 		gon.cyberdojo_avatar = @cyberdojo_avatar
-		# gon.normalizedPhaseTime = normalizedPhaseTime
-		# gon.normalizedPhaseSLOC = normalizedPhaseSLOC
-		# gon.cycles = allCycles
 	end
 
 
@@ -248,10 +166,6 @@ class VizController < ApplicationController
 		names["start"].delete("cyber-dojo.sh")
 		names["end"].delete("cyber-dojo.sh")
 		puts names
-
-		# <%= @katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files['FizzBuzz.java'] %>
-		# @katas['0A0D302A01'].avatars['cheetah'].lights[1].tag.visible_files['FizzBuzz.java']
-		# puts dojo.katas['0A0D302A01']
 
 		@oneSession = Session.all.first
 		respond_to do |format|
