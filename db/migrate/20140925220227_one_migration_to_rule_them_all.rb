@@ -7,6 +7,8 @@ class OneMigrationToRuleThemAll < ActiveRecord::Migration
       t.string :tdd_color
       t.integer :first_compile_in_phase
       t.integer :last_compile_in_phase
+      t.string :cyberdojo_id
+      t.string :avatar
       t.timestamps
     end
 
