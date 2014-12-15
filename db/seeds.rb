@@ -88,6 +88,7 @@ def import_static_kata_data
   Compile.delete_all
 
   print "\nPopulating DB with Static Kata Data\n"
+  count = 0
 
   @katas.each do |kata|
     kata.avatars.active.each do |avatar|
@@ -113,6 +114,7 @@ def import_static_kata_data
         compile.session = session
         compile.save
       end 
+      count += 1
       print "\r " + dots(count)
     end
   end
