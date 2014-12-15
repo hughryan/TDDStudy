@@ -100,7 +100,7 @@ function brushended() {
 }
 
 
-function changeDisplayedCode(){
+function changeDisplayedCode() {
   console.log("BRUSH_END")
   var extent0 = brush.extent();
   var extent1 = extent0;
@@ -132,9 +132,9 @@ function changeDisplayedCode(){
   });
 
 
-  d3.select(this).transition()
-    .call(brush.extent(extent1))
-    .call(brush.event);
+  // d3.select(this).transition()
+  //   .call(brush.extent(extent1))
+  //   .call(brush.event);
 }
 
 function TDDColor(color) {
@@ -158,8 +158,9 @@ function drawUncatagorizedKata() {
 
   // console.log(gon.compiles);
 
-  phaseHeight = 50;
-  var lineHeight = 90;
+  phaseHeight = 10;
+  var lineHeight = 50;
+  var scaleHeight = 110;
   margin = {
       top: 20,
       right: 20,
@@ -175,6 +176,22 @@ function drawUncatagorizedKata() {
   x = d3.scale.linear()
     .domain([0, compiles.length])
     .range([1, width - 40]);
+
+  var y = d3.scale.linear()
+    .range([scaleHeight,scaleHeight-10]);
+
+  var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+  var area = d3.svg.area()
+    .x(function(d) {
+      return x(d.date);
+    })
+    .y0(height)
+    .y1(function(d) {
+      return y(d.close);
+    });
 
 
   brush = d3.svg.brush()
@@ -246,11 +263,11 @@ function drawUncatagorizedKata() {
     .attr("x", function(d, i) {
       return x(d.git_tag);
     })
-    .attr("y",-5)
-    .attr("width",10)
-    .attr("height",10)
+    .attr("y", -5)
+    .attr("width", 10)
+    .attr("height", 10)
     .attr("r", 4)
-    .attr("rx", 2.5)         
+    .attr("rx", 2.5)
     .attr("ry", 2.5)
     .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
     .attr("fill", function(d) {
@@ -258,7 +275,7 @@ function drawUncatagorizedKata() {
     })
     .attr("stroke-width", 2);
 
-
+  //Axis
   var currTDDBar = chart.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(" + margin.left + ",110)")
@@ -266,11 +283,27 @@ function drawUncatagorizedKata() {
     .selectAll("text")
     .attr("y", 6)
     .attr("height", 10)
-    // .attr("x", 6)
     .style("text-anchor", "start")
     .style("font-size", "16px");
 
 
+  var lineFunction = d3.svg.line()
+    .x(function(d) {
+      console.log(d.git_tag);
+      return x(d.git_tag);
+    })
+    .y(function(d) {
+      console.log(d.total_test_method_count);
+      return y(d.total_test_method_count);
+    })
+    .interpolate("linear");
+
+  //The line SVG Path we draw
+  var lineGraph = chart.append("path")
+    .attr("d", lineFunction(data))
+    .attr("stroke", "#737373")
+    .attr("stroke-width", 2)
+    .attr("fill", "#737373");
 
   var gBrush = chart.append("g")
     .attr("class", "brush")
@@ -382,15 +415,15 @@ function drawKataViz() {
   //   })
   //   .attr("stroke-width", 2);
 
-bar.append("rect")
+  bar.append("rect")
     .attr("x", function(d, i) {
       return x(d.git_tag);
     })
-    .attr("y",-5)
-    .attr("width",10)
-    .attr("height",10)
+    .attr("y", -5)
+    .attr("width", 10)
+    .attr("height", 10)
     .attr("r", 4)
-    .attr("rx", 2.5)         
+    .attr("rx", 2.5)
     .attr("ry", 2.5)
     .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
     .attr("fill", function(d) {
