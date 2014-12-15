@@ -644,7 +644,8 @@ function populateAccordion(data) {
   }
 
   $("#accordion").accordion({
-    heightStyle: "fill"
+    // heightStyle: "fill"
+    heightStyle: "content"
   });
 
   $('#accordion').html("");
