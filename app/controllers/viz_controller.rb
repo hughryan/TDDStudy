@@ -193,6 +193,8 @@ class VizController < ApplicationController
 		markup.last_compile_in_phase = this_phase_data["end"]
 		markup.session = currSession
 		markup.user = params[:user]
+		markup.cyberdojo_id = this_cyberdojo_id
+		markup.avatar = this_cyberdojo_avatar
 		markup.save
 
 		names = Array.new
