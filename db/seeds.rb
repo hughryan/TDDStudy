@@ -15,7 +15,7 @@ require_relative root + '/app/lib/ASTInterface'
 include ASTInterface
 
 # Set to true for debug prints
-DEBUG = true
+DEBUG = false
 CYCLE_DIAG = false
 
 def root_path
@@ -87,6 +87,8 @@ def import_static_kata_data
   Session.delete_all
   Compile.delete_all
 
+  print "\nPopulating DB with Static Kata Data\n"
+
   @katas.each do |kata|
     kata.avatars.active.each do |avatar|
 
@@ -111,6 +113,7 @@ def import_static_kata_data
         compile.session = session
         compile.save
       end 
+      print "\r " + dots(count)
     end
   end
 end
