@@ -95,10 +95,14 @@ function buildpulseChart(TDDData) {
 function brushended() {
 
   if (!d3.event.sourceEvent) return; // only transition after input
+  changeDisplayedCode();
+  
+}
+
+
+function changeDisplayedCode(){
   console.log("BRUSH_END")
   var extent0 = brush.extent();
-
-
   var extent1 = extent0;
   extent1[0] = Math.round(extent0[0]);
   extent1[1] = Math.round(extent0[1]);
@@ -172,9 +176,10 @@ function drawUncatagorizedKata() {
     .domain([0, compiles.length])
     .range([1, width - 40]);
 
+
   brush = d3.svg.brush()
     .x(x)
-    .extent([3, 5])
+    .extent([0, 1])
     .on("brushend", brushended);
 
   var xAxis = d3.svg.axis()
@@ -643,7 +648,8 @@ function populateAccordion(data) {
   }
 
   $("#accordion").accordion({
-    heightStyle: "fill"
+    // heightStyle: "fill"
+    heightStyle: "content"
   });
 
   $('#accordion').html("");
@@ -934,6 +940,7 @@ function initializeKeyBindings() {
           brush.extent([currLocation[0] - 1, currLocation[1] - 1]);
           brush(d3.select(".brush").transition());
         }
+        changeDisplayedCode();
         break;
 
       case 38: // up
@@ -959,6 +966,7 @@ function initializeKeyBindings() {
           brush.extent([currLocation[0] + 1, currLocation[1] + 1]);
           brush(d3.select(".brush").transition());
         }
+        changeDisplayedCode();
         break;
 
       case 40: // down
