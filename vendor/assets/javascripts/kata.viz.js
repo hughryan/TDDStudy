@@ -172,9 +172,10 @@ function drawUncatagorizedKata() {
     .domain([0, compiles.length])
     .range([1, width - 40]);
 
+
   brush = d3.svg.brush()
     .x(x)
-    .extent([3, 5])
+    .extent([0, 1])
     .on("brushend", brushended);
 
   var xAxis = d3.svg.axis()
