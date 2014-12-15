@@ -22,6 +22,11 @@ def root_path
   Rails.root.to_s + '/'
 end
 
+def number(value,width)
+  spaces = ' ' * (width - value.to_s.length)
+  "#{spaces}#{value.to_s}"
+end
+
 def dots(dot_count)
   dots = '.' * (dot_count % 32)
   spaces = ' ' * (32 - dot_count % 32)
