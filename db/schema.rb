@@ -62,6 +62,8 @@ ActiveRecord::Schema.define(version: 20140925220227) do
     t.string   "tdd_color"
     t.integer  "first_compile_in_phase"
     t.integer  "last_compile_in_phase"
+    t.string   "cyberdojo_id"
+    t.string   "avatar"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
