@@ -52,10 +52,6 @@ function createHiveData(red, green, blue) {
 function pageSetup() {
   $(function() {
 
-  //   $("#accordion").accordion({
-  //     heightStyle: "fill"
-  //   });
-
     $.ajax({
       url: "/viz/retrieve_session",
       dataType: 'json',
@@ -92,28 +88,6 @@ function buildpulseChart(TDDData) {
   d3.select("#pulse")
     .datum(data)
     .call(my_pulsePlot);
-
-  // TDDPulse.forEach(function(pulse, index){
-  //                       $('#PulseAreaDetail').append("<div class='pulseChart' id='pulse" + index + "'></div>");
-  //                       var data = createHiveData(metrics[index].red,metrics[index].green,metrics[index].blue);
-  //                       d3.select("#pulse" + index + "")
-  //                       .datum(TDDData[0])
-  //                       .call(my_pulsePlot);
-  // // });
-
-  // var my_pulsePlotSummary =
-  // pulsePlot()
-  // .width(350)
-  // .height(350)
-  // .innerRadius(30)
-  // .outerRadius(175);
-
-  // $('#PulseAreaSummary').append("<div class='pulseChart' id='pulseAll'></div>");
-  // var dataAll = createAggHiveData(metrics);
-  // d3.select("#pulseAll")
-  // .datum(dataAll)
-  // .call(my_pulsePlotSummary);
-
 }
 
 
@@ -263,16 +237,22 @@ function drawUncatagorizedKata() {
     .data(data)
     .enter().append("g");
 
-  bar.append("circle")
-    .attr("cx", function(d, i) {
+  bar.append("rect")
+    .attr("x", function(d, i) {
       return x(d.git_tag);
     })
+    .attr("y",-5)
+    .attr("width",10)
+    .attr("height",10)
     .attr("r", 4)
+    .attr("rx", 2.5)         
+    .attr("ry", 2.5)
     .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
     .attr("fill", function(d) {
       return TDDColor(d.light_color);
     })
     .attr("stroke-width", 2);
+
 
   var currTDDBar = chart.append("g")
     .attr("class", "x axis")
@@ -295,39 +275,6 @@ function drawUncatagorizedKata() {
   gBrush.selectAll("rect")
     .attr("height", 51)
     .attr("transform", "translate(" + margin.left + ",59)");
-
-
-
-  //DRAW handcoded phases
-
-  // chart.selectAll("h")
-  //     .data(cycles)
-  //     .enter().append("rect")
-  //     .attr("x", function(d, i) {
-  //       return x(d.startCompile - 1);
-  //     })
-  //     .attr("y", 20)
-  //     .attr("width",
-  //       function(d, i) {
-  //         return x(d.endCompile - d.startCompile + 1);
-  //       })
-  //     .attr("height", 40)
-  //     .attr("rx", 6)
-  //     .attr("ry", 6)
-  //     .attr("stroke", "grey")
-  //     .attr("fill", function(d) {
-  //       if (d.valid_tdd == true) {
-  //         return "#BABABA";
-  //       }
-  //       if (d.valid_tdd == false) {
-  //         return "#6F6F6F";
-  //       }
-
-  //     })
-  //     .attr("transform", "translate(" + margin.left + ",-10)");
-
-
-
 }
 
 
@@ -419,17 +366,32 @@ function drawKataViz() {
     .data(data)
     .enter().append("g");
 
-  bar.append("circle")
-    .attr("cx", function(d, i) {
+  // bar.append("circle")
+  //   .attr("cx", function(d, i) {
+  //     return x(d.git_tag);
+  //   })
+  //   .attr("r", 4)
+  //   .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
+  //   .attr("fill", function(d) {
+  //     return TDDColor(d.light_color);
+  //   })
+  //   .attr("stroke-width", 2);
+
+bar.append("rect")
+    .attr("x", function(d, i) {
       return x(d.git_tag);
     })
+    .attr("y",-5)
+    .attr("width",10)
+    .attr("height",10)
     .attr("r", 4)
+    .attr("rx", 2.5)         
+    .attr("ry", 2.5)
     .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
     .attr("fill", function(d) {
       return TDDColor(d.light_color);
     })
     .attr("stroke-width", 2);
-
 
   var currTDDBar = chart.append("g")
     .attr("class", "x axis")
@@ -680,17 +642,9 @@ function populateAccordion(data) {
     }
   }
 
-  // console.log(commonFiles);
-  // console.log(uniqueStart);
-  // console.log(uniqueEnd);
-
-  //console.log(data.start);
-
-
-
-    $("#accordion").accordion({
-      heightStyle: "fill"
-    });
+  $("#accordion").accordion({
+    heightStyle: "fill"
+  });
 
   $('#accordion').html("");
 
@@ -801,16 +755,9 @@ function populateAccordion(data) {
 function checkLogin() {
 
   $("#logout").click(function() {
-    // $.ajax({
-    //   url: 'del_cookie',
-    //   type: 'post',
-    //   data: username,
-    //   dataType: 'JSON'
-    // }).done(function() {
-    // location.reload();
-    // });
-    // $.removeCookie('username');
-    $.removeCookie('username', { path: '/' });
+    $.removeCookie('username', {
+      path: '/'
+    });
     location.reload();
   });
 
@@ -843,10 +790,6 @@ function redrawPhaseBars() {
         return TDDColor(d.tdd_color);
       })
     .attr("transform", "translate(" + margin.left + ",10)");
-
-
-  // phaseBars.remove();
-  //saveMarkup();
 }
 
 function saveMarkup() {
@@ -898,32 +841,7 @@ function addNewPhase(start, end, color) {
   saveNewPhase(start, end, color);
 }
 
-// function setUserNameCookie(username) {
-
-//   username = {
-//     username: username
-//   };
-//   $.ajax({
-//     url: 'set_cookie',
-//     type: 'post',
-//     data: username,
-//     dataType: 'JSON'
-//   });
-// }
-
 function deleteMatchingPhases(start, end) {
-  // phaseData = phaseData.filter(function(element) {
-  //   if (currLocation[0] >= element.first_compile_in_phase && currLocation[0] <= element.last_compile_in_phase) {
-  //     console.log("WOOHOO");
-  //     console.log(element);
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-  // });
-  // redrawPhaseBars();
-
-
   for (var i = phaseData.length; i--; i > 0) {
     console.log(phaseData[i]);
     currStart = phaseData[i].first_compile_in_phase
@@ -967,9 +885,6 @@ function addAllPrexistingMarkup(markupArr) {
   }
   markupArr.forEach(function(element, index, array) {
     console.log(element.tdd_color);
-    // element.tdd_color;
-    // addNewPhase(element.first_compile_in_phase, element.last_compile_in_phase, element.tdd_color);
-
     phaseData.push(element);
     // redrawPhaseBars();
 
