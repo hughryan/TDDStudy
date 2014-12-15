@@ -96,20 +96,20 @@ function brushended() {
 
   if (!d3.event.sourceEvent) return; // only transition after input
   changeDisplayedCode();
-  
+
 }
 
 
 function changeDisplayedCode() {
-  console.log("BRUSH_END")
+  // console.log("BRUSH_END")
   var extent0 = brush.extent();
   var extent1 = extent0;
   extent1[0] = Math.round(extent0[0]);
   extent1[1] = Math.round(extent0[1]);
 
   // console.log(extent0)
-  console.log(extent1[0]);
-  console.log(extent1[1]);
+  // console.log(extent1[0]);
+  // console.log(extent1[1]);
   var start = extent1[0];
   var end = extent1[1];
 
@@ -178,7 +178,7 @@ function drawUncatagorizedKata() {
     .range([1, width - 40]);
 
   var y = d3.scale.linear()
-    .range([scaleHeight,scaleHeight-10]);
+    .range([scaleHeight, scaleHeight - 10]);
 
   var yAxis = d3.svg.axis()
     .scale(y)
@@ -289,11 +289,11 @@ function drawUncatagorizedKata() {
 
   var lineFunction = d3.svg.line()
     .x(function(d) {
-      console.log(d.git_tag);
+      // console.log(d.git_tag);
       return x(d.git_tag);
     })
     .y(function(d) {
-      console.log(d.total_test_method_count);
+      // console.log(d.total_test_method_count);
       return y(d.total_test_method_count);
     })
     .interpolate("linear");
@@ -728,7 +728,9 @@ function populateAccordion(data) {
       // console.log(data.end[element]);
 
       var str1 = data.start[element];
-      var str2 = data.start[element];
+      // var str2 = data.start[element];
+      //THis will make the diff clear that the file was removed
+      var str2 = "";
 
       var safeName = element.replace('.', '');
 
@@ -760,7 +762,9 @@ function populateAccordion(data) {
       // console.log(data.start[element]);
       // console.log(data.end[element]);
 
-      var str1 = data.end[element];
+      //This will make the diff clear that the file was added
+      // var str1 = data.end[element];
+      var str1 = "";
       var str2 = data.end[element];
 
       var safeName = element.replace('.', '');
@@ -807,7 +811,7 @@ function redrawPhaseBars() {
   // phaseBars.exit().remove();
   phaseBars.remove();
 
-  console.log("redrawPhaseBars");
+  // console.log("redrawPhaseBars");
   //Draw phase bars
   phaseBars = chart.selectAll(".phase")
     .data(phaseData)
@@ -923,7 +927,7 @@ function addAllPrexistingMarkup(markupArr) {
     return;
   }
   markupArr.forEach(function(element, index, array) {
-    console.log(element.tdd_color);
+    // console.log(element.tdd_color);
     phaseData.push(element);
     // redrawPhaseBars();
 
@@ -933,7 +937,7 @@ function addAllPrexistingMarkup(markupArr) {
 
 function initializeKeyBindings() {
 
-  console.log("INIT BINDINGS");
+  // console.log("INIT BINDINGS");
   $(document).keydown(function(e) {
     // console.log(e.which);
     switch (e.which) {
