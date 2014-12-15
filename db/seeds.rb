@@ -22,6 +22,12 @@ def root_path
   Rails.root.to_s + '/'
 end
 
+def dots(dot_count)
+  dots = '.' * (dot_count % 32)
+  spaces = ' ' * (32 - dot_count % 32)
+  dots + spaces + number(dot_count,5)
+end
+
 def dojo
   externals = {
     :disk   => OsDisk.new,
