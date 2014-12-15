@@ -1,28 +1,19 @@
-== README
+== TDDStudy README
 
-This README would normally document whatever steps are necessary to get the
+This README documents the steps necessary to get the
 application up and running.
 
-Things you may want to cover:
-
 * Ruby version
+JRuby 1.7.15
 
-* System dependencies
+* Gems
+Listed in Gemfile install via:
+'bundle install'
+Update via:
+'bundle update'
 
-* Configuration
-
-* Database creation
-
-* Database initialization
+* Database Initalization
+'bundle exec rake db:setup'
 
 * How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+TODO

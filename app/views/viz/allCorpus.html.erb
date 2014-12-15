@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<%= include_gon %>
+
+
+<script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+
+<script>
+$(function() {
+    $( "button" )
+    .button()
+    .click(function( event ) {
+             var numRows = table.data().length;
+             var randomRowNum = Math.floor(Math.random()*numRows);
+             var currSession = table.data()[randomRowNum].session;
+             console.log(currSession.cyberdojo_id);
+
+             var cyberdojo_id = currSession.cyberdojo_id;
+             var avatar = currSession.avatar;
+             var kata_name = currSession.kata_name;
+             window.location.href = "manualCatTool?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
+    });
+});
+</script>
+
+<style>
+td.details-control {
+  background: url('http://localhost:3000/assets/icons/icon_component.gif') no-repeat center center;
+  cursor: pointer;
+}
+td.markup {
+  background: url('http://localhost:3000/assets/icons/pencil.png') no-repeat center center;
+  cursor: pointer;
+}
+tr.shown td.details-control {
+  background: url('../resources/details_close.png') no-repeat center center;
+}
+
+.ui-button{
+  height:20px;
+}
+.ui-button-text{
+  font-size: 10px;
+}
+</style>
+
+<h2>List Of All Sessions</h3>
+
+<div>
+
+Find me a random kata with no Markup
+<button>GO!</button>
+</div>
+<BR><BR>
+
+
+<table id="myTable" class="display" cellspacing="0" width="100%">
+<thead>
+<tr>
+<th>Display Cycles</th>
+<th>CyberDojo ID</th>
+<th>Avatar</th>
+<th>Kata Name</th>
+<th>Lang/Framework</th>
+<th>Manual Markups</th>
+<th>Markup</th>
+</tr>
+</thead>
+
+<tfoot>
+<tr>
+<th>Display Cycles</th>
+<th>CyberDojo ID</th>
+<th>Avatar</th>
+<th>Kata Name</th>
+<th>Lang/Framework</th>
+<th>Manual Markups</th>
+<th>Markup</th>
+</tr>
+</tfoot>
+
+</table>
+
+<script>
+$(document).ready(function(){
+
+                    console.log(gon);
+                    // $('#myTable').DataTable();
+
+                    table = $('#myTable').DataTable( {
+                                                       data: gon.allSessionsAndMarkup,
+                                                       columns: [
+                                                         {
+                                                           "className":      'details-control',
+                                                           "orderable":      false,
+                                                           "data":           null,
+                                                           "defaultContent": ''
+                                                         },
+                                                         { "className":      'cyberdojo_id',
+                                                           data: 'session.cyberdojo_id' },
+                                                         { data: 'session.avatar' ,
+                                                           "className":      'avatar'},
+                                                         { "className":      'kata_name',data: 'session.kata_name' },
+                                                         { "className":      'language_framework',data: 'session.language_framework' },
+                                                         { "className":      'markup_length',data: 'markup.length' },
+                                                         {
+                                                           "className":      'markup',
+                                                           "orderable":      false,
+                                                           "data":           null,
+                                                           "defaultContent": ''
+                                                         }
+                                                       ]
+                    } );
+});
+
+
+
+// Add event listener for opening and closing details
+$('#myTable').on('click', 'td.details-control', function () {
+                   var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
+                   var avatar = $(this).parent().find(".avatar").html();
+                   var kata_name = $(this).parent().find(".kata_name").html();
+                   window.location.href = "timelineWithBrush?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
+} );
+
+$('#myTable').on('click', 'td.markup', function () {
+                   var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
+                   var avatar = $(this).parent().find(".avatar").html();
+                   var kata_name = $(this).parent().find(".kata_name").html();
+                   window.location.href = "manualCatTool?id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
+} );
+</script>

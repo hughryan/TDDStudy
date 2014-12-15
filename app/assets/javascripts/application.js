@@ -14,3 +14,17 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
+
+//= require ace/ace
+
+//= require codemirror.min
+//= require jquery-2.1.1.min
+//= require jquery.cookie.js
+//= require mergely.min
+//= require searchcursor
+//= require clike
+//= require d3.v3.min
+//= require d3-timeline
+//= require d3.hive
+//= require PulsePlot
+//= require kata.viz

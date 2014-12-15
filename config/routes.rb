@@ -1,4 +1,39 @@
 Rails.application.routes.draw do
+  get 'visualizations/index'
+
+  get 'viz/index'
+
+  post 'viz/store_markup'
+
+  post 'viz/del_markup'
+
+  get 'viz/allCorpus'
+
+  get 'viz/manualCatTool'
+
+  get 'viz/timelineWithBrush'
+
+  get 'viz/retrieve_session'
+
+  get 'cycle_catagorizer/cycle_catgories'
+
+  get 'cycle_catagorizer/parseCSV'
+
+  get 'cycle_catagorizer/listCC'
+
+  get 'cycle_catagorizer/ListKatasInDojo'
+
+  get 'cycle_catagorizer/ImportAllKatas'
+
+  get 'cycle_catagorizer/buildCycleData'
+
+  get 'cycle_catagorizer/ListAllCompiles'
+
+  get 'cycle_catagorizer/InsertTestCompiles'
+
+  get 'grader/index'
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
