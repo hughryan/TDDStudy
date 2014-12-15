@@ -94,7 +94,7 @@ function buildpulseChart(TDDData) {
 
 function brushended() {
 
-  if (!d3.event.sourceEvent) return; // only transition after input
+  // if (!d3.event.sourceEvent) return; // only transition after input
   console.log("BRUSH_END")
   var extent0 = brush.extent();
 
@@ -936,6 +936,7 @@ function initializeKeyBindings() {
           brush.extent([currLocation[0] - 1, currLocation[1] - 1]);
           brush(d3.select(".brush").transition());
         }
+        brushended();
         break;
 
       case 38: // up
@@ -961,6 +962,7 @@ function initializeKeyBindings() {
           brush.extent([currLocation[0] + 1, currLocation[1] + 1]);
           brush(d3.select(".brush").transition());
         }
+        brushended();
         break;
 
       case 40: // down
