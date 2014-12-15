@@ -146,6 +146,8 @@ pageSetup();
 console.log(username);
 
 if(username == null){
+//remove bindings before we enter username, they will be readded when page is reloaded
+$(document).unbind("keydown");
     $( "#dialog" ).dialog({
                             dialogClass: "no-close",
                             modal: "true",
