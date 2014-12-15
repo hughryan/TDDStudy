@@ -96,7 +96,7 @@ function brushended() {
 
   if (!d3.event.sourceEvent) return; // only transition after input
   changeDisplayedCode();
-  
+
 }
 
 
@@ -178,7 +178,7 @@ function drawUncatagorizedKata() {
     .range([1, width - 40]);
 
   var y = d3.scale.linear()
-    .range([scaleHeight,scaleHeight-10]);
+    .range([scaleHeight, scaleHeight - 10]);
 
   var yAxis = d3.svg.axis()
     .scale(y)
@@ -728,7 +728,9 @@ function populateAccordion(data) {
       // console.log(data.end[element]);
 
       var str1 = data.start[element];
-      var str2 = data.start[element];
+      // var str2 = data.start[element];
+      //THis will make the diff clear that the file was removed
+      var str2 = "";
 
       var safeName = element.replace('.', '');
 
@@ -760,7 +762,9 @@ function populateAccordion(data) {
       // console.log(data.start[element]);
       // console.log(data.end[element]);
 
-      var str1 = data.end[element];
+      //This will make the diff clear that the file was added
+      // var str1 = data.end[element];
+      var str1 = "";
       var str2 = data.end[element];
 
       var safeName = element.replace('.', '');
