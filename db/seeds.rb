@@ -77,6 +77,45 @@ def build_cycle_data
   end
 end
 
+######################
+# New import function focusing on the static data that only needs to be imported once
+# This should be all that is required in seeds.rb
+# Implemented: 12-15-14 by Hugh
+######################
+def import_static_kata_data
+  @katas = dojo.katas
+  Session.delete_all
+  Compile.delete_all
+
+  @katas.each do |kata|
+    kata.avatars.active.each do |avatar|
+
+      session = Session.new do |s|
+        s.cyberdojo_id = kata.id
+        s.avatar = avatar.name
+      end
+      session.save
+
+      session = Session.find_by(cyberdojo_id: kata.id, avatar: avatar.name)
+      puts "Processing: #{session}" if DEBUG
+      session.kata_name = kata.exercise.name
+      session.language_framework = kata.language.name
+      session.path = avatar.path
+      session.start_date = kata.created
+      session.save
+
+      avatar.lights.each_with_index do |light, index|
+        compile = Compile.new
+        compile.light_color = light.colour
+        compile.git_tag = light.number
+        compile.session = session
+        compile.save
+      end 
+    end
+  end
+end
+
+
 def import_all_katas
   @katas = dojo.katas
   Session.delete_all
@@ -208,8 +247,6 @@ def calc_cycles
   cycle_reds = 0
   cycle_time = 0
   first_cycle = true
-
-
 
   #Get Session
   curr_session = Session.where(cyberdojo_id: @kata.id, avatar: @avatar.name)
@@ -823,7 +860,7 @@ def calculate_phase_totals()
   end
 end
 
-
-import_all_katas
-build_cycle_data
-calculate_phase_totals
+import_static_kata_data
+#import_all_katas
+#build_cycle_data
+#calculate_phase_totals
