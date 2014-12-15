@@ -101,15 +101,15 @@ function brushended() {
 
 
 function changeDisplayedCode() {
-  console.log("BRUSH_END")
+  // console.log("BRUSH_END")
   var extent0 = brush.extent();
   var extent1 = extent0;
   extent1[0] = Math.round(extent0[0]);
   extent1[1] = Math.round(extent0[1]);
 
   // console.log(extent0)
-  console.log(extent1[0]);
-  console.log(extent1[1]);
+  // console.log(extent1[0]);
+  // console.log(extent1[1]);
   var start = extent1[0];
   var end = extent1[1];
 
@@ -289,11 +289,11 @@ function drawUncatagorizedKata() {
 
   var lineFunction = d3.svg.line()
     .x(function(d) {
-      console.log(d.git_tag);
+      // console.log(d.git_tag);
       return x(d.git_tag);
     })
     .y(function(d) {
-      console.log(d.total_test_method_count);
+      // console.log(d.total_test_method_count);
       return y(d.total_test_method_count);
     })
     .interpolate("linear");
@@ -807,7 +807,7 @@ function redrawPhaseBars() {
   // phaseBars.exit().remove();
   phaseBars.remove();
 
-  console.log("redrawPhaseBars");
+  // console.log("redrawPhaseBars");
   //Draw phase bars
   phaseBars = chart.selectAll(".phase")
     .data(phaseData)
@@ -923,7 +923,7 @@ function addAllPrexistingMarkup(markupArr) {
     return;
   }
   markupArr.forEach(function(element, index, array) {
-    console.log(element.tdd_color);
+    // console.log(element.tdd_color);
     phaseData.push(element);
     // redrawPhaseBars();
 
@@ -933,7 +933,7 @@ function addAllPrexistingMarkup(markupArr) {
 
 function initializeKeyBindings() {
 
-  console.log("INIT BINDINGS");
+  // console.log("INIT BINDINGS");
   $(document).keydown(function(e) {
     // console.log(e.which);
     switch (e.which) {
