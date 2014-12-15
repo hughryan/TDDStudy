@@ -94,11 +94,15 @@ function buildpulseChart(TDDData) {
 
 function brushended() {
 
-  // if (!d3.event.sourceEvent) return; // only transition after input
+  if (!d3.event.sourceEvent) return; // only transition after input
+  changeDisplayedCode();
+  
+}
+
+
+function changeDisplayedCode(){
   console.log("BRUSH_END")
   var extent0 = brush.extent();
-
-
   var extent1 = extent0;
   extent1[0] = Math.round(extent0[0]);
   extent1[1] = Math.round(extent0[1]);
@@ -936,7 +940,7 @@ function initializeKeyBindings() {
           brush.extent([currLocation[0] - 1, currLocation[1] - 1]);
           brush(d3.select(".brush").transition());
         }
-        brushended();
+        changeDisplayedCode();
         break;
 
       case 38: // up
@@ -962,7 +966,7 @@ function initializeKeyBindings() {
           brush.extent([currLocation[0] + 1, currLocation[1] + 1]);
           brush(d3.select(".brush").transition());
         }
-        brushended();
+        changeDisplayedCode();
         break;
 
       case 40: // down
