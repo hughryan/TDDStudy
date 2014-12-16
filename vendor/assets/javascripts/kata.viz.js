@@ -96,20 +96,20 @@ function brushended() {
 
   if (!d3.event.sourceEvent) return; // only transition after input
   changeDisplayedCode();
-  
+
 }
 
 
-function changeDisplayedCode(){
-  console.log("BRUSH_END")
+function changeDisplayedCode() {
+  // console.log("BRUSH_END")
   var extent0 = brush.extent();
   var extent1 = extent0;
   extent1[0] = Math.round(extent0[0]);
   extent1[1] = Math.round(extent0[1]);
 
   // console.log(extent0)
-  console.log(extent1[0]);
-  console.log(extent1[1]);
+  // console.log(extent1[0]);
+  // console.log(extent1[1]);
   var start = extent1[0];
   var end = extent1[1];
 
@@ -132,9 +132,9 @@ function changeDisplayedCode(){
   });
 
 
-  d3.select(this).transition()
-    .call(brush.extent(extent1))
-    .call(brush.event);
+  // d3.select(this).transition()
+  //   .call(brush.extent(extent1))
+  //   .call(brush.event);
 }
 
 function TDDColor(color) {
@@ -158,8 +158,9 @@ function drawUncatagorizedKata() {
 
   // console.log(gon.compiles);
 
-  phaseHeight = 50;
-  var lineHeight = 90;
+  phaseHeight = 10;
+  var lineHeight = 50;
+  var scaleHeight = 110;
   margin = {
       top: 20,
       right: 20,
@@ -175,6 +176,22 @@ function drawUncatagorizedKata() {
   x = d3.scale.linear()
     .domain([0, compiles.length])
     .range([1, width - 40]);
+
+  var y = d3.scale.linear()
+    .range([scaleHeight, scaleHeight - 10]);
+
+  var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+  var area = d3.svg.area()
+    .x(function(d) {
+      return x(d.date);
+    })
+    .y0(height)
+    .y1(function(d) {
+      return y(d.close);
+    });
 
 
   brush = d3.svg.brush()
@@ -246,11 +263,11 @@ function drawUncatagorizedKata() {
     .attr("x", function(d, i) {
       return x(d.git_tag);
     })
-    .attr("y",-5)
-    .attr("width",10)
-    .attr("height",10)
+    .attr("y", -5)
+    .attr("width", 10)
+    .attr("height", 10)
     .attr("r", 4)
-    .attr("rx", 2.5)         
+    .attr("rx", 2.5)
     .attr("ry", 2.5)
     .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
     .attr("fill", function(d) {
@@ -258,7 +275,7 @@ function drawUncatagorizedKata() {
     })
     .attr("stroke-width", 2);
 
-
+  //Axis
   var currTDDBar = chart.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(" + margin.left + ",110)")
@@ -266,11 +283,27 @@ function drawUncatagorizedKata() {
     .selectAll("text")
     .attr("y", 6)
     .attr("height", 10)
-    // .attr("x", 6)
     .style("text-anchor", "start")
     .style("font-size", "16px");
 
 
+  var lineFunction = d3.svg.line()
+    .x(function(d) {
+      // console.log(d.git_tag);
+      return x(d.git_tag);
+    })
+    .y(function(d) {
+      // console.log(d.total_test_method_count);
+      return y(d.total_test_method_count);
+    })
+    .interpolate("linear");
+
+  //The line SVG Path we draw
+  var lineGraph = chart.append("path")
+    .attr("d", lineFunction(data))
+    .attr("stroke", "#737373")
+    .attr("stroke-width", 2)
+    .attr("fill", "#737373");
 
   var gBrush = chart.append("g")
     .attr("class", "brush")
@@ -382,15 +415,15 @@ function drawKataViz() {
   //   })
   //   .attr("stroke-width", 2);
 
-bar.append("rect")
+  bar.append("rect")
     .attr("x", function(d, i) {
       return x(d.git_tag);
     })
-    .attr("y",-5)
-    .attr("width",10)
-    .attr("height",10)
+    .attr("y", -5)
+    .attr("width", 10)
+    .attr("height", 10)
     .attr("r", 4)
-    .attr("rx", 2.5)         
+    .attr("rx", 2.5)
     .attr("ry", 2.5)
     .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
     .attr("fill", function(d) {
@@ -686,6 +719,10 @@ function populateAccordion(data) {
               setValue(str2);
             }
           });
+          var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html()  ;
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+
       })
     //Add unique start files
   uniqueStart.forEach(
@@ -695,7 +732,9 @@ function populateAccordion(data) {
       // console.log(data.end[element]);
 
       var str1 = data.start[element];
-      var str2 = data.start[element];
+      // var str2 = data.start[element];
+      //THis will make the diff clear that the file was removed
+      var str2 = "";
 
       var safeName = element.replace('.', '');
 
@@ -718,6 +757,10 @@ function populateAccordion(data) {
             setValue(str2);
           }
         });
+        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html() ;
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+
     })
 
   //Add unique end files
@@ -727,7 +770,9 @@ function populateAccordion(data) {
       // console.log(data.start[element]);
       // console.log(data.end[element]);
 
-      var str1 = data.end[element];
+      //This will make the diff clear that the file was added
+      // var str1 = data.end[element];
+      var str1 = "";
       var str2 = data.end[element];
 
       var safeName = element.replace('.', '');
@@ -751,6 +796,12 @@ function populateAccordion(data) {
             setValue(str2);
           }
         });
+
+        // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
+        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html() ;
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+
     })
 
 
@@ -774,7 +825,7 @@ function redrawPhaseBars() {
   // phaseBars.exit().remove();
   phaseBars.remove();
 
-  console.log("redrawPhaseBars");
+  // console.log("redrawPhaseBars");
   //Draw phase bars
   phaseBars = chart.selectAll(".phase")
     .data(phaseData)
@@ -890,7 +941,7 @@ function addAllPrexistingMarkup(markupArr) {
     return;
   }
   markupArr.forEach(function(element, index, array) {
-    console.log(element.tdd_color);
+    // console.log(element.tdd_color);
     phaseData.push(element);
     // redrawPhaseBars();
 
@@ -900,7 +951,7 @@ function addAllPrexistingMarkup(markupArr) {
 
 function initializeKeyBindings() {
 
-  console.log("INIT BINDINGS");
+  // console.log("INIT BINDINGS");
   $(document).keydown(function(e) {
     // console.log(e.which);
     switch (e.which) {
