@@ -26,7 +26,7 @@ $(function() {
 });
 </script>
 
-   <input type="hidden" id="refreshed" value="no">
+<input type="hidden" id="refreshed" value="no">
  <script type="text/javascript">
 //this will reload the page.  Kinda a hack, will implement ajax table loading when I have more time.
  onload=function(){
@@ -39,16 +39,13 @@ $(function() {
 
 
 <style>
-td.details-control {
-  background: url('http://localhost:3000/assets/icons/icon_component.gif') no-repeat center center;
+td.view_kata {
+  background: url('<%= image_url('icons/icon_component.gif') %>') no-repeat center center;
   cursor: pointer;
 }
 td.markup {
-  background: url('http://localhost:3000/assets/icons/pencil.png') no-repeat center center;
+  background: url('<%= image_url('icons/pencil.png') %>') no-repeat center center;
   cursor: pointer;
-}
-tr.shown td.details-control {
-  background: url('../resources/details_close.png') no-repeat center center;
 }
 
 .ui-button{
@@ -99,16 +96,12 @@ Find me a random kata with no Markup
 <script>
 $(document).ready(function(){
 
-
-
          console.log(gon);
-                    // $('#myTable').DataTable();
-
                     table = $('#myTable').DataTable( {
                                                        data: gon.allSessionsAndMarkup,
                                                        columns: [
                                                          {
-                                                           "className":      'details-control',
+                                                           "className":      'view_kata',
                                                            "orderable":      false,
                                                            "data":           null,
                                                            "defaultContent": ''
@@ -133,7 +126,7 @@ $(document).ready(function(){
 
 
 // Add event listener for opening and closing details
-$('#myTable').on('click', 'td.details-control', function () {
+$('#myTable').on('click', 'td.view_kata', function () {
                    var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
                    var avatar = $(this).parent().find(".avatar").html();
                    var kata_name = $(this).parent().find(".kata_name").html();
