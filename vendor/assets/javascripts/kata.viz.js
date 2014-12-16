@@ -719,6 +719,10 @@ function populateAccordion(data) {
               setValue(str2);
             }
           });
+          var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html()  ;
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+
       })
     //Add unique start files
   uniqueStart.forEach(
@@ -753,6 +757,10 @@ function populateAccordion(data) {
             setValue(str2);
           }
         });
+        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html() ;
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+
     })
 
   //Add unique end files
@@ -788,6 +796,12 @@ function populateAccordion(data) {
             setValue(str2);
           }
         });
+
+        // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
+        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html() ;
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+
     })
 
 
