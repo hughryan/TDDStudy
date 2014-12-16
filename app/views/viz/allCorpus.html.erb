@@ -70,6 +70,7 @@ Find me a random kata with no Markup
 <thead>
 <tr>
 <th>Display Cycles</th>
+<th>Compile Count</th>
 <th>CyberDojo ID</th>
 <th>Avatar</th>
 <th>Kata Name</th>
@@ -82,6 +83,7 @@ Find me a random kata with no Markup
 <tfoot>
 <tr>
 <th>Display Cycles</th>
+<th>Compile Count</th>
 <th>CyberDojo ID</th>
 <th>Avatar</th>
 <th>Kata Name</th>
@@ -98,26 +100,43 @@ $(document).ready(function(){
 
          console.log(gon);
                     table = $('#myTable').DataTable( {
-                                                       data: gon.allSessionsAndMarkup,
-                                                       columns: [
+                                                         "data": gon.allSessionsAndMarkup,
+                                                         "columns": [
                                                          {
                                                            "className":      'view_kata',
                                                            "orderable":      false,
                                                            "data":           null,
-                                                           "defaultContent": ''
+                                                           "defaultContent": '',
                                                          },
-                                                         { "className":      'cyberdojo_id',
-                                                           data: 'session.cyberdojo_id' },
-                                                         { data: 'session.avatar' ,
-                                                           "className":      'avatar'},
-                                                         { "className":      'kata_name',data: 'session.kata_name' },
-                                                         { "className":      'language_framework',data: 'session.language_framework' },
-                                                         { "className":      'markup_length',data: 'markup.length' },
+                                                         {
+                                                           "className":      'compile_count',
+                                                           "data":           'compile_count',
+                                                         },
+                                                         {
+                                                           "className":      'cyberdojo_id',
+                                                           "data":           'session.cyberdojo_id',
+                                                         },
+                                                         {
+                                                           "className":      'avatar',
+                                                           "data":           'session.avatar',
+                                                         },
+                                                         {
+                                                           "className":      'kata_name',
+                                                           "data":           'session.kata_name',
+                                                         },
+                                                         {
+                                                           "className":      'language_framework',
+                                                           "data":           'session.language_framework',
+                                                         },
+                                                         {
+                                                           "className":      'markup_length',
+                                                           "data":           'markup.length',
+                                                         },
                                                          {
                                                            "className":      'markup',
                                                            "orderable":      false,
                                                            "data":           null,
-                                                           "defaultContent": ''
+                                                           "defaultContent": '',
                                                          }
                                                        ]
                     } );
