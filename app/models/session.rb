@@ -4,4 +4,5 @@ class Session < ActiveRecord::Base
 	#has_many :compiles, :through => :phases
 	has_many :compiles
 	has_many :markups
+	has_one :markup_assignment
 end

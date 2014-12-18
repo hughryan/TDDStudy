@@ -1,4 +1,4 @@
 class MarkupAssignment < ActiveRecord::Base
 	belongs_to :researcher
-	has_one :session
+	belongs_to :session
 end
