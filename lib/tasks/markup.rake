@@ -27,7 +27,7 @@ def get_valid_sessions
 	all_sessions = Session.all
 	#Limit sessions to desirable subset
 	all_sessions.each do |session|
-		if (session.language_framework = "Java-1.8_JUnit") && (session.compiles.count >= 2)
+		if (session.language_framework == "Java-1.8_JUnit") && (session.compiles.count >= 2)
 			@sessions.push(session)
 		end
 	end

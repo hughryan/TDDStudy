@@ -1,3 +1,3 @@
 class InterraterSession < ActiveRecord::Base
-	has_one :session
+	belongs_to :session
 end
