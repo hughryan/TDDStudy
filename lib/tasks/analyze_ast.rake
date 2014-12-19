@@ -1,7 +1,6 @@
 root = '../'
 require 'set'
 require_relative root + 'ASTInterface/ASTInterface'
-require_relative root + 'OsDisk'
 require_relative root + 'Git'
 require_relative root + 'DummyTestRunner'
 
@@ -20,22 +19,38 @@ def dojo
   Dojo.new(root_path,externals)
 end
 
-desc "parse Java project files at each compile"
+
+desc "parse Java project files and git to determine # of methods and # of asserts at each compile"
 task :analyze_ast => :environment do
-	
-	# puts "METHODS"
-	# puts "methods: " + findMethods("/home/nelsonni/workspace/TDDStudy/lib/tasks/Example_v0.java")
+	ast_processing
+end
+
+def ast_processing
+
+=begin
+	Session.all.each do |session|
+	    print session.cyberdojo_id.to_s+ " "
+	    print session.language_framework.to_s+ " "
+		#      print "Number ACTIVE avatars:"
+		#      puts  kata.avatars.active.count
+		#      puts  kata.id
+		print session.avatar.to_s+ " \n"
+
+		session.compiles.each_with_index do |curr, index|
+
+		end
+	end
+=end
 
 	@katas = dojo.katas
   	@katas.each do |kata|
-  		# restrict to only katas of a specific language/framework set; ALLOWED_LANGS
+  		# restrict to only katas of a specific language/framework set: ALLOWED_LANGS
   		next unless ALLOWED_LANGS.include?(kata.language.name.to_s)
 	    print "id: " + kata.id + ", "
 	    print "language: " + kata.language.name + ", "
 	    print "avatars: " + kata.avatars.active.count.to_s + "\n"
 	    kata.avatars.active.each do |avatar|
 	    	avatar.lights.each_with_index do |curr, index|
-	    		#puts "curr: #{curr}, index: #{index}"
 	    		fileNames = curr.tag.visible_files.keys
 	    		javaFiles = fileNames.select { |name|  name.include? "java" }
 	    		currLightDir =  "workingDir/"+curr.number.to_s
@@ -47,7 +62,9 @@ task :analyze_ast => :environment do
 
 	    		javaFiles.each do |javaFileName|
 	    			File.open(currLightDir+"/src/"+javaFileName, 'w') {|f| f.write(curr.tag.visible_files[javaFileName]) }
-	    			puts "FILE: " + currLightDir+"/src/"+javaFileName + ", METHODS: " + findMethods(currLightDir+"/src/"+javaFileName)
+	    			print "file: " + javaFileName + ", "
+	    			print "methods: " + findMethods(currLightDir+"/src/"+javaFileName) + ", "
+	    			print "asserts: " + findAsserts(currLightDir+"/src/"+javaFileName) + "\n"
 	    		end
 			end
 	    end
