@@ -36,7 +36,6 @@ class VizController < ApplicationController
 			currSessionAndMarkup = Hash.new
 			currSessionAndMarkup["session"] = session
 			currSessionAndMarkup["markup"] = session.markups
-			#currSessionAndMarkup["compile_count"] = 4
 			currSessionAndMarkup["compile_count"] = Array.new.push(session.compiles.count)
 			allSessionsAndMarkup << currSessionAndMarkup
 		end

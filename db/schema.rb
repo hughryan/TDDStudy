@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140925220227) do
+ActiveRecord::Schema.define(version: 20141217190517) do
 
   create_table "compiles", force: true do |t|
     t.integer  "phase_id"
@@ -56,6 +56,24 @@ ActiveRecord::Schema.define(version: 20140925220227) do
 
   add_index "cycles", ["session_id"], name: "index_cycles_on_session_id"
 
+  create_table "interrater_sessions", force: true do |t|
+    t.integer  "session_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "interrater_sessions", ["session_id"], name: "index_interrater_sessions_on_session_id"
+
+  create_table "markup_assignments", force: true do |t|
+    t.integer  "researcher_id"
+    t.integer  "session_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "markup_assignments", ["researcher_id"], name: "index_markup_assignments_on_researcher_id"
+  add_index "markup_assignments", ["session_id"], name: "index_markup_assignments_on_session_id"
+
   create_table "markups", force: true do |t|
     t.integer  "session_id"
     t.string   "user"
@@ -90,6 +108,12 @@ ActiveRecord::Schema.define(version: 20140925220227) do
   end
 
   add_index "phases", ["cycle_id"], name: "index_phases_on_cycle_id"
+
+  create_table "researchers", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "sessions", force: true do |t|
     t.string   "kata_name"
