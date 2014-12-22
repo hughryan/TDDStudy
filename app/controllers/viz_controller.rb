@@ -29,12 +29,14 @@ class VizController < ApplicationController
 	end
 
 	def allCorpus
-		@allSessions = Session.all
+		#@allSessions = Session.all		
+		@allSessions = Session.where(language_framework: "Java-1.8_JUnit")
 		allSessionsAndMarkup = Array.new
 		@allSessions.each do |session|
 			currSessionAndMarkup = Hash.new
 			currSessionAndMarkup["session"] = session
 			currSessionAndMarkup["markup"] = session.markups
+			currSessionAndMarkup["compile_count"] = Array.new.push(session.compiles.count)
 			allSessionsAndMarkup << currSessionAndMarkup
 		end
 		gon.allSessionsAndMarkup = allSessionsAndMarkup

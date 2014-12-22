@@ -93,23 +93,22 @@ function buildpulseChart(TDDData) {
 
 
 function brushended() {
-
   if (!d3.event.sourceEvent) return; // only transition after input
-  changeDisplayedCode();
 
-}
-
-
-function changeDisplayedCode() {
-  // console.log("BRUSH_END")
   var extent0 = brush.extent();
   var extent1 = extent0;
   extent1[0] = Math.round(extent0[0]);
   extent1[1] = Math.round(extent0[1]);
 
-  // console.log(extent0)
-  // console.log(extent1[0]);
-  // console.log(extent1[1]);
+  changeDisplayedCode(extent1);
+
+  d3.select(this).transition()
+    .call(brush.extent(extent1))
+    .call(brush.event);
+}
+
+
+function changeDisplayedCode(extent1) {
   var start = extent1[0];
   var end = extent1[1];
 
@@ -130,11 +129,6 @@ function changeDisplayedCode() {
     },
     type: 'GET'
   });
-
-
-  // d3.select(this).transition()
-  //   .call(brush.extent(extent1))
-  //   .call(brush.event);
 }
 
 function TDDColor(color) {
@@ -719,6 +713,10 @@ function populateAccordion(data) {
               setValue(str2);
             }
           });
+          var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html()  ;
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+
       })
     //Add unique start files
   uniqueStart.forEach(
@@ -753,6 +751,10 @@ function populateAccordion(data) {
             setValue(str2);
           }
         });
+        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html() ;
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+
     })
 
   //Add unique end files
@@ -788,6 +790,12 @@ function populateAccordion(data) {
             setValue(str2);
           }
         });
+
+        // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
+        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html() ;
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+
     })
 
 
@@ -977,7 +985,7 @@ function initializeKeyBindings() {
           brush.extent([currLocation[0] - 1, currLocation[1] - 1]);
           brush(d3.select(".brush").transition());
         }
-        changeDisplayedCode();
+        changeDisplayedCode(brush.extent());
         break;
 
       case 38: // up
@@ -1003,7 +1011,7 @@ function initializeKeyBindings() {
           brush.extent([currLocation[0] + 1, currLocation[1] + 1]);
           brush(d3.select(".brush").transition());
         }
-        changeDisplayedCode();
+        changeDisplayedCode(brush.extent());
         break;
 
       case 40: // down

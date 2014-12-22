@@ -26,7 +26,7 @@ $(function() {
 });
 </script>
 
-   <input type="hidden" id="refreshed" value="no">
+<input type="hidden" id="refreshed" value="no">
  <script type="text/javascript">
 //this will reload the page.  Kinda a hack, will implement ajax table loading when I have more time.
  onload=function(){
@@ -39,18 +39,20 @@ $(function() {
 
 
 <style>
-td.details-control {
-  background: url('http://localhost:3000/assets/icons/icon_component.gif') no-repeat center center;
+td.view_kata {
+  background: url('<%= image_url('icons/icon_component.gif') %>') no-repeat center center;
   cursor: pointer;
 }
 td.markup {
-  background: url('http://localhost:3000/assets/icons/pencil.png') no-repeat center center;
+  background: url('<%= image_url('icons/pencil.png') %>') no-repeat center center;
   cursor: pointer;
 }
-tr.shown td.details-control {
-  background: url('../resources/details_close.png') no-repeat center center;
+td.compile_count {
+  text-align: center;
 }
-
+td.markup_length {
+  text-align: center;
+}
 .ui-button{
   height:20px;
 }
@@ -72,24 +74,26 @@ Find me a random kata with no Markup
 <table id="myTable" class="display" cellspacing="0" width="100%">
 <thead>
 <tr>
-<th>Display Cycles</th>
-<th>CyberDojo ID</th>
+<th>Display<br>Cycles</th>
+<th>Compile<br>Count</th>
+<th>CyberDojo<br>ID</th>
 <th>Avatar</th>
-<th>Kata Name</th>
-<th>Lang/Framework</th>
-<th>Manual Markups</th>
+<th>Kata<br>Name</th>
+<th>Lang/<br>Framework</th>
+<th>Manual<br>Markups</th>
 <th>Markup</th>
 </tr>
 </thead>
 
 <tfoot>
 <tr>
-<th>Display Cycles</th>
-<th>CyberDojo ID</th>
+<th>Display<br>Cycles</th>
+<th>Compile<br>Count</th>
+<th>CyberDojo<br>ID</th>
 <th>Avatar</th>
-<th>Kata Name</th>
-<th>Lang/Framework</th>
-<th>Manual Markups</th>
+<th>Kata<br>Name</th>
+<th>Lang/<br>Framework</th>
+<th>Manual<br>Markups</th>
 <th>Markup</th>
 </tr>
 </tfoot>
@@ -99,32 +103,55 @@ Find me a random kata with no Markup
 <script>
 $(document).ready(function(){
 
-
-
          console.log(gon);
-                    // $('#myTable').DataTable();
-
                     table = $('#myTable').DataTable( {
-                                                       data: gon.allSessionsAndMarkup,
-                                                       columns: [
+                                                         "data": gon.allSessionsAndMarkup,
+                                                         "columns": [
                                                          {
-                                                           "className":      'details-control',
+                                                           "className":      'view_kata',
                                                            "orderable":      false,
                                                            "data":           null,
-                                                           "defaultContent": ''
+                                                           "defaultContent": '',
+                                                           "width":          '20px'
                                                          },
-                                                         { "className":      'cyberdojo_id',
-                                                           data: 'session.cyberdojo_id' },
-                                                         { data: 'session.avatar' ,
-                                                           "className":      'avatar'},
-                                                         { "className":      'kata_name',data: 'session.kata_name' },
-                                                         { "className":      'language_framework',data: 'session.language_framework' },
-                                                         { "className":      'markup_length',data: 'markup.length' },
+                                                         {
+                                                           "className":      'compile_count',
+                                                           "data":           'compile_count',
+                                                           "defaultContent": 'dt-center',
+                                                           "width":          '20px'
+                                                         },
+                                                         {
+                                                           "className":      'cyberdojo_id',
+                                                           "data":           'session.cyberdojo_id',
+                                                           "width":          '50px'
+                                                         },
+                                                         {
+                                                           "className":      'avatar',
+                                                           "data":           'session.avatar',
+                                                           "width":          '30px'
+                                                         },
+                                                         {
+                                                           "className":      'kata_name',
+                                                           "data":           'session.kata_name',
+                                                           "width":          '40px'
+
+                                                         },
+                                                         {
+                                                           "className":      'language_framework',
+                                                           "data":           'session.language_framework',
+                                                           "width":          '50px'
+                                                         },
+                                                         {
+                                                           "className":      'markup_length',
+                                                           "data":           'markup.length',
+                                                           "width":          '20px'
+                                                         },
                                                          {
                                                            "className":      'markup',
                                                            "orderable":      false,
                                                            "data":           null,
-                                                           "defaultContent": ''
+                                                           "defaultContent": '',
+                                                           "width":          '20px'
                                                          }
                                                        ]
                     } );
@@ -133,7 +160,7 @@ $(document).ready(function(){
 
 
 // Add event listener for opening and closing details
-$('#myTable').on('click', 'td.details-control', function () {
+$('#myTable').on('click', 'td.view_kata', function () {
                    var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
                    var avatar = $(this).parent().find(".avatar").html();
                    var kata_name = $(this).parent().find(".kata_name").html();

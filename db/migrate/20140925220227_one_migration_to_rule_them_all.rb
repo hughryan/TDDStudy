@@ -9,9 +9,9 @@ class OneMigrationToRuleThemAll < ActiveRecord::Migration
       t.integer :last_compile_in_phase
       t.string :cyberdojo_id
       t.string :avatar
+
       t.timestamps
     end
-
 
     create_table :compiles do |t|
       t.references :phase, index: true
@@ -50,6 +50,7 @@ class OneMigrationToRuleThemAll < ActiveRecord::Migration
       t.integer :test_line_change_count
       t.integer :first_compile_in_phase
       t.integer :last_compile_in_phase
+
       t.timestamps
     end
 
