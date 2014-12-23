@@ -35,7 +35,7 @@ def findMethods(path)
 	results = searcher.find_methods(abs_path)
 	File.delete(file)
 
-	return results.to_s
+	return results
 end	
 
 def findAsserts(path)
@@ -49,7 +49,7 @@ def findAsserts(path)
 	results = searcher.find_tests(abs_path)
 	File.delete(file)
 
-	return results["allAsserts"].to_s
+	return results["allAsserts"]
 end
 
 # Optional command-line execution using --tree or --diff options (absolute filepaths required)
