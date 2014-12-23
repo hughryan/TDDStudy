@@ -1,8 +1,10 @@
 root = '../'
 require 'set'
+require 'fileutils'
 require_relative root + 'ASTInterface/ASTInterface'
-require_relative root + 'Git'
-require_relative root + 'DummyTestRunner'
+require_relative root + 'OsDisk'			# required for dojo definition
+require_relative root + 'Git'				# required for dojo definition
+require_relative root + 'DummyTestRunner'	# required for dojo definition
 
 ALLOWED_LANGS = Set["Java-1.8_JUnit"]
 
@@ -26,49 +28,37 @@ task :analyze_ast => :environment do
 end
 
 def ast_processing
+	build_dir = 'ast_builds'
 
-=begin
-	Session.all.each do |session|
-	    print session.cyberdojo_id.to_s+ " "
-	    print session.language_framework.to_s+ " "
-		#      print "Number ACTIVE avatars:"
-		#      puts  kata.avatars.active.count
-		#      puts  kata.id
-		print session.avatar.to_s+ " \n"
+	Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
+		print "id: " + session.id.to_s + ", " if DEBUG
+	    print "language: " + session.language_framework.to_s + ", " if DEBUG
+		print "avatar: " + session.avatar.to_s + "\n" if DEBUG
 
 		session.compiles.each_with_index do |curr, index|
+			curr.total_test_method_count = 0
+			asserts = 0 # placeholder for future db schema update to include total_test_assert_count
+			light = dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[curr.git_tag]
 
+			if light	# only lights that do not contain nil should be evaluated for files
+				files = light.tag.visible_files.keys.select{ |filename| filename.include? ".java" }
+				path = "#{build_dir}/" + light.number.to_s + "/src"
+				FileUtils.mkdir_p path, :mode => 0700
+
+				files.each do |file|
+					File.open(path + "/" + file, 'w') { |f| f.write(light.tag.visible_files[file]) }					
+					curr.total_test_method_count += findMethods(path + "/" + file)
+					asserts += findAsserts(path + "/" + file)
+				end
+			
+			print "  " + curr.git_tag.to_s + ":\t" if DEBUG
+			print "methods: " + curr.total_test_method_count.to_s + ", " if DEBUG
+			print "asserts: " + asserts.to_s + "\n" if DEBUG
+
+			curr.save
+			end
 		end
 	end
-=end
 
-	@katas = dojo.katas
-  	@katas.each do |kata|
-  		# restrict to only katas of a specific language/framework set: ALLOWED_LANGS
-  		next unless ALLOWED_LANGS.include?(kata.language.name.to_s)
-	    print "id: " + kata.id + ", "
-	    print "language: " + kata.language.name + ", "
-	    print "avatars: " + kata.avatars.active.count.to_s + "\n"
-	    kata.avatars.active.each do |avatar|
-	    	avatar.lights.each_with_index do |curr, index|
-	    		fileNames = curr.tag.visible_files.keys
-	    		javaFiles = fileNames.select { |name|  name.include? "java" }
-	    		currLightDir =  "workingDir/"+curr.number.to_s
-
-				`rm -rf workingDir/*`
-				`mkdir workingDir/`
-				`mkdir #{currLightDir}`
-				`mkdir #{currLightDir}/src`
-
-	    		javaFiles.each do |javaFileName|
-	    			File.open(currLightDir+"/src/"+javaFileName, 'w') {|f| f.write(curr.tag.visible_files[javaFileName]) }
-	    			print "file: " + javaFileName + ", "
-	    			print "methods: " + findMethods(currLightDir+"/src/"+javaFileName) + ", "
-	    			print "asserts: " + findAsserts(currLightDir+"/src/"+javaFileName) + "\n"
-	    		end
-			end
-	    end
-	end
-
-	`rm -rf workingDir/`
+	FileUtils.remove_entry_secure(build_dir)
 end
