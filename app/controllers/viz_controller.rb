@@ -29,7 +29,7 @@ class VizController < ApplicationController
 	end
 
 	def allCorpus
-		@allSessions = Session.all		
+		#@allSessions = Session.all		
 		@allSessions = Session.where(language_framework: "Java-1.8_JUnit")
 		allSessionsAndMarkup = Array.new
 		@allSessions.each do |session|
@@ -42,54 +42,7 @@ class VizController < ApplicationController
 		gon.allSessionsAndMarkup = allSessionsAndMarkup
 	end
 
-	def markup
-		@researchers = Researcher.all
-		researcher = params[:researcher]
-		allSessionsAndMarkup = Array.new
-
-		@allSessions = InterraterSession.all
-		@allSessions.each do |interrater|
-			session = Session.find_by(id: interrater.session_id)
-			currSessionAndMarkup = Hash.new
-			currSessionAndMarkup["session"] = session
-			currSessionAndMarkup["markup"] = session.markups
-			currSessionAndMarkup["compile_count"] = Array.new.push(session.compiles.count)
-			allSessionsAndMarkup << currSessionAndMarkup
-		end
-
-		@allSessions = MarkupAssignment.where(researcher: researcher)
-		@allSessions.each do |assignment|
-			session = Session.find_by(id: assignment.session_id)			
-			currSessionAndMarkup = Hash.new
-			currSessionAndMarkup["session"] = session
-			currSessionAndMarkup["markup"] = session.markups
-			currSessionAndMarkup["compile_count"] = Array.new.push(session.compiles.count)
-			allSessionsAndMarkup << currSessionAndMarkup
-		end
-
-		gon.watch.allSessionsAndMarkup = allSessionsAndMarkup
-	end
-
-	def markupView
-		#@allSessions = Session.all		
-		@allSessions = Session.where(language_framework: "Java-1.8_JUnit")
-		allSessionsAndMarkup = Array.new
-		@allSessions.each do |session|
-			currSessionAndMarkup = Hash.new
-			currSessionAndMarkup["session"] = session
-			currSessionAndMarkup["markup"] = session.markups
-			currSessionAndMarkup["compile_count"] = Array.new.push(session.compiles.count)
-			allSessionsAndMarkup << currSessionAndMarkup
-		end
-		gon.watch.allSessionsAndMarkup = allSessionsAndMarkup
-
-		@researchers = Researcher.all
-	end
-
-
 	def manualCatTool
-
-		@researcher = params[:researcher]
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
@@ -118,11 +71,8 @@ class VizController < ApplicationController
 		gon.cyberdojo_avatar = @cyberdojo_avatar
 	end
 
-
-
 	def timelineWithBrush
 		# Params to know what to drwa
-		@researcher = params[:researcher]
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
@@ -221,9 +171,7 @@ class VizController < ApplicationController
 		end
 	end
 
-
 	def store_markup
-
 		puts params[:phaseData]
 		puts params[:cyberdojo_id]
 		puts params[:cyberdojo_avatar]
