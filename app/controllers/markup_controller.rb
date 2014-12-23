@@ -1,48 +1,38 @@
-root = '../..'
-
-require_relative root + '/config/environment.rb'
-require_relative root + '/lib/Docker'
-require_relative root + '/lib/DockerTestRunner'
-require_relative root + '/lib/DummyTestRunner'
-require_relative root + '/lib/Folders'
-require_relative root + '/lib/Git'
-require_relative root + '/lib/HostTestRunner'
-require_relative root + '/lib/OsDisk'
-
-class VizController < ApplicationController
+class MarkupController < ApplicationController
 	def index
-		@allSessions = Session.all
-		@katas = dojo.katas
+		@researchers = Researcher.all
 	end
 
-	def dojo
-		externals = {
-			:disk   => OsDisk.new,
-			:git    => Git.new,
-			:runner => DummyTestRunner.new
-		}
-		Dojo.new(root_path,externals)
-	end
+	def researcher
+		@researcher = params[:researcher]
+		researcher_id = Researcher.find_by(name: @researcher).id
+		all_sessions_markup = Array.new
 
-	def root_path
-		Rails.root.to_s + '/'
-	end
-
-	def allCorpus
-		#@allSessions = Session.all		
-		@allSessions = Session.where(language_framework: "Java-1.8_JUnit")
-		allSessionsAndMarkup = Array.new
-		@allSessions.each do |session|
-			currSessionAndMarkup = Hash.new
-			currSessionAndMarkup["session"] = session
-			currSessionAndMarkup["markup"] = session.markups
-			currSessionAndMarkup["compile_count"] = Array.new.push(session.compiles.count)
-			allSessionsAndMarkup << currSessionAndMarkup
+		@inter_sessions = InterraterSession.all
+		@inter_sessions.each do |interrater|
+			session = Session.find_by(id: interrater.session_id)
+			curr_session_markup = Hash.new
+			curr_session_markup["session"] = session
+			curr_session_markup["markup"] = session.markups
+			curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
+			all_sessions_markup << curr_session_markup
 		end
-		gon.allSessionsAndMarkup = allSessionsAndMarkup
+
+		@markup_sessions = MarkupAssignment.where(researcher_id: researcher_id)
+		@markup_sessions.each do |assignment|
+			session = Session.find_by(id: assignment.session_id)			
+			curr_session_markup = Hash.new
+			curr_session_markup["session"] = session
+			curr_session_markup["markup"] = session.markups
+			curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
+			all_sessions_markup << curr_session_markup
+		end
+
+		gon.all_sessions_markup = all_sessions_markup		
 	end
 
 	def manualCatTool
+		@researcher = params[:researcher]
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
@@ -71,8 +61,11 @@ class VizController < ApplicationController
 		gon.cyberdojo_avatar = @cyberdojo_avatar
 	end
 
+
+
 	def timelineWithBrush
-		# Params to know what to drwa
+		# Params to know what to draw
+		@researcher = params[:researcher]
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
@@ -171,6 +164,7 @@ class VizController < ApplicationController
 		end
 	end
 
+
 	def store_markup
 		puts params[:phaseData]
 		puts params[:cyberdojo_id]
@@ -219,6 +213,5 @@ class VizController < ApplicationController
 			# format.json { render :json => @oneSession }
 			format.json { render :json => names }
 		end
-	end
-
+	end	
 end
