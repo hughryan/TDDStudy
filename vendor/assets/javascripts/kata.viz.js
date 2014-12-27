@@ -869,7 +869,8 @@ function saveNewPhase(start, end, color) {
     },
     cyberdojo_id: gon.cyberdojo_id,
     cyberdojo_avatar: gon.cyberdojo_avatar,
-    user: $.cookie('username')
+    //user: $.cookie('username')
+    user: username
   };
 
   $.ajax({
