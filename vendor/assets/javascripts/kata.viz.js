@@ -1328,7 +1328,10 @@ function saveMarkup() {
     url: 'store_markup',
     type: 'post',
     data: phaseDataJSON,
-    dataType: 'JSON'
+    dataType: 'JSON',
+    error: function() {
+      console.error("AJAX");
+    }
   });
 }
 
@@ -1349,7 +1352,10 @@ function saveNewPhase(start, end, color) {
     url: 'store_markup',
     type: 'post',
     data: phaseDataJSON,
-    dataType: 'JSON'
+    dataType: 'JSON',
+    error: function() {
+      console.error("AJAX");
+    }
   });
 }
 
@@ -1398,7 +1404,10 @@ function deletePhase(currPhase, i) {
     url: 'del_markup',
     type: 'post',
     data: phaseDataJSON,
-    dataType: 'JSON'
+    dataType: 'JSON',
+    error: function() {
+      console.error("AJAX");
+    }
   });
 
 }
