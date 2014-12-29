@@ -40,13 +40,9 @@ class VizController < ApplicationController
 			allSessionsAndMarkup << currSessionAndMarkup
 		end
 		gon.allSessionsAndMarkup = allSessionsAndMarkup
-
-
 	end
 
-
 	def manualCatTool
-
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
@@ -74,8 +70,6 @@ class VizController < ApplicationController
 		gon.cyberdojo_id = @cyberdojo_id
 		gon.cyberdojo_avatar = @cyberdojo_avatar
 	end
-
-
 
 	def timelineWithBrush
 		# Params to know what to drwa
@@ -177,9 +171,7 @@ class VizController < ApplicationController
 		end
 	end
 
-
 	def store_markup
-
 		puts params[:phaseData]
 		puts params[:cyberdojo_id]
 		puts params[:cyberdojo_avatar]
