@@ -713,9 +713,9 @@ function populateAccordion(data) {
               setValue(str2);
             }
           });
-          var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-        var currHTML = $('#accordion h3:contains()').last().html()  ;
-        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html();
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
 
       })
     //Add unique start files
@@ -751,9 +751,9 @@ function populateAccordion(data) {
             setValue(str2);
           }
         });
-        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-        var currHTML = $('#accordion h3:contains()').last().html() ;
-        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+      var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+      var currHTML = $('#accordion h3:contains()').last().html();
+      $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
 
     })
 
@@ -791,10 +791,10 @@ function populateAccordion(data) {
           }
         });
 
-        // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
-        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-        var currHTML = $('#accordion h3:contains()').last().html() ;
-        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+      // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
+      var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+      var currHTML = $('#accordion h3:contains()').last().html();
+      $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
 
     })
 
@@ -869,7 +869,8 @@ function saveNewPhase(start, end, color) {
     },
     cyberdojo_id: gon.cyberdojo_id,
     cyberdojo_avatar: gon.cyberdojo_avatar,
-    user: $.cookie('username')
+    // user: $.cookie('username')
+    user: username
   };
 
   $.ajax({
@@ -882,14 +883,78 @@ function saveNewPhase(start, end, color) {
 
 
 function addNewPhase(start, end, color) {
-  console.log(brush.extent());
+  // console.log(brush.extent());
   var newPhase = new Object();
+  //Make Space
+  // phaseData.forEach(function(element, index, array) {
+  //   console.log(element);
+
+  // });
+
+
+  for (var i = 0; i < phaseData.length; i++) {
+    console.log(phaseData[i]);
+
+    var startsInsideRange = false;
+    var finishesInsideRange = false;
+    var coversRange = false;
+    if ((phaseData[i].first_compile_in_phase >= start) && (phaseData[i].first_compile_in_phase <= end)) {
+      // startsInsideRange = true;
+      updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, color)
+    }
+    if ((phaseData[i].last_compile_in_phase >= start) && (phaseData[i].last_compile_in_phase <= end)) {
+      finishesInsideRange = true;
+    }
+    if ((phaseData[i].last_compile_in_phase <= start) && (phaseData[i].last_compile_in_phase >= end)) {
+      coversRange = true;
+    }
+    console.log("startsInsideRange: " + startsInsideRange);
+    console.log("finishesInsideRange: " + finishesInsideRange);
+    console.log("coversRange " + coversRange);
+    // if(phaseData.first_compile_in_phase > 0)
+
+  }
+
+
   newPhase.first_compile_in_phase = start;
   newPhase.last_compile_in_phase = end;
   newPhase.tdd_color = color;
   phaseData.push(newPhase);
   redrawPhaseBars();
   saveNewPhase(start, end, color);
+}
+
+function updatePhase(newStart, newEnd, oldStart, oldEnd, color) {
+  console.log("TODO update phase");
+  console.log("newStart: " + newStart);
+  console.log("newEnd: " + newEnd);
+  console.log("oldStart: " + oldStart);
+  console.log("oldEnd: " + oldEnd);
+  console.log("color: " + color);
+
+
+  phaseDataJSON = {
+    phaseData: {
+      oldStart: oldStart,
+      oldEnd: oldEnd,
+      newStart: newStart,
+      newEnd: newEnd,
+      color: color
+    },
+    cyberdojo_id: gon.cyberdojo_id,
+    cyberdojo_avatar: gon.cyberdojo_avatar,
+    user: username
+  };
+
+  // phaseData.splice(i, 1);
+  $.ajax({
+    url: 'update_markup',
+    type: 'post',
+    data: phaseDataJSON,
+    dataType: 'JSON'
+  });
+
+
 }
 
 function deleteMatchingPhases(start, end) {

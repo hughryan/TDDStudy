@@ -1,4 +1,8 @@
 class MarkupController < ApplicationController
+
+	skip_before_filter  :verify_authenticity_token
+
+
 	def index
 		@researchers = Researcher.all
 	end
@@ -214,4 +218,37 @@ class MarkupController < ApplicationController
 			format.json { render :json => names }
 		end
 	end	
+
+	def update_markup
+
+		puts "%%%%%%%%%%%%%%%%%%update_markup$$$$$$$$$$$$$$$$$$"
+		puts params[:phaseData]
+		phaseData =  params[:phaseData]
+		# phase
+		puts phaseData[:oldStart]
+		puts params[:cyberdojo_id]
+		puts params[:cyberdojo_avatar]
+		this_phase_data = params[:phaseData]
+		this_cyberdojo_id = params[:cyberdojo_id]
+		this_cyberdojo_avatar = params[:cyberdojo_avatar]
+
+		currSession = Session.where(cyberdojo_id: this_cyberdojo_id, avatar: this_cyberdojo_avatar).first
+		markup = Markup.find_by(session: currSession, user: params[:user], tdd_color: this_phase_data["color"],first_compile_in_phase: this_phase_data["oldStart"], last_compile_in_phase: this_phase_data["oldEnd"])
+		# markup.destroy
+		# markup.first_compile_in_phase = 10
+		# markup.last_compile_in_phase = this_phase_data[:newEnd]
+		# markup.first_compile_in_phase = 99
+		# markup.update_attribute(:first_compile_in_phase, 10)
+		markup.save
+		
+		puts "MARKUP"
+		puts markup.inspect
+
+		names = Array.new
+		respond_to do |format|
+			format.html
+			# format.json { render :json => @oneSession }
+			format.json { render :json => names }
+		end
+	end
 end
