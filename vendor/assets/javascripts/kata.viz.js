@@ -900,7 +900,7 @@ function addNewPhase(start, end, color) {
     var coversRange = false;
     if ((phaseData[i].first_compile_in_phase >= start) && (phaseData[i].first_compile_in_phase <= end)) {
       // startsInsideRange = true;
-      updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, color)
+      updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
     }
     if ((phaseData[i].last_compile_in_phase >= start) && (phaseData[i].last_compile_in_phase <= end)) {
       finishesInsideRange = true;
@@ -933,6 +933,21 @@ function updatePhase(newStart, newEnd, oldStart, oldEnd, color) {
   console.log("color: " + color);
 
 
+
+  //Update data locally
+  for (var i = 0; i < phaseData.length; i++) {
+    if(phaseData[i].first_compile_in_phase == oldStart){
+      if(phaseData[i].last_compile_in_phase == oldEnd){
+        if(phaseData[i].tdd_color == color){
+          phaseData[i].first_compile_in_phase = newStart;
+          phaseData[i].last_compile_in_phase = newEnd;
+          break;
+        }
+      }
+    }
+  }
+
+  //Update data on server
   phaseDataJSON = {
     phaseData: {
       oldStart: oldStart,
@@ -946,7 +961,6 @@ function updatePhase(newStart, newEnd, oldStart, oldEnd, color) {
     user: username
   };
 
-  // phaseData.splice(i, 1);
   $.ajax({
     url: 'update_markup',
     type: 'post',

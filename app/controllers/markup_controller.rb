@@ -233,16 +233,29 @@ class MarkupController < ApplicationController
 		this_cyberdojo_avatar = params[:cyberdojo_avatar]
 
 		currSession = Session.where(cyberdojo_id: this_cyberdojo_id, avatar: this_cyberdojo_avatar).first
-		markup = Markup.find_by(session: currSession, user: params[:user], tdd_color: this_phase_data["color"],first_compile_in_phase: this_phase_data["oldStart"], last_compile_in_phase: this_phase_data["oldEnd"])
+		puts "currSession"
+		puts currSession
+		puts "params[:user]"
+		puts params[:user]
+		puts "this_phase_data[\"color\"]"
+		puts this_phase_data["color"]
+		puts "this_phase_data[\"oldStart\"]"
+		puts this_phase_data["oldStart"]
+		puts "this_phase_data[\"oldEnd\"]"
+		puts this_phase_data["oldEnd"]
+		markup = Markup.find_by(session: currSession.id, user: params[:user], tdd_color: this_phase_data["color"],first_compile_in_phase: this_phase_data["oldStart"], last_compile_in_phase: this_phase_data["oldEnd"])
+		puts "MARKUP"
+		puts markup.inspect
 		# markup.destroy
 		# markup.first_compile_in_phase = 10
-		# markup.last_compile_in_phase = this_phase_data[:newEnd]
+		markup.first_compile_in_phase = this_phase_data["newStart"]
+		markup.last_compile_in_phase = this_phase_data["newEnd"]
+
 		# markup.first_compile_in_phase = 99
 		# markup.update_attribute(:first_compile_in_phase, 10)
 		markup.save
 		
-		puts "MARKUP"
-		puts markup.inspect
+
 
 		names = Array.new
 		respond_to do |format|
