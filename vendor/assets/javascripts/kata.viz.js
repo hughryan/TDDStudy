@@ -898,16 +898,55 @@ function addNewPhase(start, end, color) {
     var startsInsideRange = false;
     var finishesInsideRange = false;
     var coversRange = false;
-    if ((phaseData[i].first_compile_in_phase >= start) && (phaseData[i].first_compile_in_phase <= end)) {
-      // startsInsideRange = true;
-      updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
-    }
-    if ((phaseData[i].last_compile_in_phase >= start) && (phaseData[i].last_compile_in_phase <= end)) {
-      finishesInsideRange = true;
-    }
-    if ((phaseData[i].last_compile_in_phase <= start) && (phaseData[i].last_compile_in_phase >= end)) {
-      coversRange = true;
-    }
+   
+   if(phaseData[i].first_compile_in_phase == start){
+      if(phaseData[i].last_compile_in_phase == end){
+        //EXACT MATCH
+        updatePhase(start, end, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color,color);
+        redrawPhaseBars();
+        return;
+      }
+      if(phaseData[i].last_compile_in_phase < end){
+        //Entirely Contained
+        //TODO remove phase
+      }
+      if(phaseData[i].last_compile_in_phase > end){
+        //Extends beyond
+         updatePhase(start, end, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color,color);
+      }
+
+   }
+
+
+    //     //exact match
+    // if ((phaseData[i].first_compile_in_phase == start) && (phaseData[i].last_compile_in_phase == end)) {
+    //   // coversRange = true;
+    //   updatePhase(start, end, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color,color)
+    // }
+
+
+    // if ((phaseData[i].first_compile_in_phase >= start) && (phaseData[i].first_compile_in_phase <= end) && (phaseData[i].last_compile_in_phase > end)) {
+    //   // startsInsideRange = true;
+    //   updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
+    // }
+    // if ((phaseData[i].last_compile_in_phase >= start) && (phaseData[i].last_compile_in_phase <= end) && (phaseData[i].first_compile_in_phase <= start)) {
+    //   // finishesInsideRange = true;
+    //   updatePhase(phaseData[i].first_compile_in_phase, start, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
+
+    // }
+    // //smaller phase to split larger
+    // if ((phaseData[i].first_compile_in_phase < start) && (phaseData[i].last_compile_in_phase > end)) {
+    //   // coversRange = true;
+    //   addNewPhase(end, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+    //   updatePhase(phaseData[i].first_compile_in_phase, start, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
+     
+    // }
+    // //larger phase totaly covers it
+
+    // //TODO
+
+
+
     console.log("startsInsideRange: " + startsInsideRange);
     console.log("finishesInsideRange: " + finishesInsideRange);
     console.log("coversRange " + coversRange);
@@ -924,25 +963,27 @@ function addNewPhase(start, end, color) {
   saveNewPhase(start, end, color);
 }
 
-function updatePhase(newStart, newEnd, oldStart, oldEnd, color) {
+function updatePhase(newStart, newEnd, oldStart, oldEnd, oldColor, newColor) {
   console.log("TODO update phase");
   console.log("newStart: " + newStart);
   console.log("newEnd: " + newEnd);
   console.log("oldStart: " + oldStart);
   console.log("oldEnd: " + oldEnd);
-  console.log("color: " + color);
-
-
+  console.log("color: " + oldColor);
+  if(newColor == null){
+    newColor = oldColor;
+  }
 
   //Update data locally
   for (var i = 0; i < phaseData.length; i++) {
-    if(phaseData[i].first_compile_in_phase == oldStart){
-      if(phaseData[i].last_compile_in_phase == oldEnd){
-        if(phaseData[i].tdd_color == color){
+    if (phaseData[i].first_compile_in_phase == oldStart) {
+      if (phaseData[i].last_compile_in_phase == oldEnd) {
+        // if (phaseData[i].tdd_color == oldColor) {
           phaseData[i].first_compile_in_phase = newStart;
           phaseData[i].last_compile_in_phase = newEnd;
+          phaseData[i].tdd_color = newColor;
           break;
-        }
+        // }
       }
     }
   }
@@ -954,7 +995,8 @@ function updatePhase(newStart, newEnd, oldStart, oldEnd, color) {
       oldEnd: oldEnd,
       newStart: newStart,
       newEnd: newEnd,
-      color: color
+      oldColor: oldColor,
+      newColor: newColor
     },
     cyberdojo_id: gon.cyberdojo_id,
     cyberdojo_avatar: gon.cyberdojo_avatar,

@@ -237,20 +237,20 @@ class MarkupController < ApplicationController
 		puts currSession
 		puts "params[:user]"
 		puts params[:user]
-		puts "this_phase_data[\"color\"]"
-		puts this_phase_data["color"]
+		puts "this_phase_data[\"newColor\"]"
+		puts this_phase_data["newColor"]
 		puts "this_phase_data[\"oldStart\"]"
 		puts this_phase_data["oldStart"]
 		puts "this_phase_data[\"oldEnd\"]"
 		puts this_phase_data["oldEnd"]
-		markup = Markup.find_by(session: currSession.id, user: params[:user], tdd_color: this_phase_data["color"],first_compile_in_phase: this_phase_data["oldStart"], last_compile_in_phase: this_phase_data["oldEnd"])
+		markup = Markup.find_by(session: currSession.id, user: params[:user], first_compile_in_phase: this_phase_data["oldStart"], last_compile_in_phase: this_phase_data["oldEnd"])
 		puts "MARKUP"
 		puts markup.inspect
 		# markup.destroy
 		# markup.first_compile_in_phase = 10
 		markup.first_compile_in_phase = this_phase_data["newStart"]
 		markup.last_compile_in_phase = this_phase_data["newEnd"]
-
+		markup.tdd_color = this_phase_data["newColor"]
 		# markup.first_compile_in_phase = 99
 		# markup.update_attribute(:first_compile_in_phase, 10)
 		markup.save
