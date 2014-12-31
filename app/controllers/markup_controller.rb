@@ -219,7 +219,7 @@ class MarkupController < ApplicationController
 
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
-		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
+		@currSession = Session.find_by(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar)  #.first
 		gon.compiles = @currSession.compiles
 
 
