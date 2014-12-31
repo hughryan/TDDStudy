@@ -215,7 +215,7 @@ class MarkupController < ApplicationController
 		end
 	end	
 
-	def markupComparison
+	def markup_comparison
 
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
