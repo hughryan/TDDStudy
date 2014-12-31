@@ -883,77 +883,47 @@ function saveNewPhase(start, end, color) {
 
 
 function addNewPhase(start, end, color) {
-  // console.log(brush.extent());
   var newPhase = new Object();
-  //Make Space
-  // phaseData.forEach(function(element, index, array) {
-  //   console.log(element);
 
-  // });
-
-
-  for (var i = 0; i < phaseData.length; i++) {
-    console.log(phaseData[i]);
-
+  for (var i = (phaseData.length - 1); i >= 0; --i) {
     var startsInsideRange = false;
     var finishesInsideRange = false;
     var coversRange = false;
-   
-   if(phaseData[i].first_compile_in_phase == start){
-      if(phaseData[i].last_compile_in_phase == end){
+
+    if (start == phaseData[i].first_compile_in_phase) {
+      if (end == phaseData[i].last_compile_in_phase) {
         //EXACT MATCH
-        updatePhase(start, end, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color,color);
+        updatePhase(start, end, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color, color);
         redrawPhaseBars();
         return;
-      }
-      if(phaseData[i].last_compile_in_phase < end){
+      } else if (end > phaseData[i].last_compile_in_phase) {
         //Entirely Contained
-        //TODO remove phase
-      }
-      if(phaseData[i].last_compile_in_phase > end){
+        deletePhase(phaseData[i], i);
+        phaseData.splice(i, 1);
+      } else if (end < phaseData[i].last_compile_in_phase) {
         //Extends beyond
-         updatePhase(start, end, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color,color);
+        updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
       }
-
-   }
-
-
-    //     //exact match
-    // if ((phaseData[i].first_compile_in_phase == start) && (phaseData[i].last_compile_in_phase == end)) {
-    //   // coversRange = true;
-    //   updatePhase(start, end, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color,color)
-    // }
-
-
-    // if ((phaseData[i].first_compile_in_phase >= start) && (phaseData[i].first_compile_in_phase <= end) && (phaseData[i].last_compile_in_phase > end)) {
-    //   // startsInsideRange = true;
-    //   updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
-    // }
-    // if ((phaseData[i].last_compile_in_phase >= start) && (phaseData[i].last_compile_in_phase <= end) && (phaseData[i].first_compile_in_phase <= start)) {
-    //   // finishesInsideRange = true;
-    //   updatePhase(phaseData[i].first_compile_in_phase, start, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
-
-    // }
-    // //smaller phase to split larger
-    // if ((phaseData[i].first_compile_in_phase < start) && (phaseData[i].last_compile_in_phase > end)) {
-    //   // coversRange = true;
-    //   addNewPhase(end, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
-    //   updatePhase(phaseData[i].first_compile_in_phase, start, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
-     
-    // }
-    // //larger phase totaly covers it
-
-    // //TODO
-
-
-
-    console.log("startsInsideRange: " + startsInsideRange);
-    console.log("finishesInsideRange: " + finishesInsideRange);
-    console.log("coversRange " + coversRange);
-    // if(phaseData.first_compile_in_phase > 0)
-
+    } else if (start < phaseData[i].first_compile_in_phase) {
+      if ((end >= phaseData[i].last_compile_in_phase)) {
+        // OVERWRITE PHASE
+        deletePhase(phaseData[i], i);
+        phaseData.splice(i, 1);
+      } else if ((end < phaseData[i].last_compile_in_phase) && (end > phaseData[i].firstw_compile_in_phase)) {
+        // MODIFY PHASE
+        updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+      }
+    } else if (start > phaseData[i].first_compile_in_phase) {
+      if ((end >= phaseData[i].last_compile_in_phase) && (start < phaseData[i].last_compile_in_phase)) {
+        //MODIFY PHASE
+        updatePhase(phaseData[i].first_compile_in_phase, start, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+      } else if (end < phaseData[i].last_compile_in_phase) {
+        //SPLIT PHASE
+        addNewPhase(end, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+        updatePhase(phaseData[i].first_compile_in_phase, start, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
+      }
+    }
   }
-
 
   newPhase.first_compile_in_phase = start;
   newPhase.last_compile_in_phase = end;
@@ -963,6 +933,8 @@ function addNewPhase(start, end, color) {
   saveNewPhase(start, end, color);
 }
 
+
+
 function updatePhase(newStart, newEnd, oldStart, oldEnd, oldColor, newColor) {
   console.log("TODO update phase");
   console.log("newStart: " + newStart);
@@ -970,7 +942,7 @@ function updatePhase(newStart, newEnd, oldStart, oldEnd, oldColor, newColor) {
   console.log("oldStart: " + oldStart);
   console.log("oldEnd: " + oldEnd);
   console.log("color: " + oldColor);
-  if(newColor == null){
+  if (newColor == null) {
     newColor = oldColor;
   }
 
@@ -979,10 +951,10 @@ function updatePhase(newStart, newEnd, oldStart, oldEnd, oldColor, newColor) {
     if (phaseData[i].first_compile_in_phase == oldStart) {
       if (phaseData[i].last_compile_in_phase == oldEnd) {
         // if (phaseData[i].tdd_color == oldColor) {
-          phaseData[i].first_compile_in_phase = newStart;
-          phaseData[i].last_compile_in_phase = newEnd;
-          phaseData[i].tdd_color = newColor;
-          break;
+        phaseData[i].first_compile_in_phase = newStart;
+        phaseData[i].last_compile_in_phase = newEnd;
+        phaseData[i].tdd_color = newColor;
+        break;
         // }
       }
     }
