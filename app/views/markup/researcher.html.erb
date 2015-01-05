@@ -60,7 +60,7 @@ td.markup_length {
 <th>Avatar</th>
 <th>Kata<br>Name</th>
 <th>Lang/<br>Framework</th>
-<th>Manual<br>Markups</th>
+<th>Markups</th>
 <th>Markup</th>
 </tr>
 </thead>
@@ -73,7 +73,7 @@ td.markup_length {
 <th>Avatar</th>
 <th>Kata<br>Name</th>
 <th>Lang/<br>Framework</th>
-<th>Manual<br>Markups</th>
+<th>Markups</th>
 <th>Markup</th>
 </tr>
 </tfoot>
@@ -103,6 +103,7 @@ $(document).ready(function() {
         markedupBy[element.markup[i].user] = tempMarkup + numMarkedupPhases;
 
       }
+      element.session.markedupBy = JSON.stringify(markedupBy);
       console.log(markedupBy);
     });
 
@@ -140,7 +141,7 @@ $(document).ready(function() {
       "width": '50px'
     }, {
       "className": 'markup_length',
-      "data": 'markup.length',
+      "data": 'session.markedupBy',
       "width": '20px'
     }, {
       "className": 'markup',
