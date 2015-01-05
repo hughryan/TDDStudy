@@ -84,8 +84,11 @@ td.markup_length {
 $(document).ready(function() {
   console.log(gon);
   
-
-
+   gon.all_sessions_markup.forEach(
+      function(element, index) {
+        console.log(element);
+        // console.log(index);
+      });
 
 
   table = $('#myTable').DataTable({
