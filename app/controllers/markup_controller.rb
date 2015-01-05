@@ -267,4 +267,3 @@ class MarkupController < ApplicationController
 		end
 	end
 end
-end
