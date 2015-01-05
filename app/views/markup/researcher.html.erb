@@ -81,77 +81,72 @@ td.markup_length {
 </table>
 
 <script>
-$(document).ready(function(){
+$(document).ready(function() {
+  console.log(gon);
+  
 
-         console.log(gon);
-                    table = $('#myTable').DataTable( {
-                                                         "data": gon.all_sessions_markup,
-                                                         "columns": [
-                                                         {
-                                                           "className":      'view_kata',
-                                                           "orderable":      false,
-                                                           "data":           null,
-                                                           "defaultContent": '',
-                                                           "width":          '20px'
-                                                         },
-                                                         {
-                                                           "className":      'compile_count',
-                                                           "data":           'compile_count',
-                                                           "defaultContent": 'dt-center',
-                                                           "width":          '20px'
-                                                         },
-                                                         {
-                                                           "className":      'cyberdojo_id',
-                                                           "data":           'session.cyberdojo_id',
-                                                           "width":          '50px'
-                                                         },
-                                                         {
-                                                           "className":      'avatar',
-                                                           "data":           'session.avatar',
-                                                           "width":          '30px'
-                                                         },
-                                                         {
-                                                           "className":      'kata_name',
-                                                           "data":           'session.kata_name',
-                                                           "width":          '40px'
 
-                                                         },
-                                                         {
-                                                           "className":      'language_framework',
-                                                           "data":           'session.language_framework',
-                                                           "width":          '50px'
-                                                         },
-                                                         {
-                                                           "className":      'markup_length',
-                                                           "data":           'markup.length',
-                                                           "width":          '20px'
-                                                         },
-                                                         {
-                                                           "className":      'markup',
-                                                           "orderable":      false,
-                                                           "data":           null,
-                                                           "defaultContent": '',
-                                                           "width":          '20px'
-                                                         }
-                                                       ]
-                    } );
+
+
+  table = $('#myTable').DataTable({
+    "data": gon.all_sessions_markup,
+    "columns": [{
+      "className": 'view_kata',
+      "orderable": false,
+      "data": null,
+      "defaultContent": '',
+      "width": '20px'
+    }, {
+      "className": 'compile_count',
+      "data": 'compile_count',
+      "defaultContent": 'dt-center',
+      "width": '20px'
+    }, {
+      "className": 'cyberdojo_id',
+      "data": 'session.cyberdojo_id',
+      "width": '50px'
+    }, {
+      "className": 'avatar',
+      "data": 'session.avatar',
+      "width": '30px'
+    }, {
+      "className": 'kata_name',
+      "data": 'session.kata_name',
+      "width": '40px'
+
+    }, {
+      "className": 'language_framework',
+      "data": 'session.language_framework',
+      "width": '50px'
+    }, {
+      "className": 'markup_length',
+      "data": 'markup.length',
+      "width": '20px'
+    }, {
+      "className": 'markup',
+      "orderable": false,
+      "data": null,
+      "defaultContent": '',
+      "width": '20px'
+    }]
+  });
 });
 
 
 // Add event listener for opening and closing details
-$('#myTable').on('click', 'td.view_kata', function () {
-                   var researcher = "<%= @researcher %>"
-                   var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
-                   var avatar = $(this).parent().find(".avatar").html();
-                   var kata_name = $(this).parent().find(".kata_name").html();
-                   window.location.href = "timelineWithBrush?researcher="+researcher+"&id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
-} );
+$('#myTable').on('click', 'td.view_kata', function() {
+  var researcher = "<%= @researcher %>"
+  var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
+  var avatar = $(this).parent().find(".avatar").html();
+  var kata_name = $(this).parent().find(".kata_name").html();
+  window.location.href = "timelineWithBrush?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+});
 
-$('#myTable').on('click', 'td.markup', function () {
-                   var researcher = "<%= @researcher %>"
-                   var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
-                   var avatar = $(this).parent().find(".avatar").html();
-                   var kata_name = $(this).parent().find(".kata_name").html();
-                   window.location.href = "manualCatTool?researcher="+researcher+"&id="+cyberdojo_id+"&avatar="+avatar+"&kataName="+kata_name;
-} );
+$('#myTable').on('click', 'td.markup', function() {
+  var researcher = "<%= @researcher %>"
+  var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
+  var avatar = $(this).parent().find(".avatar").html();
+  var kata_name = $(this).parent().find(".kata_name").html();
+  window.location.href = "manualCatTool?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+});
 </script>
