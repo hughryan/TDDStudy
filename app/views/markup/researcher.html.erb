@@ -84,11 +84,28 @@ td.markup_length {
 $(document).ready(function() {
   console.log(gon);
   
-   gon.all_sessions_markup.forEach(
-      function(element, index) {
-        console.log(element);
-        // console.log(index);
-      });
+  gon.all_sessions_markup.forEach(
+    function(element, index) {
+      console.log(element);
+      // console.log(index);
+      var totalMarkedUpPhases = 0;
+      var markedupBy = new Object();
+      for (var i = 0; i < element.markup.length; i++) {
+        console.log(element.markup[i]);
+        // var markedupBy = new Array();
+        // for(var j = 0; j < element.markup[i].)
+        console.log(element.markup[i].user);
+        var numMarkedupPhases = element.markup[i].last_compile_in_phase - element.markup[i].first_compile_in_phase ;
+        var tempMarkup = markedupBy[element.markup[i].user];
+        if(tempMarkup == undefined){
+          tempMarkup = 0;
+        }
+        markedupBy[element.markup[i].user] = tempMarkup + numMarkedupPhases;
+
+      }
+      console.log(markedupBy);
+    });
+
 
 
   table = $('#myTable').DataTable({
