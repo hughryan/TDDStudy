@@ -61,6 +61,7 @@ td.markup_length {
 <th>Kata<br>Name</th>
 <th>Lang/<br>Framework</th>
 <th>Markups</th>
+<th>InterRated</th>
 <th>Markup</th>
 </tr>
 </thead>
@@ -74,6 +75,7 @@ td.markup_length {
 <th>Kata<br>Name</th>
 <th>Lang/<br>Framework</th>
 <th>Markups</th>
+<th>InterRated</th>
 <th>Markup</th>
 </tr>
 </tfoot>
@@ -142,6 +144,10 @@ $(document).ready(function() {
     }, {
       "className": 'markup_length',
       "data": 'session.markedupBy',
+      "width": '20px'
+    }, {      
+      "className": 'inter_rated',
+      "data": 'interRater',
       "width": '20px'
     }, {
       "className": 'markup',
