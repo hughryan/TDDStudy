@@ -77,10 +77,17 @@ def calc_cycles
       
         if curr_compile.light_color.to_s == "red" || curr_compile.light_color.to_s == "amber"
 
-          if curr_compile.test_change && curr_compile.prod_change #indicates green phase
+
+          if curr_compile.test_change && !curr_compile.prod_change
+
+            curr_phase.compiles << curr_compile
+            curr_compile.save
+            puts "Saved curr_compile to red phase" if CYCLE_DIAG
+
+          elsif curr_compile.test_change && curr_compile.prod_change
 
 
-            ##TODO: introoduce one new test etc. branches here
+            ##################TODO: introoduce only function creation etc. branches here
 
             #save phase before new curr_compile is added
             curr_phase.save
@@ -91,13 +98,6 @@ def calc_cycles
             #new curr_compile is part of next phase, so save now
             puts "Saved curr_compile to green phase" if CYCLE_DIAG
             curr_phase.compiles << curr_compile
-
-          elsif curr_compile.test_change && !curr_compile.prod_change
-
-
-            curr_phase.compiles << curr_compile
-            curr_compile.save
-            puts "Saved curr_compile to red phase" if CYCLE_DIAG
           
           else #only prod edits in red phase indicates deviation from TDD
 
@@ -132,7 +132,7 @@ def calc_cycles
         if curr_compile.light_color.to_s == "red" ||  curr_compile.light_color.to_s == "amber" 
       
 
-          ##TODO: introoduce one new test etc. branches here
+          ##TODO: introoduce no new test etc. branches here
 
           #save curr_compile to phase
           curr_phase.compiles << curr_compile
@@ -155,29 +155,14 @@ def calc_cycles
         end
       when "blue"
         if curr_compile.light_color.to_s == "red" ||  curr_compile.light_color.to_s == "amber" 
-      
+
           ##TODO: this is a placeholder, replace the following branch with new test logic
-          if curr_compile.test_change || !curr_compile.prod_change #IF NEW TEST
-          
-            unless curr_phase.compiles.empty? #the blue phase is not empty
-          
+          if curr_compile.test_change || !curr_compile.prod_change
 
-              curr_cycle.phases << curr_phase
-              curr_phase.save
-              puts "Start red phase" if CYCLE_DIAG
-              curr_phase = Phase.new(tdd_color: "red")
-              curr_phase.compiles << curr_compile
-              puts "Saved curr_compile to red phase" if CYCLE_DIAG
-          
-            else
-          
+            #save the current data as blue
+            curr_cycle.phases << curr_phase
+            curr_phase.save
 
-              puts "Start red phase" if CYCLE_DIAG
-              curr_phase.tdd_color == "red"
-              curr_phase.compiles << curr_compile
-          
-            end
-                
             #End the Cycle
             pos += 1
             curr_session.cycles << curr_cycle
@@ -185,28 +170,43 @@ def calc_cycles
             curr_cycle.save
             puts "Saved cycle" if CYCLE_DIAG
             curr_cycle = Cycle.new(cycle_position: pos)
-        
-          else #if no new test
 
+            #start new phase
+            puts "Start red phase" if CYCLE_DIAG
+            
+            #copy extraFrame to phaseFrame because extraFrame consists of new red phase
+            extra_phase.compiles.each do |current|
+              curr_phase.compiles << current
+            end
 
+            curr_phase.tdd_color = "red"
+            curr_phase.compiles << curr_compile
+            puts "Saved curr_compile to red phase" if CYCLE_DIAG
 
-          #save curr_compile to phase
-          curr_phase.compiles << curr_compile
-          curr_compile.save
-          puts "Saved curr_compile to blue phase" if CYCLE_DIAG
-        
+          else
+
+            #save curr_compile to extraFrame
+            extra_phase.compiles << curr_compile
+            curr_compile.save
+            
           end
+        else #curr_compile is green
 
-        else
-        
+          #if there is no new test
+          if not extra_phase.compiles.empty?
+            #concatenate extraFrame to phaseFrame
+            extra_phase.compiles.each do |current|
+              curr_phase.compiles << current
+            end
 
+          end
           #save curr_compile to phase
           curr_phase.compiles << curr_compile
           curr_compile.save
           puts "Saved curr_compile to blue phase" if CYCLE_DIAG
         
         end
-      
+        
       when "white"
       
         if curr_compile.light_color.to_s == "red" || curr_compile.light_color.to_s == "amber" 
