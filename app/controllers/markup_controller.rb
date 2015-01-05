@@ -16,6 +16,7 @@ class MarkupController < ApplicationController
 		@inter_sessions.each do |interrater|
 			session = Session.find_by(id: interrater.session_id)
 			curr_session_markup = Hash.new
+			curr_session_markup["interRater"] = true
 			curr_session_markup["session"] = session
 			curr_session_markup["markup"] = session.markups
 			curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
@@ -26,6 +27,7 @@ class MarkupController < ApplicationController
 		@markup_sessions.each do |assignment|
 			session = Session.find_by(id: assignment.session_id)			
 			curr_session_markup = Hash.new
+			curr_session_markup["interRater"] = false
 			curr_session_markup["session"] = session
 			curr_session_markup["markup"] = session.markups
 			curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
@@ -264,4 +266,5 @@ class MarkupController < ApplicationController
 			format.json { render :json => names }
 		end
 	end
+end
 end
