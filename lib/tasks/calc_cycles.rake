@@ -16,8 +16,6 @@ require_relative root + '/lib/HostTestRunner'
 require_relative root + '/lib/OsDisk'
 require_relative root + '/app/lib/ASTInterface'
 
-include ASTInterface
-
 CYCLE_DIAG = true
 
 def root_path
