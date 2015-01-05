@@ -109,8 +109,11 @@ function brushended() {
 
 
 function changeDisplayedCode(extent1) {
-  var start = extent1[0];
-  var end = extent1[1];
+  var start = extent1[0]-1;
+  if(start < 0){
+    start = 0;
+  }
+  var end = extent1[1]-1;
 
   $.ajax({
     url: "/viz/retrieve_session",
