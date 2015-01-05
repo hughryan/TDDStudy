@@ -1,3 +1,14 @@
+root = '../..'
+
+require_relative root + '/config/environment.rb'
+require_relative root + '/lib/Docker'
+require_relative root + '/lib/DockerTestRunner'
+require_relative root + '/lib/DummyTestRunner'
+require_relative root + '/lib/Folders'
+require_relative root + '/lib/Git'
+require_relative root + '/lib/HostTestRunner'
+require_relative root + '/lib/OsDisk'
+
 class MarkupController < ApplicationController
 
 	skip_before_filter  :verify_authenticity_token
@@ -6,6 +17,20 @@ class MarkupController < ApplicationController
 	def index
 		@researchers = Researcher.all
 	end
+
+	def dojo
+		externals = {
+			:disk   => OsDisk.new,
+			:git    => Git.new,
+			:runner => DummyTestRunner.new
+		}
+		Dojo.new(root_path,externals)
+	end
+
+	def root_path
+		Rails.root.to_s + '/'
+	end
+
 
 	def researcher
 		@researcher = params[:researcher]
@@ -144,6 +169,13 @@ class MarkupController < ApplicationController
 		print start_id
 		print "  End:"
 		puts end_id
+
+		puts "*********************************"
+		puts dojo.katas[cyberdojo_id].avatars[cyberdojo_avatar].lights.count
+		if(dojo.katas[cyberdojo_id].avatars[cyberdojo_avatar].lights.count == end_id.to_i)
+			end_id = end_id.to_i - 1
+			puts end_id
+		end
 
 		# puts "@cyberdojo_id"
 		@cyberdojo_id

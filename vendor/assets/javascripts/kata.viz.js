@@ -53,7 +53,7 @@ function pageSetup() {
   $(function() {
 
     $.ajax({
-      url: "/viz/retrieve_session",
+      url: "/markup/retrieve_session",
       dataType: 'json',
       data: {
         'start': 0,
@@ -116,7 +116,7 @@ function changeDisplayedCode(extent1) {
   var end = extent1[1]-1;
 
   $.ajax({
-    url: "/viz/retrieve_session",
+    url: "/markup/retrieve_session",
     dataType: 'json',
     data: {
       'start': start,
