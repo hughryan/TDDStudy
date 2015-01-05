@@ -1348,7 +1348,7 @@ function saveNewPhase(start, end, color) {
     },
     cyberdojo_id: gon.cyberdojo_id,
     cyberdojo_avatar: gon.cyberdojo_avatar,
-    //user: $.cookie('username')
+    // user: $.cookie('username')
     user: username
   };
 
@@ -1365,14 +1365,106 @@ function saveNewPhase(start, end, color) {
 
 
 function addNewPhase(start, end, color) {
-  console.log(brush.extent());
   var newPhase = new Object();
+
+  for (var i = (phaseData.length - 1); i >= 0; --i) {
+    var startsInsideRange = false;
+    var finishesInsideRange = false;
+    var coversRange = false;
+
+    if (start == phaseData[i].first_compile_in_phase) {
+      if (end == phaseData[i].last_compile_in_phase) {
+        //EXACT MATCH
+        updatePhase(start, end, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color, color);
+        redrawPhaseBars();
+        return;
+      } else if (end > phaseData[i].last_compile_in_phase) {
+        //Entirely Contained
+        deletePhase(phaseData[i], i);
+        phaseData.splice(i, 1);
+      } else if (end < phaseData[i].last_compile_in_phase) {
+        //Extends beyond
+        updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+      }
+    } else if (start < phaseData[i].first_compile_in_phase) {
+      if ((end >= phaseData[i].last_compile_in_phase)) {
+        // OVERWRITE PHASE
+        deletePhase(phaseData[i], i);
+        phaseData.splice(i, 1);
+      } else if ((end < phaseData[i].last_compile_in_phase) && (end > phaseData[i].firstw_compile_in_phase)) {
+        // MODIFY PHASE
+        updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+      }
+    } else if (start > phaseData[i].first_compile_in_phase) {
+      if ((end >= phaseData[i].last_compile_in_phase) && (start < phaseData[i].last_compile_in_phase)) {
+        //MODIFY PHASE
+        updatePhase(phaseData[i].first_compile_in_phase, start, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+      } else if (end < phaseData[i].last_compile_in_phase) {
+        //SPLIT PHASE
+        addNewPhase(end, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+        updatePhase(phaseData[i].first_compile_in_phase, start, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
+      }
+    }
+  }
+
   newPhase.first_compile_in_phase = start;
   newPhase.last_compile_in_phase = end;
   newPhase.tdd_color = color;
   phaseData.push(newPhase);
   redrawPhaseBars();
   saveNewPhase(start, end, color);
+}
+
+
+
+function updatePhase(newStart, newEnd, oldStart, oldEnd, oldColor, newColor) {
+  console.log("TODO update phase");
+  console.log("newStart: " + newStart);
+  console.log("newEnd: " + newEnd);
+  console.log("oldStart: " + oldStart);
+  console.log("oldEnd: " + oldEnd);
+  console.log("color: " + oldColor);
+  if (newColor == null) {
+    newColor = oldColor;
+  }
+
+  //Update data locally
+  for (var i = 0; i < phaseData.length; i++) {
+    if (phaseData[i].first_compile_in_phase == oldStart) {
+      if (phaseData[i].last_compile_in_phase == oldEnd) {
+        // if (phaseData[i].tdd_color == oldColor) {
+        phaseData[i].first_compile_in_phase = newStart;
+        phaseData[i].last_compile_in_phase = newEnd;
+        phaseData[i].tdd_color = newColor;
+        break;
+        // }
+      }
+    }
+  }
+
+  //Update data on server
+  phaseDataJSON = {
+    phaseData: {
+      oldStart: oldStart,
+      oldEnd: oldEnd,
+      newStart: newStart,
+      newEnd: newEnd,
+      oldColor: oldColor,
+      newColor: newColor
+    },
+    cyberdojo_id: gon.cyberdojo_id,
+    cyberdojo_avatar: gon.cyberdojo_avatar,
+    user: username
+  };
+
+  $.ajax({
+    url: 'update_markup',
+    type: 'post',
+    data: phaseDataJSON,
+    dataType: 'JSON'
+  });
+
+
 }
 
 function deleteMatchingPhases(start, end) {

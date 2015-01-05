@@ -1,4 +1,8 @@
 class MarkupController < ApplicationController
+
+	skip_before_filter  :verify_authenticity_token
+
+
 	def index
 		@researchers = Researcher.all
 	end
@@ -217,33 +221,49 @@ class MarkupController < ApplicationController
 		end
 	end	
 
-	def markup_comparison
+	def update_markup
 
-		@cyberdojo_id = params[:id]
-		@cyberdojo_avatar = params[:avatar]
-		@currSession = Session.find_by(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar)  #.first
-		gon.compiles = @currSession.compiles
+		puts "%%%%%%%%%%%%%%%%%%update_markup$$$$$$$$$$$$$$$$$$"
+		puts params[:phaseData]
+		phaseData =  params[:phaseData]
+		# phase
+		puts phaseData[:oldStart]
+		puts params[:cyberdojo_id]
+		puts params[:cyberdojo_avatar]
+		this_phase_data = params[:phaseData]
+		this_cyberdojo_id = params[:cyberdojo_id]
+		this_cyberdojo_avatar = params[:cyberdojo_avatar]
+
+		currSession = Session.where(cyberdojo_id: this_cyberdojo_id, avatar: this_cyberdojo_avatar).first
+		puts "currSession"
+		puts currSession
+		puts "params[:user]"
+		puts params[:user]
+		puts "this_phase_data[\"newColor\"]"
+		puts this_phase_data["newColor"]
+		puts "this_phase_data[\"oldStart\"]"
+		puts this_phase_data["oldStart"]
+		puts "this_phase_data[\"oldEnd\"]"
+		puts this_phase_data["oldEnd"]
+		markup = Markup.find_by(session: currSession.id, user: params[:user], first_compile_in_phase: this_phase_data["oldStart"], last_compile_in_phase: this_phase_data["oldEnd"])
+		puts "MARKUP"
+		puts markup.inspect
+		# markup.destroy
+		# markup.first_compile_in_phase = 10
+		markup.first_compile_in_phase = this_phase_data["newStart"]
+		markup.last_compile_in_phase = this_phase_data["newEnd"]
+		markup.tdd_color = this_phase_data["newColor"]
+		# markup.first_compile_in_phase = 99
+		# markup.update_attribute(:first_compile_in_phase, 10)
+		markup.save
+		
 
 
-		allMarkups = Hash.new
-		@currSession.markups.each do |markup|
-
-			if allMarkups.has_key?(markup.user)
-				allMarkups[markup.user] << markup
-			else
-				currMarkup = Array.new
-				currMarkup << markup
-				allMarkups[markup.user] = currMarkup
-			end
-			puts "MARKUP"
-			puts markup.user
-			puts markup.inspect
+		names = Array.new
+		respond_to do |format|
+			format.html
+			# format.json { render :json => @oneSession }
+			format.json { render :json => names }
 		end
-
-		gon.allMarkups = allMarkups
-
-		gon.phases = Array.new
-		gon.cyberdojo_id = @cyberdojo_id
-		gon.cyberdojo_avatar = @cyberdojo_avatar
 	end
 end

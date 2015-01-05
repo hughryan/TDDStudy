@@ -26,6 +26,8 @@ Rails.application.routes.draw do
 
   post 'markup/del_markup' => 'markup#del_markup'
 
+  post 'markup/update_markup' => 'markup#update_markup'
+
   get 'markup/manualCatTool' => 'markup#manualCatTool'
 
   get 'markup/timelineWithBrush' => 'markup#timelineWithBrush'
