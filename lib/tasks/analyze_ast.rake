@@ -29,6 +29,7 @@ end
 
 def ast_processing
 	build_dir = 'ast_builds'
+	FileUtils.mkdir_p build_dir, :mode => 0700
 
 	Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
 		print "id: " + session.id.to_s + ", " if DEBUG
