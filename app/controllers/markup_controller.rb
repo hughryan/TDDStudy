@@ -9,10 +9,13 @@ require_relative root + '/lib/Git'
 require_relative root + '/lib/HostTestRunner'
 require_relative root + '/lib/OsDisk'
 
-class VizController < ApplicationController
+class MarkupController < ApplicationController
+
+	skip_before_filter  :verify_authenticity_token
+
+
 	def index
-		@allSessions = Session.all
-		@katas = dojo.katas
+		@researchers = Researcher.all
 	end
 
 	def dojo
@@ -28,21 +31,39 @@ class VizController < ApplicationController
 		Rails.root.to_s + '/'
 	end
 
-	def allCorpus
-		#@allSessions = Session.all		
-		@allSessions = Session.where(language_framework: "Java-1.8_JUnit")
-		allSessionsAndMarkup = Array.new
-		@allSessions.each do |session|
-			currSessionAndMarkup = Hash.new
-			currSessionAndMarkup["session"] = session
-			currSessionAndMarkup["markup"] = session.markups
-			currSessionAndMarkup["compile_count"] = Array.new.push(session.compiles.count)
-			allSessionsAndMarkup << currSessionAndMarkup
+
+	def researcher
+		@researcher = params[:researcher]
+		researcher_id = Researcher.find_by(name: @researcher).id
+		all_sessions_markup = Array.new
+
+		@inter_sessions = InterraterSession.all
+		@inter_sessions.each do |interrater|
+			session = Session.find_by(id: interrater.session_id)
+			curr_session_markup = Hash.new
+			curr_session_markup["interRater"] = true
+			curr_session_markup["session"] = session
+			curr_session_markup["markup"] = session.markups
+			curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
+			all_sessions_markup << curr_session_markup
 		end
-		gon.allSessionsAndMarkup = allSessionsAndMarkup
+
+		@markup_sessions = MarkupAssignment.where(researcher_id: researcher_id)
+		@markup_sessions.each do |assignment|
+			session = Session.find_by(id: assignment.session_id)			
+			curr_session_markup = Hash.new
+			curr_session_markup["interRater"] = false
+			curr_session_markup["session"] = session
+			curr_session_markup["markup"] = session.markups
+			curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
+			all_sessions_markup << curr_session_markup
+		end
+
+		gon.all_sessions_markup = all_sessions_markup		
 	end
 
 	def manualCatTool
+		@researcher = params[:researcher]
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
@@ -71,8 +92,11 @@ class VizController < ApplicationController
 		gon.cyberdojo_avatar = @cyberdojo_avatar
 	end
 
+
+
 	def timelineWithBrush
-		# Params to know what to drwa
+		# Params to know what to draw
+		@researcher = params[:researcher]
 		@cyberdojo_id = params[:id]
 		@cyberdojo_avatar = params[:avatar]
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
@@ -146,6 +170,13 @@ class VizController < ApplicationController
 		print "  End:"
 		puts end_id
 
+		puts "*********************************"
+		puts dojo.katas[cyberdojo_id].avatars[cyberdojo_avatar].lights.count
+		if(dojo.katas[cyberdojo_id].avatars[cyberdojo_avatar].lights.count == end_id.to_i)
+			end_id = end_id.to_i - 1
+			puts end_id
+		end
+
 		# puts "@cyberdojo_id"
 		@cyberdojo_id
 		@cyberdojo_avatar
@@ -170,6 +201,7 @@ class VizController < ApplicationController
 			format.json { render :json => names }
 		end
 	end
+
 
 	def store_markup
 		puts params[:phaseData]
@@ -219,8 +251,51 @@ class VizController < ApplicationController
 			# format.json { render :json => @oneSession }
 			format.json { render :json => names }
 		end
+	end	
+
+	def update_markup
+
+		puts "%%%%%%%%%%%%%%%%%%update_markup$$$$$$$$$$$$$$$$$$"
+		puts params[:phaseData]
+		phaseData =  params[:phaseData]
+		# phase
+		puts phaseData[:oldStart]
+		puts params[:cyberdojo_id]
+		puts params[:cyberdojo_avatar]
+		this_phase_data = params[:phaseData]
+		this_cyberdojo_id = params[:cyberdojo_id]
+		this_cyberdojo_avatar = params[:cyberdojo_avatar]
+
+		currSession = Session.where(cyberdojo_id: this_cyberdojo_id, avatar: this_cyberdojo_avatar).first
+		puts "currSession"
+		puts currSession
+		puts "params[:user]"
+		puts params[:user]
+		puts "this_phase_data[\"newColor\"]"
+		puts this_phase_data["newColor"]
+		puts "this_phase_data[\"oldStart\"]"
+		puts this_phase_data["oldStart"]
+		puts "this_phase_data[\"oldEnd\"]"
+		puts this_phase_data["oldEnd"]
+		markup = Markup.find_by(session: currSession.id, user: params[:user], first_compile_in_phase: this_phase_data["oldStart"], last_compile_in_phase: this_phase_data["oldEnd"])
+		puts "MARKUP"
+		puts markup.inspect
+		# markup.destroy
+		# markup.first_compile_in_phase = 10
+		markup.first_compile_in_phase = this_phase_data["newStart"]
+		markup.last_compile_in_phase = this_phase_data["newEnd"]
+		markup.tdd_color = this_phase_data["newColor"]
+		# markup.first_compile_in_phase = 99
+		# markup.update_attribute(:first_compile_in_phase, 10)
+		markup.save
+		
+
+
+		names = Array.new
+		respond_to do |format|
+			format.html
+			# format.json { render :json => @oneSession }
+			format.json { render :json => names }
+		end
 	end
-
-
-
 end

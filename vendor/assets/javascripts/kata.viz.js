@@ -53,11 +53,11 @@ function pageSetup() {
   $(function() {
 
     $.ajax({
-      url: "/viz/retrieve_session",
+      url: "/markup/retrieve_session",
       dataType: 'json',
       data: {
-        'start': 2,
-        'end': 4,
+        'start': 0,
+        'end': 1,
         'cyberdojo_id': gon.cyberdojo_id,
         'cyberdojo_avatar': gon.cyberdojo_avatar
       },
@@ -109,11 +109,14 @@ function brushended() {
 
 
 function changeDisplayedCode(extent1) {
-  var start = extent1[0];
-  var end = extent1[1];
+  var start = extent1[0]-1;
+  if(start < 0){
+    start = 0;
+  }
+  var end = extent1[1]-1;
 
   $.ajax({
-    url: "/viz/retrieve_session",
+    url: "/markup/retrieve_session",
     dataType: 'json',
     data: {
       'start': start,
@@ -146,9 +149,482 @@ function TDDColor(color) {
 
 }
 
+function drawKataBackground() {
+  // console.log(gon.compiles);
 
+  phaseHeight = 10;
+  lineHeight = 100;
+  scaleHeight = 210;
+  axisHeight = 170;
+  margin = {
+      top: 20,
+      right: 20,
+      bottom: 30,
+      left: 10
+    },
+    width = $(window).width() - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+  var barHeight = 50,
+    color = d3.scale.category20c();
+
+  x = d3.scale.linear()
+    .domain([0, compiles.length + 1])
+    .range([1, width - 40]);
+
+  y = d3.scale.linear()
+    .range([scaleHeight, scaleHeight - 10]);
+
+  yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+  area = d3.svg.area()
+    .x(function(d) {
+      return x(d.date);
+    })
+    .y0(height)
+    .y1(function(d) {
+      return y(d.close);
+    });
+
+
+  brush = d3.svg.brush()
+    .x(x)
+    .extent([0, 1])
+    .on("brushend", brushended);
+
+  xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+  chart = d3.select(".chart")
+    .attr("width", width)
+    .attr("height", barHeight * 4);
+
+
+  // Draw Line for compile points
+  var myLine = chart.append("svg:line")
+    .attr("x1", x(0) + margin.left)
+    .attr("y1", lineHeight)
+    .attr("x2", function(d, i) {
+      return x(compiles.length + 1);
+    })
+    .attr("y2", lineHeight)
+    .style("stroke", "#737373")
+    .style("stroke-width", "1");
+
+  // Draw left start line
+  var startLine = chart.append("svg:line")
+    .attr("x1", margin.left + 1)
+    .attr("y1", lineHeight - 6)
+    .attr("x2", margin.left + 1)
+    .attr("y2", lineHeight + 6)
+    .style("stroke", "#737373");
+
+
+  // //Draw phase bars
+  // phaseBars = chart.selectAll("f")
+  //   .data(phaseData)
+  //   .enter().append("rect")
+  //   .attr("x", function(d, i) {
+  //     return x(d.first_compile_in_phase - 1);
+  //   })
+  //   .attr("y", phaseHeight)
+  //   .attr("width",
+  //     function(d, i) {
+  //       if (d.last_compile_in_phase == compiles.length) {
+  //         return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
+  //       } else {
+  //         return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
+  //       }
+  //     })
+  //   .attr("height", 10)
+  //   .attr("stroke", "grey")
+  //   .attr("fill",
+  //     function(d) {
+  //       return TDDColor(d.tdd_color);
+  //     })
+  //   .attr("transform", "translate(" + margin.left + ",10)");
+
+
+
+  // //Axis
+  // var currTDDBar = chart.append("g")
+  //   .attr("class", "x axis")
+  //   .attr("transform", "translate(" + margin.left + ",110)")
+  //   .call(xAxis)
+  //   .selectAll("text")
+  //   .attr("y", 6)
+  //   .attr("height", 10)
+  //   .style("text-anchor", "start")
+  //   .style("font-size", "16px");
+
+
+  // var lineFunction = d3.svg.line()
+  //   .x(function(d) {
+  //     // console.log(d.git_tag);
+  //     return x(d.git_tag);
+  //   })
+  //   .y(function(d) {
+  //     // console.log(d.total_test_method_count);
+  //     return y(d.total_test_method_count);
+  //   })
+  //   .interpolate("linear");
+
+  // //The line SVG Path we draw
+  // var lineGraph = chart.append("path")
+  //   .attr("d", lineFunction(data))
+  //   .attr("stroke", "#737373")
+  //   .attr("stroke-width", 2)
+  //   .attr("fill", "#737373");
+
+  // var gBrush = chart.append("g")
+  //   .attr("class", "brush")
+  //   .call(brush)
+  //   .call(brush.event);
+
+  // gBrush.selectAll("rect")
+  //   .attr("height", 51)
+  //   .attr("transform", "translate(" + margin.left + ",59)");
+
+
+}
+
+
+function drawCompilePoints() {
+
+  //Draw Compile Points
+  var bar = chart.selectAll("g")
+    .data(data)
+    .enter()
+    .append("g");
+
+  bar.append("rect")
+    .attr("x", function(d, i) {
+      return x(d.git_tag);
+    })
+    .attr("y", -5)
+    .attr("width", 10)
+    .attr("height", 10)
+    .attr("r", 4)
+    .attr("rx", 2.5)
+    .attr("ry", 2.5)
+    .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
+    .attr("fill", function(d) {
+      return TDDColor(d.light_color);
+    })
+    .attr("stroke-width", 2);
+}
+
+function drawAxisAndBars() {
+  // //Axis
+  var currTDDBar = chart.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(" + margin.left + "," + axisHeight + ")")
+    .call(xAxis)
+    .selectAll("text")
+    .attr("y", 6)
+    .attr("height", 10)
+    .style("text-anchor", "start")
+    .style("font-size", "16px");
+
+
+  var lineFunction = d3.svg.line()
+    .x(function(d) {
+      // console.log(d.git_tag);
+      return x(d.git_tag);
+    })
+    .y(function(d) {
+      // console.log(d.total_test_method_count);
+      return y(d.total_test_method_count);
+    })
+    .interpolate("linear");
+
+  //The line SVG Path we draw
+  var lineGraph = chart.append("path")
+    .attr("d", lineFunction(data))
+    .attr("stroke", "#737373")
+    .attr("stroke-width", 2)
+    .attr("fill", "#737373");
+
+  var gBrush = chart.append("g")
+    .attr("class", "brush")
+    .call(brush)
+    .call(brush.event);
+
+  gBrush.selectAll("rect")
+    .attr("height", 51)
+    .attr("transform", "translate(" + margin.left + ",59)");
+
+
+}
+
+function drawEachUserMarkups(AllMarkups) {
+
+  var offset = 0;
+
+  $.each(AllMarkups, function(i, item) {
+    // console.log(item);
+
+    phaseBars = chart.selectAll("f")
+      .data(item)
+      .enter().append("rect")
+      .attr("x", function(d, i) {
+        return x(d.first_compile_in_phase - 1);
+      })
+      .attr("y", phaseHeight + offset)
+      .attr("width",
+        function(d, i) {
+          if (d.last_compile_in_phase == compiles.length) {
+            return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
+          } else {
+            return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
+          }
+        })
+      .attr("height", 15)
+      .attr("stroke", "grey")
+      .attr("fill",
+        function(d) {
+          return TDDColor(d.tdd_color);
+        })
+      .attr("transform", "translate(50,10)");
+
+// compilesArray[0]
+chart.append("svg:text")
+.attr("x", function(d, i) {
+        return x(1);
+      })
+.attr("y", phaseHeight + offset)
+.attr("dy",".35em")
+// .attr("text-anchor", "right")
+.style("font", "300 12px Helvetica Neue")
+.text(i)
+.attr("fill","white")
+.attr("transform", "translate(6,18)");
+
+    offset = offset + 20;
+
+  });
+}
+
+
+function highlightDiffs(AllMarkups) {
+  // console.log(AllMarkups);
+
+  var compilesArray = new Array(compiles.length);
+  for (var i = 0; i < compiles.length + 1; i++) {
+    compilesArray[i] = new Array();
+  }
+  $.each(AllMarkups, function(i, item) {
+    // console.log(item);
+     $.each(item, function(j, phase) {
+      // console.log(phase);
+      for (var k = phase.first_compile_in_phase; k < phase.last_compile_in_phase; k++) {
+        compilesArray[k][i] = phase.tdd_color;
+      }
+     });
+
+  });
+  console.log(compilesArray);
+
+    diffBoxes = chart.selectAll("f")
+      .data(compilesArray)
+      .enter().append("rect")
+      .attr("x", function(d, i) {
+        return x(i-1);
+      })
+      .attr("y", 10)
+      .attr("width", function(d, i) {
+        return x(1);
+        })
+      .attr("height", 150)
+      .attr("stroke", "grey")
+      .attr("fill",  function(d, i) {
+        // return x(1);
+        var ArrayOfKeys = Object.keys(d)
+        var initialValue = d[ArrayOfKeys[0]];
+        var isEqual = true;
+        for(var j = 1; j < ArrayOfKeys.length; j++){
+          if(d[ArrayOfKeys[j]] != initialValue){
+isEqual = false ;
+          }
+        }
+        if(isEqual){
+          return "green";
+        }else{
+          return "red";
+        }
+        })
+      .attr("opacity", .08)
+      .attr("transform", "translate(50,10)");
+    // offset = offset + 20;
+
+}
 
 function drawUncatagorizedKata() {
+
+  // console.log(gon.compiles);
+
+  phaseHeight = 10;
+  var lineHeight = 50;
+  var scaleHeight = 110;
+  margin = {
+      top: 20,
+      right: 20,
+      bottom: 30,
+      left: 10
+    },
+    width = $(window).width() - margin.left - margin.right,
+    height = 100 - margin.top - margin.bottom;
+
+  var barHeight = 50,
+    color = d3.scale.category20c();
+
+  x = d3.scale.linear()
+    .domain([0, compiles.length + 1])
+    .range([1, width - 40]);
+
+  var y = d3.scale.linear()
+    .range([scaleHeight, scaleHeight - 10]);
+
+  var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+  var area = d3.svg.area()
+    .x(function(d) {
+      return x(d.date);
+    })
+    .y0(height)
+    .y1(function(d) {
+      return y(d.close);
+    });
+
+
+  brush = d3.svg.brush()
+    .x(x)
+    .extent([0, 1])
+    .on("brushend", brushended);
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+  chart = d3.select(".chart")
+    .attr("width", width)
+    .attr("height", barHeight * 3);
+
+
+  // Draw Line for compile points
+  var myLine = chart.append("svg:line")
+    .attr("x1", margin.left)
+    .attr("y1", lineHeight)
+    .attr("x2", function(d, i) {
+      return x(compiles.length) + 5;
+    })
+    .attr("y2", lineHeight)
+    .style("stroke", "#737373")
+    .style("stroke-width", "1");
+
+  // Draw left start line
+  var startLine = chart.append("svg:line")
+    .attr("x1", margin.left + 1)
+    .attr("y1", lineHeight - 6)
+    .attr("x2", margin.left + 1)
+    .attr("y2", lineHeight + 6)
+    .style("stroke", "#737373");
+
+
+  //Draw phase bars
+  phaseBars = chart.selectAll("f")
+    .data(phaseData)
+    .enter().append("rect")
+    .attr("x", function(d, i) {
+      return x(d.first_compile_in_phase - 1);
+    })
+    .attr("y", phaseHeight)
+    .attr("width",
+      function(d, i) {
+        if (d.last_compile_in_phase == compiles.length) {
+          return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
+        } else {
+          // return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
+        }
+      })
+    .attr("height", 10)
+    .attr("stroke", "grey")
+    .attr("fill",
+      function(d) {
+        return TDDColor(d.tdd_color);
+      })
+    .attr("transform", "translate(" + margin.left + ",10)");
+
+
+
+  //Draw Compile Points
+  var bar = chart.selectAll("g")
+    .data(data)
+    .enter().append("g");
+
+  bar.append("rect")
+    .attr("x", function(d, i) {
+      return x(d.git_tag);
+    })
+    .attr("y", -5)
+    .attr("width", 10)
+    .attr("height", 10)
+    .attr("r", 4)
+    .attr("rx", 2.5)
+    .attr("ry", 2.5)
+    .attr("transform", "translate(" + margin.left + "," + lineHeight + ")")
+    .attr("fill", function(d) {
+      return TDDColor(d.light_color);
+    })
+    .attr("stroke-width", 2);
+
+  //Axis
+  var currTDDBar = chart.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(" + margin.left + ",110)")
+    .call(xAxis)
+    .selectAll("text")
+    .attr("y", 6)
+    .attr("height", 10)
+    .style("text-anchor", "start")
+    .style("font-size", "16px");
+
+
+  var lineFunction = d3.svg.line()
+    .x(function(d) {
+      // console.log(d.git_tag);
+      return x(d.git_tag);
+    })
+    .y(function(d) {
+      // console.log(d.total_test_method_count);
+      return y(d.total_test_method_count);
+    })
+    .interpolate("linear");
+
+  //The line SVG Path we draw
+  var lineGraph = chart.append("path")
+    .attr("d", lineFunction(data))
+    .attr("stroke", "#737373")
+    .attr("stroke-width", 2)
+    .attr("fill", "#737373");
+
+  var gBrush = chart.append("g")
+    .attr("class", "brush")
+    .call(brush)
+    .call(brush.event);
+
+  gBrush.selectAll("rect")
+    .attr("height", 51)
+    .attr("transform", "translate(" + margin.left + ",59)");
+}
+
+
+function drawallMarkups() {
 
   // console.log(gon.compiles);
 
@@ -251,7 +727,8 @@ function drawUncatagorizedKata() {
   //Draw Compile Points
   var bar = chart.selectAll("g")
     .data(data)
-    .enter().append("g");
+    .enter()
+    .append("g");
 
   bar.append("rect")
     .attr("x", function(d, i) {
@@ -308,7 +785,6 @@ function drawUncatagorizedKata() {
     .attr("height", 51)
     .attr("transform", "translate(" + margin.left + ",59)");
 }
-
 
 
 function drawKataViz() {
@@ -713,9 +1189,9 @@ function populateAccordion(data) {
               setValue(str2);
             }
           });
-          var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-        var currHTML = $('#accordion h3:contains()').last().html()  ;
-        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        var currHTML = $('#accordion h3:contains()').last().html();
+        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
 
       })
     //Add unique start files
@@ -751,9 +1227,9 @@ function populateAccordion(data) {
             setValue(str2);
           }
         });
-        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-        var currHTML = $('#accordion h3:contains()').last().html() ;
-        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+      var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+      var currHTML = $('#accordion h3:contains()').last().html();
+      $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
 
     })
 
@@ -791,10 +1267,10 @@ function populateAccordion(data) {
           }
         });
 
-        // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
-        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-        var currHTML = $('#accordion h3:contains()').last().html() ;
-        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength-1)) ;
+      // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
+      var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+      var currHTML = $('#accordion h3:contains()').last().html();
+      $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
 
     })
 
@@ -855,7 +1331,10 @@ function saveMarkup() {
     url: 'store_markup',
     type: 'post',
     data: phaseDataJSON,
-    dataType: 'JSON'
+    dataType: 'JSON',
+    error: function() {
+      console.error("AJAX");
+    }
   });
 }
 
@@ -869,27 +1348,123 @@ function saveNewPhase(start, end, color) {
     },
     cyberdojo_id: gon.cyberdojo_id,
     cyberdojo_avatar: gon.cyberdojo_avatar,
-    user: $.cookie('username')
+    // user: $.cookie('username')
+    user: username
   };
 
   $.ajax({
     url: 'store_markup',
     type: 'post',
     data: phaseDataJSON,
-    dataType: 'JSON'
+    dataType: 'JSON',
+    error: function() {
+      console.error("AJAX");
+    }
   });
 }
 
 
 function addNewPhase(start, end, color) {
-  console.log(brush.extent());
   var newPhase = new Object();
+
+  for (var i = (phaseData.length - 1); i >= 0; --i) {
+    var startsInsideRange = false;
+    var finishesInsideRange = false;
+    var coversRange = false;
+
+    if (start == phaseData[i].first_compile_in_phase) {
+      if (end == phaseData[i].last_compile_in_phase) {
+        //EXACT MATCH
+        updatePhase(start, end, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color, color);
+        redrawPhaseBars();
+        return;
+      } else if (end > phaseData[i].last_compile_in_phase) {
+        //Entirely Contained
+        deletePhase(phaseData[i], i);
+        phaseData.splice(i, 1);
+      } else if (end < phaseData[i].last_compile_in_phase) {
+        //Extends beyond
+        updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+      }
+    } else if (start < phaseData[i].first_compile_in_phase) {
+      if ((end >= phaseData[i].last_compile_in_phase)) {
+        // OVERWRITE PHASE
+        deletePhase(phaseData[i], i);
+        phaseData.splice(i, 1);
+      } else if ((end < phaseData[i].last_compile_in_phase) && (end > phaseData[i].firstw_compile_in_phase)) {
+        // MODIFY PHASE
+        updatePhase(end, phaseData[i].last_compile_in_phase, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+      }
+    } else if (start > phaseData[i].first_compile_in_phase) {
+      if ((end >= phaseData[i].last_compile_in_phase) && (start < phaseData[i].last_compile_in_phase)) {
+        //MODIFY PHASE
+        updatePhase(phaseData[i].first_compile_in_phase, start, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+      } else if (end < phaseData[i].last_compile_in_phase) {
+        //SPLIT PHASE
+        addNewPhase(end, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color);
+        updatePhase(phaseData[i].first_compile_in_phase, start, phaseData[i].first_compile_in_phase, phaseData[i].last_compile_in_phase, phaseData[i].tdd_color)
+      }
+    }
+  }
+
   newPhase.first_compile_in_phase = start;
   newPhase.last_compile_in_phase = end;
   newPhase.tdd_color = color;
   phaseData.push(newPhase);
   redrawPhaseBars();
   saveNewPhase(start, end, color);
+}
+
+
+
+function updatePhase(newStart, newEnd, oldStart, oldEnd, oldColor, newColor) {
+  console.log("TODO update phase");
+  console.log("newStart: " + newStart);
+  console.log("newEnd: " + newEnd);
+  console.log("oldStart: " + oldStart);
+  console.log("oldEnd: " + oldEnd);
+  console.log("color: " + oldColor);
+  if (newColor == null) {
+    newColor = oldColor;
+  }
+
+  //Update data locally
+  for (var i = 0; i < phaseData.length; i++) {
+    if (phaseData[i].first_compile_in_phase == oldStart) {
+      if (phaseData[i].last_compile_in_phase == oldEnd) {
+        // if (phaseData[i].tdd_color == oldColor) {
+        phaseData[i].first_compile_in_phase = newStart;
+        phaseData[i].last_compile_in_phase = newEnd;
+        phaseData[i].tdd_color = newColor;
+        break;
+        // }
+      }
+    }
+  }
+
+  //Update data on server
+  phaseDataJSON = {
+    phaseData: {
+      oldStart: oldStart,
+      oldEnd: oldEnd,
+      newStart: newStart,
+      newEnd: newEnd,
+      oldColor: oldColor,
+      newColor: newColor
+    },
+    cyberdojo_id: gon.cyberdojo_id,
+    cyberdojo_avatar: gon.cyberdojo_avatar,
+    user: username
+  };
+
+  $.ajax({
+    url: 'update_markup',
+    type: 'post',
+    data: phaseDataJSON,
+    dataType: 'JSON'
+  });
+
+
 }
 
 function deleteMatchingPhases(start, end) {
@@ -925,7 +1500,10 @@ function deletePhase(currPhase, i) {
     url: 'del_markup',
     type: 'post',
     data: phaseDataJSON,
-    dataType: 'JSON'
+    dataType: 'JSON',
+    error: function() {
+      console.error("AJAX");
+    }
   });
 
 }
