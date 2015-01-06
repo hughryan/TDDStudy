@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141217190517) do
+ActiveRecord::Schema.define(version: 20150106034930) do
 
   create_table "compiles", force: true do |t|
     t.integer  "phase_id"
@@ -33,6 +33,8 @@ ActiveRecord::Schema.define(version: 20141217190517) do
     t.boolean  "prod_change"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "total_method_count"
+    t.integer  "total_assert_count"
   end
 
   add_index "compiles", ["phase_id"], name: "index_compiles_on_phase_id"
