@@ -37,8 +37,8 @@ def ast_processing
 		print "avatar: " + session.avatar.to_s + "\n" if DEBUG
 
 		session.compiles.each_with_index do |curr, index|
-			curr.total_test_method_count = 0
-			asserts = 0 # placeholder for future db schema update to include total_test_assert_count
+			curr.total_method_count = 0
+			curr.total_assert_count = 0
 			light = dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[curr.git_tag]
 
 			if light	# only lights that do not contain nil should be evaluated for files
@@ -48,13 +48,13 @@ def ast_processing
 
 				files.each do |file|
 					File.open(path + "/" + file, 'w') { |f| f.write(light.tag.visible_files[file]) }					
-					curr.total_test_method_count += findMethods(path + "/" + file)
-					asserts += findAsserts(path + "/" + file)
+					curr.total_method_count += findMethods(path + "/" + file)
+					curr.total_assert_count += findAsserts(path + "/" + file)
 				end
 			
 			print "  " + curr.git_tag.to_s + ":\t" if DEBUG
-			print "methods: " + curr.total_test_method_count.to_s + ", " if DEBUG
-			print "asserts: " + asserts.to_s + "\n" if DEBUG
+			print "methods: " + curr.total_method_count.to_s + ", " if DEBUG
+			print "asserts: " + curr.total_assert_count.to_s + "\n" if DEBUG
 
 			curr.save
 			end
