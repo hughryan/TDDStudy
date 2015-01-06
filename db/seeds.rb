@@ -9,10 +9,9 @@ require_relative root + '/lib/Folders'
 require_relative root + '/lib/Git'
 require_relative root + '/lib/HostTestRunner'
 require_relative root + '/lib/OsDisk'
-require_relative root + '/app/lib/ASTInterface'
+#require_relative root + '/app/lib/ASTInterface'
 
-
-include ASTInterface
+#include ASTInterface
 
 # Set to true for debug prints
 DEBUG = false
