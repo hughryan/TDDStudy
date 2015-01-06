@@ -10,9 +10,9 @@ require_relative root + '/lib/Folders'
 require_relative root + '/lib/Git'
 require_relative root + '/lib/HostTestRunner'
 require_relative root + '/lib/OsDisk'
-require_relative root + '/app/lib/ASTInterface'
+#require_relative root + '/app/lib/ASTInterface'
 
-include ASTInterface
+#include ASTInterface
 
 DEBUG = true
 @TIME_CEILING = 1200 # Time Ceiling in Seconds Per Light
