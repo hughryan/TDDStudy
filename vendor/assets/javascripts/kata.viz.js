@@ -1150,145 +1150,32 @@ function populateAccordion(data) {
     }
   }
 
-  // $("#accordion").style("overflow","scroll");
-  // $("#accordion").accordion({
-  //   // heightStyle: "fill"
-  //   heightStyle: "content"
-  // });
-
   $('#accordion').html("");
 
   //Add Common Files
   commonFiles
     .forEach(
       function(element, index) {
-        // console.log(element);
-        // console.log(data.start[element]);
-        // console.log(data.end[element]);
-
         var str1 = data.start[element];
         var str2 = data.end[element];
         addTitleAndDiffCode(str1, str2, element);
-
-        // var safeName = element.replace('.', '');
-
-        // var newDiv = "<div><h3>" + element + "<\/h3><div><div id='compare_" + safeName + "' class='CodeMirror'></div></div></div>";
-        // $('#accordion').append(newDiv);
-
-        // $('#compare_' + safeName)
-        //   .mergely({
-        //     width: 1100,
-        //     // height: 'auto',
-        //     cmsettings: {
-        //       readOnly: true,
-        //       lineNumbers: true,
-        //       mode: "text/x-java"
-        //     },
-        //     lhs: function(setValue) {
-        //       setValue(str1);
-        //     },
-        //     rhs: function(setValue) {
-        //       setValue(str2);
-        //     }
-        //   });
-        // // var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-        // // var currHTML = $('#accordion h3:contains()').last().html();
-        // // $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
-        // // var currDiv = $('div').add(currHTML + " ChangeValue:" + (diffLength - 1)).add();
-        // // $('#accordion').append(currDiv);
       })
     //Add unique start files
   uniqueStart.forEach(
     function(element, index) {
-      // console.log(element);
-      // console.log(data.start[element]);
-      // console.log(data.end[element]);
-
       var str1 = data.start[element];
-      // var str2 = data.start[element];
       //THis will make the diff clear that the file was removed
       var str2 = "";
-
       addTitleAndDiffCode(str1, str2, element);
-
-
-      // var safeName = element.replace('.', '');
-
-      // var newDiv = "<div><div id='" + element + "'>" + element + "<\/h3><div><div id='compare_" + safeName + "' class='CodeMirror'></div></div></div>";
-      // $('#accordion').append(newDiv);
-
-      // $('#compare_' + safeName)
-      //   .mergely({
-      //     width: 800,
-      //     // height: 'auto',
-      //     cmsettings: {
-      //       readOnly: true,
-      //       lineNumbers: true,
-      //       mode: "text/x-java"
-      //     },
-      //     lhs: function(setValue) {
-      //       setValue(str1);
-      //     },
-      //     rhs: function(setValue) {
-      //       setValue(str2);
-      //     }
-      //   });
-      // var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-      // var currHTML = $('#accordion h3:contains()').last().html();
-      // $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
-
     })
 
   //Add unique end files
   uniqueEnd.forEach(
     function(element, index) {
-      // console.log(element);
-      // console.log(data.start[element]);
-      // console.log(data.end[element]);
-
-      //This will make the diff clear that the file was added
-      // var str1 = data.end[element];
       var str1 = "";
       var str2 = data.end[element];
-
       addTitleAndDiffCode(str1, str2, element);
-
-      // var safeName = element.replace('.', '');
-
-      // var newDiv = "<div><h3>" + element + "<\/h3><div><div id='compare_" + safeName + "' class='CodeMirror'></div></div></div>";
-      // $('#accordion').append(newDiv);
-
-      // $('#compare_' + safeName)
-      //   .mergely({
-      //     width: 800,
-      //     // height: 'auto',
-      //     cmsettings: {
-      //       readOnly: true,
-      //       lineNumbers: true,
-      //       mode: "text/x-java"
-      //     },
-      //     lhs: function(setValue) {
-      //       setValue(str1);
-      //     },
-      //     rhs: function(setValue) {
-      //       setValue(str2);
-      //     }
-      //   });
-
-      // // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
-      // var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-      // var currHTML = $('#accordion h3:contains()').last().html();
-      // $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
-
     })
-
-
-  // $('#accordion').accordion("refresh");
-  // $("#accordion").accordion("option", "active", 0);
-
-  console.log($("#header").height());
-  console.log($(window).height());
-  console.log($(window).height() - $("#header").height());
   $("#accordion").height($(window).height() - $("#header").height() - 20);
 }
 
@@ -1302,8 +1189,9 @@ function addTitleAndDiffCode(str1, str2, element) {
 
   $('#compare_' + safeName)
     .mergely({
-      width: 800,
+      width: $(window).width,
       // height: 'auto',
+      autoresize:true,
       cmsettings: {
         readOnly: true,
         lineNumbers: true,
@@ -1316,19 +1204,27 @@ function addTitleAndDiffCode(str1, str2, element) {
         setValue(str2);
       }
     });
-
-  // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
   var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-  // var currHTML = $('#accordion h3:contains()').last().html();
-  // $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
-if(diffLength == 1){
- $("#compare_" + safeName).css("display","none")
- $("#" + safeName).addClass("collapsed");
+  if (diffLength == 1) {
+    $("#compare_" + safeName).css("display", "none");
+    $("#" + safeName).addClass("collapsed");
+    $("#" + safeName).click(expand);
+  } else {
+    $("#" + safeName).click(collapse);
+  }
+
+  $('#' + safeName).html(element + " ChangeValue:" + (diffLength - 1));
+
 }
 
-$('#'+safeName).html(element + " ChangeValue:" + (diffLength - 1));
+function collapse(e) {
+$("#compare_" + e.currentTarget.id).css("display", "none");
+$("#" + e.currentTarget.id).click(expand);
+}
 
-
+function expand(e) {
+$("#compare_" + e.currentTarget.id).css("display", "block");
+$("#" + e.currentTarget.id).click(collapse);
 }
 
 function checkLogin() {
