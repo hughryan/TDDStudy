@@ -34,6 +34,12 @@ td.markup {
   background: url('<%= image_url('icons/pencil.png') %>') no-repeat center center;
   cursor: pointer;
 }
+td.comparison {
+  background: url('<%= image_url('icons/copy.gif') %>') no-repeat center center;
+  cursor: pointer;
+}
+/*/comparison*/
+
 td.compile_count {
   text-align: center;
 }
@@ -63,6 +69,7 @@ td.markup_length {
 <th>Markups</th>
 <th>InterRated</th>
 <th>Markup</th>
+<th>Comparison</th>
 </tr>
 </thead>
 
@@ -77,6 +84,7 @@ td.markup_length {
 <th>Markups</th>
 <th>InterRated</th>
 <th>Markup</th>
+<th>Comparison</th>
 </tr>
 </tfoot>
 
@@ -145,12 +153,18 @@ $(document).ready(function() {
       "className": 'markup_length',
       "data": 'session.markedupBy',
       "width": '20px'
-    }, {      
+    }, {
       "className": 'inter_rated',
       "data": 'interRater',
       "width": '20px'
     }, {
       "className": 'markup',
+      "orderable": false,
+      "data": null,
+      "defaultContent": '',
+      "width": '20px'
+    }, {
+      "className": 'comparison',
       "orderable": false,
       "data": null,
       "defaultContent": '',
@@ -176,4 +190,14 @@ $('#myTable').on('click', 'td.markup', function() {
   var kata_name = $(this).parent().find(".kata_name").html();
   window.location.href = "manualCatTool?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
 });
+
+$('#myTable').on('click', 'td.comparison', function() {
+  var researcher = "<%= @researcher %>"
+  var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
+  var avatar = $(this).parent().find(".avatar").html();
+  var kata_name = $(this).parent().find(".kata_name").html();
+  window.location.href = "markup_comparison?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+});
+
+
 </script>
