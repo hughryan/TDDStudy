@@ -1193,7 +1193,7 @@ function addTitleAndDiffCode(str1, str2, element) {
     .mergely({
       // width: ($(window).width/2),
       // height: 500,
-       width: $(window).width(),
+       width: $(window).width()-($(window).width()*0.05),
       autoresize:true,
       sidebar:false,
       cmsettings: {
