@@ -1,4 +1,3 @@
-desc "TODO"
 task :calcCycles do
   calc_cycles
 end
