@@ -109,11 +109,11 @@ function brushended() {
 
 
 function changeDisplayedCode(extent1) {
-  var start = extent1[0]-1;
-  if(start < 0){
+  var start = extent1[0] - 1;
+  if (start < 0) {
     start = 0;
   }
-  var end = extent1[1]-1;
+  var end = extent1[1] - 1;
 
   $.ajax({
     url: "/markup/retrieve_session",
@@ -145,6 +145,8 @@ function TDDColor(color) {
     return "orange";
   } else if (color == "white") {
     return "#efefef";
+  } else if (color == "brown") {
+    return "#49362E";
   }
 
 }
@@ -390,18 +392,18 @@ function drawEachUserMarkups(AllMarkups) {
         })
       .attr("transform", "translate(50,10)");
 
-// compilesArray[0]
-chart.append("svg:text")
-.attr("x", function(d, i) {
+    // compilesArray[0]
+    chart.append("svg:text")
+      .attr("x", function(d, i) {
         return x(1);
       })
-.attr("y", phaseHeight + offset)
-.attr("dy",".35em")
-// .attr("text-anchor", "right")
-.style("font", "300 12px Helvetica Neue")
-.text(i)
-.attr("fill","white")
-.attr("transform", "translate(6,18)");
+      .attr("y", phaseHeight + offset)
+      .attr("dy", ".35em")
+      // .attr("text-anchor", "right")
+      .style("font", "300 12px Helvetica Neue")
+      .text(i)
+      .attr("fill", "white")
+      .attr("transform", "translate(6,18)");
 
     offset = offset + 20;
 
@@ -418,47 +420,47 @@ function highlightDiffs(AllMarkups) {
   }
   $.each(AllMarkups, function(i, item) {
     // console.log(item);
-     $.each(item, function(j, phase) {
+    $.each(item, function(j, phase) {
       // console.log(phase);
       for (var k = phase.first_compile_in_phase; k < phase.last_compile_in_phase; k++) {
         compilesArray[k][i] = phase.tdd_color;
       }
-     });
+    });
 
   });
   console.log(compilesArray);
 
-    diffBoxes = chart.selectAll("f")
-      .data(compilesArray)
-      .enter().append("rect")
-      .attr("x", function(d, i) {
-        return x(i-1);
-      })
-      .attr("y", 10)
-      .attr("width", function(d, i) {
-        return x(1);
-        })
-      .attr("height", 150)
-      .attr("stroke", "grey")
-      .attr("fill",  function(d, i) {
-        // return x(1);
-        var ArrayOfKeys = Object.keys(d)
-        var initialValue = d[ArrayOfKeys[0]];
-        var isEqual = true;
-        for(var j = 1; j < ArrayOfKeys.length; j++){
-          if(d[ArrayOfKeys[j]] != initialValue){
-isEqual = false ;
-          }
+  diffBoxes = chart.selectAll("f")
+    .data(compilesArray)
+    .enter().append("rect")
+    .attr("x", function(d, i) {
+      return x(i - 1);
+    })
+    .attr("y", 10)
+    .attr("width", function(d, i) {
+      return x(1);
+    })
+    .attr("height", 150)
+    .attr("stroke", "grey")
+    .attr("fill", function(d, i) {
+      // return x(1);
+      var ArrayOfKeys = Object.keys(d)
+      var initialValue = d[ArrayOfKeys[0]];
+      var isEqual = true;
+      for (var j = 1; j < ArrayOfKeys.length; j++) {
+        if (d[ArrayOfKeys[j]] != initialValue) {
+          isEqual = false;
         }
-        if(isEqual){
-          return "green";
-        }else{
-          return "red";
-        }
-        })
-      .attr("opacity", .08)
-      .attr("transform", "translate(50,10)");
-    // offset = offset + 20;
+      }
+      if (isEqual) {
+        return "green";
+      } else {
+        return "red";
+      }
+    })
+    .attr("opacity", .08)
+    .attr("transform", "translate(50,10)");
+  // offset = offset + 20;
 
 }
 
@@ -1525,7 +1527,7 @@ function initializeKeyBindings() {
 
   // console.log("INIT BINDINGS");
   $(document).keydown(function(e) {
-    // console.log(e.which);
+    console.log(e.which);
     switch (e.which) {
       case 65: //a
         addNewPhase(brush.extent()[0], brush.extent()[1], "red");
@@ -1541,6 +1543,10 @@ function initializeKeyBindings() {
 
       case 70: //f
         addNewPhase(brush.extent()[0], brush.extent()[1], "white");
+        break;
+
+      case 71: //g
+        addNewPhase(brush.extent()[0], brush.extent()[1], "brown");
         break;
 
       case 37: // left
