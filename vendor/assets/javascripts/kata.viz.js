@@ -506,7 +506,7 @@ function drawUncatagorizedKata() {
 
   brush = d3.svg.brush()
     .x(x)
-    .extent([0, 1])
+    .extent([-1, 0])
     .on("brushend", brushended);
 
   var xAxis = d3.svg.axis()
@@ -1191,8 +1191,9 @@ function addTitleAndDiffCode(str1, str2, element) {
 
   $('#compare_' + safeName)
     .mergely({
-      width: $(window).width,
+      // width: ($(window).width/2),
       // height: 500,
+       width: $(window).width()-($(window).width()*0.05),
       autoresize:true,
       sidebar:false,
       cmsettings: {
