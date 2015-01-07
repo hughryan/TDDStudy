@@ -1216,7 +1216,7 @@ function addTitleAndDiffCode(str1, str2, element) {
 
   $('#' + safeName).html(element + " ChangeValue:" + (diffLength - 1));
 
-$('#compare_' + safeName).mergely('resize')
+// $('#compare_' + safeName).mergely('resize')
 }
 
 function collapse(e) {
