@@ -71,8 +71,70 @@ color: gray;
 font-family: sans-serif;
 }
 
+#accordion{
+  overflow: scroll;
+}
+
+.entireDiffArea{
+padding-top:10px;
+padding-right:14px;
+margin-top: 10px;
+}
+
+.diffTitle{
+  border: 2px solid #888888;
+background: white url("images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
+font-weight: normal;
+color: #212121;
+border-top-right-radius: 4px;
+border-top-left-radius: 4px;
+display: block;
+cursor: pointer;
+position: relative;
+margin: 2px 0px 0px 0px;
+padding: .3em .3em 0em .3em;
+min-height: 0;
+/* support: IE7; */
+font-size: 100%;
+font-weight: bold;
+float:left;
+margin-bottom: -1px;
+width:90%;
+}
+
+.diffArea{
+  border: 2px solid #888888;
+background: white url("images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
+font-weight: normal;
+color: #212121;
+border-bottom-right-radius: 4px;
+border-bottom-left-radius: 4px;
+display: block;
+cursor: pointer;
+position: relative;
+margin: -1px 0 0 0;
+padding: .3em .3em .1em .3em;
+min-height: 0;
+/* support: IE7; */
+font-size: 100%;
+font-weight: bold;
+float:left;
+margin-bottom: 5px;
+width:90%;
+}
+
+.CodeMirror{
+  width:100%;
+  background: white url("images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
+   border: 2px solid #888888;
+   border-top-right-radius: 4px;
+border-top-left-radius: 4px;
+display: block;
+}
+
 </style>
 
+<div id="header">
 <h3>
 <div id="username">
 Researcher: <%= params[:researcher] %>
@@ -94,7 +156,7 @@ x - delete all cycles under brush<br>
 
 <div id="viz"></div>
 <svg class="chart"></svg>
-
+</div>
 <div id="accordion">
 </div>
 
@@ -108,17 +170,10 @@ var phaseData = gon.phases;
 compiles = gon.compiles;
 cycles = gon.cycles;
 username = "<%= params[:researcher] %>";
-// console.log(gon.cycles);
 
 pageSetup();
 
-// console.log(gon.normalizedPhaseTime);
-// console.log(gon.normalizedPhaseSLOC);
-// console.log(username);
-
-// TDDData = gon.normalizedPhaseSLOC;
 drawUncatagorizedKata();
-// buildpulseChart(gon.normalizedPhaseSLOC);
-addAllPrexistingMarkup(gon.allMarkups[username]);
+// addAllPrexistingMarkup(gon.allMarkups[username]);
 
 </script>

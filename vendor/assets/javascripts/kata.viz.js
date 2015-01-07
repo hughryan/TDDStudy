@@ -109,11 +109,11 @@ function brushended() {
 
 
 function changeDisplayedCode(extent1) {
-  var start = extent1[0]-1;
-  if(start < 0){
+  var start = extent1[0] - 1;
+  if (start < 0) {
     start = 0;
   }
-  var end = extent1[1]-1;
+  var end = extent1[1] - 1;
 
   $.ajax({
     url: "/markup/retrieve_session",
@@ -390,18 +390,18 @@ function drawEachUserMarkups(AllMarkups) {
         })
       .attr("transform", "translate(50,10)");
 
-// compilesArray[0]
-chart.append("svg:text")
-.attr("x", function(d, i) {
+    // compilesArray[0]
+    chart.append("svg:text")
+      .attr("x", function(d, i) {
         return x(1);
       })
-.attr("y", phaseHeight + offset)
-.attr("dy",".35em")
-// .attr("text-anchor", "right")
-.style("font", "300 12px Helvetica Neue")
-.text(i)
-.attr("fill","white")
-.attr("transform", "translate(6,18)");
+      .attr("y", phaseHeight + offset)
+      .attr("dy", ".35em")
+      // .attr("text-anchor", "right")
+      .style("font", "300 12px Helvetica Neue")
+      .text(i)
+      .attr("fill", "white")
+      .attr("transform", "translate(6,18)");
 
     offset = offset + 20;
 
@@ -418,47 +418,47 @@ function highlightDiffs(AllMarkups) {
   }
   $.each(AllMarkups, function(i, item) {
     // console.log(item);
-     $.each(item, function(j, phase) {
+    $.each(item, function(j, phase) {
       // console.log(phase);
       for (var k = phase.first_compile_in_phase; k < phase.last_compile_in_phase; k++) {
         compilesArray[k][i] = phase.tdd_color;
       }
-     });
+    });
 
   });
   console.log(compilesArray);
 
-    diffBoxes = chart.selectAll("f")
-      .data(compilesArray)
-      .enter().append("rect")
-      .attr("x", function(d, i) {
-        return x(i-1);
-      })
-      .attr("y", 10)
-      .attr("width", function(d, i) {
-        return x(1);
-        })
-      .attr("height", 150)
-      .attr("stroke", "grey")
-      .attr("fill",  function(d, i) {
-        // return x(1);
-        var ArrayOfKeys = Object.keys(d)
-        var initialValue = d[ArrayOfKeys[0]];
-        var isEqual = true;
-        for(var j = 1; j < ArrayOfKeys.length; j++){
-          if(d[ArrayOfKeys[j]] != initialValue){
-isEqual = false ;
-          }
+  diffBoxes = chart.selectAll("f")
+    .data(compilesArray)
+    .enter().append("rect")
+    .attr("x", function(d, i) {
+      return x(i - 1);
+    })
+    .attr("y", 10)
+    .attr("width", function(d, i) {
+      return x(1);
+    })
+    .attr("height", 150)
+    .attr("stroke", "grey")
+    .attr("fill", function(d, i) {
+      // return x(1);
+      var ArrayOfKeys = Object.keys(d)
+      var initialValue = d[ArrayOfKeys[0]];
+      var isEqual = true;
+      for (var j = 1; j < ArrayOfKeys.length; j++) {
+        if (d[ArrayOfKeys[j]] != initialValue) {
+          isEqual = false;
         }
-        if(isEqual){
-          return "green";
-        }else{
-          return "red";
-        }
-        })
-      .attr("opacity", .08)
-      .attr("transform", "translate(50,10)");
-    // offset = offset + 20;
+      }
+      if (isEqual) {
+        return "green";
+      } else {
+        return "red";
+      }
+    })
+    .attr("opacity", .08)
+    .attr("transform", "translate(50,10)");
+  // offset = offset + 20;
 
 }
 
@@ -1150,10 +1150,11 @@ function populateAccordion(data) {
     }
   }
 
-  $("#accordion").accordion({
-    // heightStyle: "fill"
-    heightStyle: "content"
-  });
+  // $("#accordion").style("overflow","scroll");
+  // $("#accordion").accordion({
+  //   // heightStyle: "fill"
+  //   heightStyle: "content"
+  // });
 
   $('#accordion').html("");
 
@@ -1167,32 +1168,34 @@ function populateAccordion(data) {
 
         var str1 = data.start[element];
         var str2 = data.end[element];
+        addTitleAndDiffCode(str1, str2, element);
 
-        var safeName = element.replace('.', '');
+        // var safeName = element.replace('.', '');
 
-        var newDiv = "<h3>" + element + "<\/h3><div><div id='compare_" + safeName + "' class='CodeMirror'></div></div>";
-        $('#accordion').append(newDiv);
+        // var newDiv = "<div><h3>" + element + "<\/h3><div><div id='compare_" + safeName + "' class='CodeMirror'></div></div></div>";
+        // $('#accordion').append(newDiv);
 
-        $('#compare_' + safeName)
-          .mergely({
-            width: 1100,
-            // height: 'auto',
-            cmsettings: {
-              readOnly: true,
-              lineNumbers: true,
-              mode: "text/x-java"
-            },
-            lhs: function(setValue) {
-              setValue(str1);
-            },
-            rhs: function(setValue) {
-              setValue(str2);
-            }
-          });
-        var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-        var currHTML = $('#accordion h3:contains()').last().html();
-        $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
-
+        // $('#compare_' + safeName)
+        //   .mergely({
+        //     width: 1100,
+        //     // height: 'auto',
+        //     cmsettings: {
+        //       readOnly: true,
+        //       lineNumbers: true,
+        //       mode: "text/x-java"
+        //     },
+        //     lhs: function(setValue) {
+        //       setValue(str1);
+        //     },
+        //     rhs: function(setValue) {
+        //       setValue(str2);
+        //     }
+        //   });
+        // // var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+        // // var currHTML = $('#accordion h3:contains()').last().html();
+        // // $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
+        // // var currDiv = $('div').add(currHTML + " ChangeValue:" + (diffLength - 1)).add();
+        // // $('#accordion').append(currDiv);
       })
     //Add unique start files
   uniqueStart.forEach(
@@ -1206,30 +1209,33 @@ function populateAccordion(data) {
       //THis will make the diff clear that the file was removed
       var str2 = "";
 
-      var safeName = element.replace('.', '');
+      addTitleAndDiffCode(str1, str2, element);
 
-      var newDiv = "<h3>" + element + "<\/h3><div><div id='compare_" + safeName + "' class='CodeMirror'></div></div>";
-      $('#accordion').append(newDiv);
 
-      $('#compare_' + safeName)
-        .mergely({
-          width: 800,
-          // height: 'auto',
-          cmsettings: {
-            readOnly: true,
-            lineNumbers: true,
-            mode: "text/x-java"
-          },
-          lhs: function(setValue) {
-            setValue(str1);
-          },
-          rhs: function(setValue) {
-            setValue(str2);
-          }
-        });
-      var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-      var currHTML = $('#accordion h3:contains()').last().html();
-      $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
+      // var safeName = element.replace('.', '');
+
+      // var newDiv = "<div><div id='" + element + "'>" + element + "<\/h3><div><div id='compare_" + safeName + "' class='CodeMirror'></div></div></div>";
+      // $('#accordion').append(newDiv);
+
+      // $('#compare_' + safeName)
+      //   .mergely({
+      //     width: 800,
+      //     // height: 'auto',
+      //     cmsettings: {
+      //       readOnly: true,
+      //       lineNumbers: true,
+      //       mode: "text/x-java"
+      //     },
+      //     lhs: function(setValue) {
+      //       setValue(str1);
+      //     },
+      //     rhs: function(setValue) {
+      //       setValue(str2);
+      //     }
+      //   });
+      // var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+      // var currHTML = $('#accordion h3:contains()').last().html();
+      // $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
 
     })
 
@@ -1245,38 +1251,84 @@ function populateAccordion(data) {
       var str1 = "";
       var str2 = data.end[element];
 
-      var safeName = element.replace('.', '');
+      addTitleAndDiffCode(str1, str2, element);
 
-      var newDiv = "<h3>" + element + "<\/h3><div><div id='compare_" + safeName + "' class='CodeMirror'></div></div>";
-      $('#accordion').append(newDiv);
+      // var safeName = element.replace('.', '');
 
-      $('#compare_' + safeName)
-        .mergely({
-          width: 800,
-          // height: 'auto',
-          cmsettings: {
-            readOnly: true,
-            lineNumbers: true,
-            mode: "text/x-java"
-          },
-          lhs: function(setValue) {
-            setValue(str1);
-          },
-          rhs: function(setValue) {
-            setValue(str2);
-          }
-        });
+      // var newDiv = "<div><h3>" + element + "<\/h3><div><div id='compare_" + safeName + "' class='CodeMirror'></div></div></div>";
+      // $('#accordion').append(newDiv);
 
-      // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
-      var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
-      var currHTML = $('#accordion h3:contains()').last().html();
-      $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
+      // $('#compare_' + safeName)
+      //   .mergely({
+      //     width: 800,
+      //     // height: 'auto',
+      //     cmsettings: {
+      //       readOnly: true,
+      //       lineNumbers: true,
+      //       mode: "text/x-java"
+      //     },
+      //     lhs: function(setValue) {
+      //       setValue(str1);
+      //     },
+      //     rhs: function(setValue) {
+      //       setValue(str2);
+      //     }
+      //   });
+
+      // // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
+      // var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+      // var currHTML = $('#accordion h3:contains()').last().html();
+      // $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
 
     })
 
 
-  $('#accordion').accordion("refresh");
-  $("#accordion").accordion("option", "active", 0);
+  // $('#accordion').accordion("refresh");
+  // $("#accordion").accordion("option", "active", 0);
+
+  console.log($("#header").height());
+  console.log($(window).height());
+  console.log($(window).height() - $("#header").height());
+  $("#accordion").height($(window).height() - $("#header").height() - 20);
+}
+
+
+function addTitleAndDiffCode(str1, str2, element) {
+
+  var safeName = element.replace('.', '');
+
+  var newDiv = "<div class='entireDiffArea'><div class='diffTitle' id='" + safeName + "'>" + element + "<\/div><div class='diffArea'><div id='compare_" + safeName + "' class='CodeMirror'></div></div></div></div></div>";
+  $('#accordion').append(newDiv);
+
+  $('#compare_' + safeName)
+    .mergely({
+      width: 800,
+      // height: 'auto',
+      cmsettings: {
+        readOnly: true,
+        lineNumbers: true,
+        mode: "text/x-java"
+      },
+      lhs: function(setValue) {
+        setValue(str1);
+      },
+      rhs: function(setValue) {
+        setValue(str2);
+      }
+    });
+
+  // console.log($('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length);
+  var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+  // var currHTML = $('#accordion h3:contains()').last().html();
+  // $('#accordion h3:contains()').last().html(currHTML + " ChangeValue:" + (diffLength - 1));
+if(diffLength == 1){
+ $("#compare_" + safeName).css("display","none")
+ $("#" + safeName).addClass("collapsed");
+}
+
+$('#'+safeName).html(element + " ChangeValue:" + (diffLength - 1));
+
+
 }
 
 function checkLogin() {
