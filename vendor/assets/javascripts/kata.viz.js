@@ -145,6 +145,8 @@ function TDDColor(color) {
     return "orange";
   } else if (color == "white") {
     return "#efefef";
+  } else if (color == "brown") {
+    return "#49362E";
   }
 
 }
@@ -1475,7 +1477,7 @@ function initializeKeyBindings() {
 
   // console.log("INIT BINDINGS");
   $(document).keydown(function(e) {
-    // console.log(e.which);
+    console.log(e.which);
     switch (e.which) {
       case 65: //a
         addNewPhase(brush.extent()[0], brush.extent()[1], "red");
@@ -1491,6 +1493,10 @@ function initializeKeyBindings() {
 
       case 70: //f
         addNewPhase(brush.extent()[0], brush.extent()[1], "white");
+        break;
+
+      case 71: //g
+        addNewPhase(brush.extent()[0], brush.extent()[1], "brown");
         break;
 
       case 37: // left
