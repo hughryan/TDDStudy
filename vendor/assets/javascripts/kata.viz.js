@@ -1190,8 +1190,9 @@ function addTitleAndDiffCode(str1, str2, element) {
   $('#compare_' + safeName)
     .mergely({
       width: $(window).width,
-      // height: 'auto',
+      // height: 500,
       autoresize:true,
+      sidebar:false,
       cmsettings: {
         readOnly: true,
         lineNumbers: true,
@@ -1215,6 +1216,7 @@ function addTitleAndDiffCode(str1, str2, element) {
 
   $('#' + safeName).html(element + " ChangeValue:" + (diffLength - 1));
 
+$('#compare_' + safeName).mergely('resize')
 }
 
 function collapse(e) {
@@ -1223,7 +1225,7 @@ $("#" + e.currentTarget.id).click(expand);
 }
 
 function expand(e) {
-$("#compare_" + e.currentTarget.id).css("display", "block");
+$("#compare_" + e.currentTarget.id).css("display", "inline");
 $("#" + e.currentTarget.id).click(collapse);
 }
 
