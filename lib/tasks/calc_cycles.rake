@@ -40,6 +40,8 @@ def calc_cycles
   cycle_reds = 0
   cycle_time = 0
   first_cycle = true
+  curr_num_tests = 0
+  new_test = false
 
   #Get Session
   Session.all.each do |curr_session|
@@ -54,6 +56,12 @@ def calc_cycles
 
     #For Each Light
     curr_session.compiles.each_with_index do |curr_compile, index|
+      
+      #check for new test in compiles
+      if curr_compile.total_assert_count > curr_num_tests
+        new_test = true
+      end
+
       puts "CYCLE_DIAG CURR: #{curr_compile}" if CYCLE_DIAG
       puts "CYCLE_DIAG INDEX: #{index}" if CYCLE_DIAG
 
@@ -69,37 +77,86 @@ def calc_cycles
 
       #NEW LOGIC ============================
       case curr_phase.tdd_color
-      
+
       when "red"
-      
         if curr_compile.light_color.to_s == "red" || curr_compile.light_color.to_s == "amber"
-
-
+          
           if curr_compile.test_change && !curr_compile.prod_change
-
             curr_phase.compiles << curr_compile
             curr_compile.save
             puts "Saved curr_compile to red phase" if CYCLE_DIAG
-
+          
           elsif curr_compile.test_change && curr_compile.prod_change
+          
+            if new_test
+              #save phase before new curr_compile is added
+              curr_phase.save
 
-
-            ##################TODO: introoduce only function creation etc. branches here
-
-            #save phase before new curr_compile is added
-            curr_phase.save
-
-            puts "Start Green Phase" if CYCLE_DIAG
-            curr_phase = Phase.new(tdd_color: "green")
-            
-            #new curr_compile is part of next phase, so save now
-            puts "Saved curr_compile to green phase" if CYCLE_DIAG
-            curr_phase.compiles << curr_compile
+              puts "Start Green Phase" if CYCLE_DIAG
+              curr_phase = Phase.new(tdd_color: "green")
+              
+              #new curr_compile is part of next phase, so save now
+              puts "Saved curr_compile to green phase" if CYCLE_DIAG
+              curr_phase.compiles << curr_compile
+              
+              #reset new_test
+              new_test = false
+            else
+              puts "[!!] NON - TDD >> no new test and production edits occured" if CYCLE_DIAG
+          
+              #NON TDD (no red phase occured)
+              curr_cycle.valid_tdd = false
+              curr_phase.tdd_color = "white"
+          
+              #save curr_compile to phase
+              curr_phase.compiles << curr_compile
+              curr_compile.save
+          
+              #reset new_test
+              new_test = false
+            end
           
           else #only prod edits in red phase indicates deviation from TDD
+          
+            if new_test
+              #save phase before new curr_compile is added
+              curr_phase.save
 
-
-            puts "[!!] NON - TDD >> no red phase occured" if CYCLE_DIAG
+              puts "Start Green Phase" if CYCLE_DIAG
+              curr_phase = Phase.new(tdd_color: "green")
+              
+              #new curr_compile is part of next phase, so save now
+              puts "Saved curr_compile to green phase" if CYCLE_DIAG
+              curr_phase.compiles << curr_compile
+          
+              #reset new_test
+              new_test = false
+            else  
+              puts "[!!] NON - TDD >> no new test for testing phase" if CYCLE_DIAG
+          
+              #NON TDD (no red phase occured)
+              curr_cycle.valid_tdd = false
+              curr_phase.tdd_color = "white"
+          
+              #save curr_compile to phase
+              curr_phase.compiles << curr_compile
+              curr_compile.save
+          
+              #reset new_test
+              new_test = false
+            end
+          
+          end
+        
+        else #green curr_compile state should not happen in red phase
+        
+          if curr_compile.test_change && !curr_compile.prod_change
+            curr_phase.compiles << curr_compile
+            curr_compile.save
+            puts "Saved curr_compile to red phase" if CYCLE_DIAG
+          
+          else
+            puts "[!!] NON - TDD >> production edits in testing phase" if CYCLE_DIAG
         
             #NON TDD (no red phase occured)
             curr_cycle.valid_tdd = false
@@ -108,13 +165,23 @@ def calc_cycles
             #save curr_compile to phase
             curr_phase.compiles << curr_compile
             curr_compile.save
-         
+          
+            #reset new_test
+            new_test = false
           end
 
-        else #green curr_compile state should not happen in red phase
-
+        end
+      
+      when "green"
+      
+        if curr_compile.light_color.to_s == "red" ||  curr_compile.light_color.to_s == "amber" 
+          if !new_test
+            #save curr_compile to phase
+            curr_phase.compiles << curr_compile
+            curr_compile.save
           
-            puts "[!!] NON - TDD >> no red phase occured" if CYCLE_DIAG
+          else
+            puts "[!!] NON - TDD >> new test in green phase!" if CYCLE_DIAG
         
             #NON TDD (no red phase occured)
             curr_cycle.valid_tdd = false
@@ -123,21 +190,14 @@ def calc_cycles
             #save curr_compile to phase
             curr_phase.compiles << curr_compile
             curr_compile.save
-        
-        end
-      when "green"
-        if curr_compile.light_color.to_s == "red" ||  curr_compile.light_color.to_s == "amber" 
-      
-
-          ##TODO: introoduce no new test etc. branches here
-
-          #save curr_compile to phase
-          curr_phase.compiles << curr_compile
-          curr_compile.save
           
-        else #green curr_compile indicates the green phase has ended, move on to refactor (or test if need be)
-      
+            #reset new_test
+            new_test = false
+          end
 
+        else #green curr_compile indicates the green phase has ended, move on to refactor (or test if need be)
+    
+          if !new_test
             #save current curr_compile to phase and phase to cycle
             curr_cycle.phases << curr_phase
             curr_phase.save
@@ -148,14 +208,30 @@ def calc_cycles
             
             #next phase (assume the next phase is blue)
             curr_phase = Phase.new(tdd_color: "blue")
+    
+          else
+            puts "[!!] NON - TDD >> new test in green phase!" if CYCLE_DIAG
+        
+            #NON TDD (no red phase occured)
+            curr_cycle.valid_tdd = false
+            curr_phase.tdd_color = "white"
+        
+            #save curr_compile to phase
+            curr_phase.compiles << curr_compile
+            curr_compile.save
+          
+            #reset new_test
+            new_test = false
+    
+          end
         
         end
+
       when "blue"
+        
         if curr_compile.light_color.to_s == "red" ||  curr_compile.light_color.to_s == "amber" 
-
-          ##TODO: this is a placeholder, replace the following branch with new test logic
-          if curr_compile.test_change || !curr_compile.prod_change
-
+     
+          if new_test
             #save the current data as blue
             curr_cycle.phases << curr_phase
             curr_phase.save
@@ -167,41 +243,50 @@ def calc_cycles
             curr_cycle.save
             puts "Saved cycle" if CYCLE_DIAG
             curr_cycle = Cycle.new(cycle_position: pos)
-
             #start new phase
             puts "Start red phase" if CYCLE_DIAG
-            
             #copy extraFrame to phaseFrame because extraFrame consists of new red phase
             extra_phase.compiles.each do |current|
               curr_phase.compiles << current
             end
-
             curr_phase.tdd_color = "red"
             curr_phase.compiles << curr_compile
             puts "Saved curr_compile to red phase" if CYCLE_DIAG
-
           else
-
             #save curr_compile to extraFrame
             extra_phase.compiles << curr_compile
-            curr_compile.save
-            
+            curr_compile.save  
           end
+
         else #curr_compile is green
-
-          #if there is no new test
-          if not extra_phase.compiles.empty?
-            #concatenate extraFrame to phaseFrame
-            extra_phase.compiles.each do |current|
-              curr_phase.compiles << current
+    
+          if !new_test
+    
+            if not extra_phase.compiles.empty?
+              #concatenate extraFrame to phaseFrame
+              extra_phase.compiles.each do |current|
+                curr_phase.compiles << current          
+              end
             end
-
+            #save curr_compile to phase
+            curr_phase.compiles << curr_compile
+            curr_compile.save
+            puts "Saved curr_compile to blue phase" if CYCLE_DIAG
+          
+          else
+            
+            puts "[!!] NON - TDD >> new test in green phase!" if CYCLE_DIAG
+            #NON TDD (no red phase occured)
+            curr_cycle.valid_tdd = false
+            curr_phase.tdd_color = "white"
+            #save curr_compile to phase
+            curr_phase.compiles << curr_compile
+            curr_compile.save
+            #reset new_test
+            new_test = false
+          
           end
-          #save curr_compile to phase
-          curr_phase.compiles << curr_compile
-          curr_compile.save
-          puts "Saved curr_compile to blue phase" if CYCLE_DIAG
-        
+
         end
         
       when "white"
