@@ -1,20 +1,23 @@
-function addNextRecordLink(){
-  console.log(gon.all_sessions_markup.markup);
-  var i = 0;
-  while((gon.all_sessions_markup[i].markup.length>0) && (gon.all_sessions_markup[i].session.id = gon.session_id)){
-    i++;
+function addNextRecordLink() {
+
+  var selectedSessionIndex = 0;
+  for (var i = 0; i < gon.all_sessions_markup.length; i++) {
+    if ((gon.all_sessions_markup[i].markup.length == 0) && (gon.all_sessions_markup[i].session.id != gon.session_id)) {
+      selectedSessionIndex = i;
+      break;
+    }
   }
-  if(i == gon.all_sessions_markup.length){
+
+  if (selectedSessionIndex == gon.all_sessions_markup.length) {
     console.log("no session Found");
-  }else{
+  } else {
     console.log(gon.all_sessions_markup[i]);
     var nSesh = gon.all_sessions_markup[i].session;
     var a = "";
-    $("#nextKata").html("<a href='manualCatTool?researcher="+gon.researcher+"&id="+nSesh.cyberdojo_id+"&avatar="+nSesh.avatar+"&kataName="+nSesh.kata_name+"'>NEXT KATA</a>");
+    $("#nextKata").html("<a href='manualCatTool?researcher=" + gon.researcher + "&id=" + nSesh.cyberdojo_id + "&avatar=" + nSesh.avatar + "&kataName=" + nSesh.kata_name + "'>NEXT KATA</a>");
   }
 
 }
-
 function createHiveData(red, green, blue) {
   if (blue == 0 || isNaN(blue)) {
     blue = 0.001;
