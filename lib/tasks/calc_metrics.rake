@@ -314,6 +314,6 @@ def calc_lines(prev, curr, session)
 end
 
 desc "TODO"
-task :calcMetrics => :environment do
+task :calc_metrics => :environment do
   build_metric_data  
 end

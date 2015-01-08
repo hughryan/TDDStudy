@@ -1,4 +1,4 @@
-task :calcCycles do
+task :calc_cycles do
   calc_cycles
 end
 
@@ -13,7 +13,8 @@ require_relative root + '/lib/Folders'
 require_relative root + '/lib/Git'
 require_relative root + '/lib/HostTestRunner'
 require_relative root + '/lib/OsDisk'
-require_relative root + '/app/lib/ASTInterface'
+require_relative root + '/lib/ASTInterface/ASTInterface'
+
 
 CYCLE_DIAG = true
 
@@ -58,10 +59,12 @@ def calc_cycles
     curr_session.compiles.each_with_index do |curr_compile, index|
       
       #check for new test in compiles
-      if curr_compile.total_assert_count > curr_num_tests
-        new_test = true
+      if !curr_compile.total_assert_count.nil?
+        if curr_compile.total_assert_count > curr_num_tests
+          new_test = true
+          curr_num_tests = curr_compile.total_assert_count
+        end
       end
-
       puts "CYCLE_DIAG CURR: #{curr_compile}" if CYCLE_DIAG
       puts "CYCLE_DIAG INDEX: #{index}" if CYCLE_DIAG
 
