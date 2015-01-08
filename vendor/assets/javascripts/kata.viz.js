@@ -458,12 +458,11 @@ function highlightDiffs(AllMarkups) {
         return "red";
       }
     })
-    .attr("opacity", .08)
-    .attr("transform", "translate(50,10)");
-  // offset = offset + 20;
+.attr("opacity", .08)
+  .attr("transform", "translate(" + margin.left + ",10)");
+// offset = offset + 20;
 
 }
-
 function drawUncatagorizedKata() {
 
   // console.log(gon.compiles);
