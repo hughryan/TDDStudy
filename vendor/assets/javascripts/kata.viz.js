@@ -1,3 +1,23 @@
+function addNextRecordLink() {
+
+  var selectedSessionIndex = 0;
+  for (var i = 0; i < gon.all_sessions_markup.length; i++) {
+    if ((gon.all_sessions_markup[i].markup.length == 0) && (gon.all_sessions_markup[i].session.id != gon.session_id)) {
+      selectedSessionIndex = i;
+      break;
+    }
+  }
+
+  if (selectedSessionIndex == gon.all_sessions_markup.length) {
+    console.log("no session Found");
+  } else {
+    console.log(gon.all_sessions_markup[i]);
+    var nSesh = gon.all_sessions_markup[i].session;
+    var a = "";
+    $("#nextKata").html("<a href='manualCatTool?researcher=" + gon.researcher + "&id=" + nSesh.cyberdojo_id + "&avatar=" + nSesh.avatar + "&kataName=" + nSesh.kata_name + "'>NEXT KATA</a>");
+  }
+
+}
 function createHiveData(red, green, blue) {
   if (blue == 0 || isNaN(blue)) {
     blue = 0.001;
@@ -57,7 +77,7 @@ function pageSetup() {
       dataType: 'json',
       data: {
         'start': 0,
-        'end': 1,
+        'end': 0,
         'cyberdojo_id': gon.cyberdojo_id,
         'cyberdojo_avatar': gon.cyberdojo_avatar
       },
@@ -506,7 +526,7 @@ function drawUncatagorizedKata() {
 
   brush = d3.svg.brush()
     .x(x)
-    .extent([-1, 0])
+    .extent([0, 1])
     .on("brushend", brushended);
 
   var xAxis = d3.svg.axis()
