@@ -449,7 +449,7 @@ function highlightDiffs(AllMarkups) {
     .data(compilesArray)
     .enter().append("rect")
     .attr("x", function(d, i) {
-      return x(i - 1);
+      return x(i);
     })
     .attr("y", 10)
     .attr("width", function(d, i) {
