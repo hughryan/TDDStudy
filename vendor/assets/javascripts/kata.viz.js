@@ -57,7 +57,7 @@ function pageSetup() {
       dataType: 'json',
       data: {
         'start': 0,
-        'end': 1,
+        'end': 0,
         'cyberdojo_id': gon.cyberdojo_id,
         'cyberdojo_avatar': gon.cyberdojo_avatar
       },
@@ -506,7 +506,7 @@ function drawUncatagorizedKata() {
 
   brush = d3.svg.brush()
     .x(x)
-    .extent([-1, 0])
+    .extent([0, 1])
     .on("brushend", brushended);
 
   var xAxis = d3.svg.axis()
