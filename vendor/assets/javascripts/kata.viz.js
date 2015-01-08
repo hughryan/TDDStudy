@@ -387,22 +387,17 @@ function drawEachUserMarkups(AllMarkups) {
   var offset = 0;
 
   $.each(AllMarkups, function(i, item) {
-    // console.log(item);
 
     phaseBars = chart.selectAll("f")
       .data(item)
       .enter().append("rect")
       .attr("x", function(d, i) {
-        return x(d.first_compile_in_phase - 1);
+        return x(d.first_compile_in_phase);
       })
-      .attr("y", phaseHeight + offset)
+      .attr("y", phaseHeight + offset )
       .attr("width",
         function(d, i) {
-          if (d.last_compile_in_phase == compiles.length) {
-            return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
-          } else {
-            return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
-          }
+          return x(d.last_compile_in_phase - d.first_compile_in_phase);
         })
       .attr("height", 15)
       .attr("stroke", "grey")
@@ -410,7 +405,7 @@ function drawEachUserMarkups(AllMarkups) {
         function(d) {
           return TDDColor(d.tdd_color);
         })
-      .attr("transform", "translate(50,10)");
+      .attr("transform", "translate(" + margin.left + ",10)");
 
     // compilesArray[0]
     chart.append("svg:text")
@@ -478,12 +473,11 @@ function highlightDiffs(AllMarkups) {
         return "red";
       }
     })
-    .attr("opacity", .08)
-    .attr("transform", "translate(50,10)");
-  // offset = offset + 20;
+.attr("opacity", .08)
+  .attr("transform", "translate(" + margin.left + ",10)");
+// offset = offset + 20;
 
 }
-
 function drawUncatagorizedKata() {
 
   // console.log(gon.compiles);
@@ -1283,7 +1277,7 @@ function redrawPhaseBars() {
       function(d, i) {
         return x(d.last_compile_in_phase - d.first_compile_in_phase);
       })
-    .attr("height", 10)
+    .attr("height", 15)
     .attr("stroke", "grey")
     .attr("fill",
       function(d) {
