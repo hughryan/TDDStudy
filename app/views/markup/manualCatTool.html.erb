@@ -143,10 +143,14 @@ border-top-left-radius: 4px;
 
 }
 
+.nextKata{
+  width: 20%;
+}
 </style>
 
 <div id="header">
 <h3>
+<div id="nextKata">NO CANDIDATE FOUND</div>
 <div id="username">
 Researcher: <%= params[:researcher] %>
 </div>
@@ -159,7 +163,7 @@ Kata Name: <%= params[:kataName] %>
 
 
 <body>
-<div id="instructions">'a' - mark red cycle : 's' - mark as green cycle : 'd' - mark as blue cycle : 'f' mark as white cycle<br>
+<div id="instructions">'a' - mark red cycle : 's' - mark as green cycle : 'd' - mark as blue cycle : 'f' mark as white cycle : 'g' mark as brown cycle<br>
 left and right arrow - move entire brush left and right <br>
 shift + arrow - grow that side : alt (option) + arrow - shrink that side<br>
 x - delete all cycles under brush<br>
@@ -185,6 +189,8 @@ username = "<%= params[:researcher] %>";
 pageSetup();
 
 drawUncatagorizedKata();
-// addAllPrexistingMarkup(gon.allMarkups[username]);
+addAllPrexistingMarkup(gon.allMarkups[username]);
+
+addNextRecordLink();
 
 </script>

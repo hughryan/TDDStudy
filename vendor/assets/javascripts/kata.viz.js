@@ -1,3 +1,23 @@
+function addNextRecordLink() {
+
+  var selectedSessionIndex = 0;
+  for (var i = 0; i < gon.all_sessions_markup.length; i++) {
+    if ((gon.all_sessions_markup[i].markup.length == 0) && (gon.all_sessions_markup[i].session.id != gon.session_id)) {
+      selectedSessionIndex = i;
+      break;
+    }
+  }
+
+  if (selectedSessionIndex == gon.all_sessions_markup.length) {
+    console.log("no session Found");
+  } else {
+    console.log(gon.all_sessions_markup[i]);
+    var nSesh = gon.all_sessions_markup[i].session;
+    var a = "";
+    $("#nextKata").html("<a href='manualCatTool?researcher=" + gon.researcher + "&id=" + nSesh.cyberdojo_id + "&avatar=" + nSesh.avatar + "&kataName=" + nSesh.kata_name + "'>NEXT KATA</a>");
+  }
+
+}
 function createHiveData(red, green, blue) {
   if (blue == 0 || isNaN(blue)) {
     blue = 0.001;
@@ -57,7 +77,7 @@ function pageSetup() {
       dataType: 'json',
       data: {
         'start': 0,
-        'end': 1,
+        'end': 0,
         'cyberdojo_id': gon.cyberdojo_id,
         'cyberdojo_avatar': gon.cyberdojo_avatar
       },
@@ -145,6 +165,8 @@ function TDDColor(color) {
     return "orange";
   } else if (color == "white") {
     return "#efefef";
+  } else if (color == "brown") {
+    return "#49362E";
   }
 
 }
@@ -365,22 +387,17 @@ function drawEachUserMarkups(AllMarkups) {
   var offset = 0;
 
   $.each(AllMarkups, function(i, item) {
-    // console.log(item);
 
     phaseBars = chart.selectAll("f")
       .data(item)
       .enter().append("rect")
       .attr("x", function(d, i) {
-        return x(d.first_compile_in_phase - 1);
+        return x(d.first_compile_in_phase);
       })
-      .attr("y", phaseHeight + offset)
+      .attr("y", phaseHeight + offset )
       .attr("width",
         function(d, i) {
-          if (d.last_compile_in_phase == compiles.length) {
-            return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
-          } else {
-            return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
-          }
+          return x(d.last_compile_in_phase - d.first_compile_in_phase);
         })
       .attr("height", 15)
       .attr("stroke", "grey")
@@ -388,7 +405,7 @@ function drawEachUserMarkups(AllMarkups) {
         function(d) {
           return TDDColor(d.tdd_color);
         })
-      .attr("transform", "translate(50,10)");
+      .attr("transform", "translate(" + margin.left + ",10)");
 
     // compilesArray[0]
     chart.append("svg:text")
@@ -432,7 +449,7 @@ function highlightDiffs(AllMarkups) {
     .data(compilesArray)
     .enter().append("rect")
     .attr("x", function(d, i) {
-      return x(i - 1);
+      return x(i);
     })
     .attr("y", 10)
     .attr("width", function(d, i) {
@@ -456,12 +473,11 @@ function highlightDiffs(AllMarkups) {
         return "red";
       }
     })
-    .attr("opacity", .08)
-    .attr("transform", "translate(50,10)");
-  // offset = offset + 20;
+.attr("opacity", .08)
+  .attr("transform", "translate(" + margin.left + ",10)");
+// offset = offset + 20;
 
 }
-
 function drawUncatagorizedKata() {
 
   // console.log(gon.compiles);
@@ -1189,8 +1205,9 @@ function addTitleAndDiffCode(str1, str2, element) {
 
   $('#compare_' + safeName)
     .mergely({
-      width: $(window).width,
+      // width: ($(window).width/2),
       // height: 500,
+       width: $(window).width()-($(window).width()*0.05),
       autoresize:true,
       sidebar:false,
       cmsettings: {
@@ -1260,7 +1277,7 @@ function redrawPhaseBars() {
       function(d, i) {
         return x(d.last_compile_in_phase - d.first_compile_in_phase);
       })
-    .attr("height", 10)
+    .attr("height", 15)
     .attr("stroke", "grey")
     .attr("fill",
       function(d) {
@@ -1475,7 +1492,7 @@ function initializeKeyBindings() {
 
   // console.log("INIT BINDINGS");
   $(document).keydown(function(e) {
-    // console.log(e.which);
+    console.log(e.which);
     switch (e.which) {
       case 65: //a
         addNewPhase(brush.extent()[0], brush.extent()[1], "red");
@@ -1491,6 +1508,10 @@ function initializeKeyBindings() {
 
       case 70: //f
         addNewPhase(brush.extent()[0], brush.extent()[1], "white");
+        break;
+
+      case 71: //g
+        addNewPhase(brush.extent()[0], brush.extent()[1], "brown");
         break;
 
       case 37: // left
