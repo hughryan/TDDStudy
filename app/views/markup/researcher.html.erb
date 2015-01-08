@@ -67,6 +67,7 @@ td.markup_length {
 <th>Kata<br>Name</th>
 <th>Lang/<br>Framework</th>
 <th>Markups</th>
+<th>Markup Agreement</th>
 <th>InterRated</th>
 <th>Markup</th>
 <th>Comparison</th>
@@ -82,6 +83,7 @@ td.markup_length {
 <th>Kata<br>Name</th>
 <th>Lang/<br>Framework</th>
 <th>Markups</th>
+<th>Markup Agreement</th>
 <th>InterRated</th>
 <th>Markup</th>
 <th>Comparison</th>
@@ -92,32 +94,60 @@ td.markup_length {
 
 <script>
 $(document).ready(function() {
-  console.log(gon);
-  
+      // console.log(gon);
+
   gon.all_sessions_markup.forEach(
     function(element, index) {
-      console.log(element);
+      // console.log(element);
       // console.log(index);
       var totalMarkedUpPhases = 0;
       var markedupBy = new Object();
+      var MarkupGrid = new Object();
       for (var i = 0; i < element.markup.length; i++) {
-        console.log(element.markup[i]);
-        // var markedupBy = new Array();
-        // for(var j = 0; j < element.markup[i].)
-        console.log(element.markup[i].user);
-        var numMarkedupPhases = element.markup[i].last_compile_in_phase - element.markup[i].first_compile_in_phase ;
+        var numMarkedupPhases = element.markup[i].last_compile_in_phase - element.markup[i].first_compile_in_phase;
         var tempMarkup = markedupBy[element.markup[i].user];
-        if(tempMarkup == undefined){
+        if (tempMarkup == undefined) {
           tempMarkup = 0;
         }
         markedupBy[element.markup[i].user] = tempMarkup + numMarkedupPhases;
 
+        var currMarkup = element.markup[i];
+
+        if (MarkupGrid[currMarkup.user] == undefined) {
+          MarkupGrid[currMarkup.user] = new Array();
+        }
+
+        for (var j = currMarkup.first_compile_in_phase; j <= currMarkup.last_compile_in_phase; j++) {
+          MarkupGrid[currMarkup.user][j] = currMarkup.tdd_color;
+        }
+
+
+
       }
       element.session.markedupBy = JSON.stringify(markedupBy);
-      console.log(markedupBy);
+      // console.log(MarkupGrid);
+
+      var numAgreed = 0;
+      var keys = Object.keys(MarkupGrid);
+      if(keys.length > 1){
+      for (var k = 0; k < element.compile_count[0]; k++) {
+        var inagreement = true;
+        for (var l = 1; l < keys.length; l++) {
+          if (MarkupGrid[keys[0]][k] != MarkupGrid[keys[l]][k]) {
+            inagreement = false;
+            break;
+          }
+        }
+        if (inagreement) {
+          numAgreed = numAgreed+1;
+        }
+      }
+    }else{
+      numAgreed = 0;
+    }
+      // console.log(numAgreed);
+      element.numAgreed = numAgreed
     });
-
-
 
   table = $('#myTable').DataTable({
     "data": gon.all_sessions_markup,
@@ -152,6 +182,10 @@ $(document).ready(function() {
     }, {
       "className": 'markup_length',
       "data": 'session.markedupBy',
+      "width": '20px'
+    }, {
+      "className": 'markup_agreement',
+      "data": 'numAgreed',
       "width": '20px'
     }, {
       "className": 'inter_rated',
