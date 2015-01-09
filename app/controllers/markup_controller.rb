@@ -68,6 +68,8 @@ class MarkupController < ApplicationController
 		@cyberdojo_avatar = params[:avatar]
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
 		gon.compiles = @currSession.compiles
+		# gon.nextSession = Session.includes(:markups).where(:markups => { :session_id => nil }, ).first_compile_in_phase
+
 
 
 		allMarkups = Hash.new
@@ -90,6 +92,40 @@ class MarkupController < ApplicationController
 		gon.phases = Array.new
 		gon.cyberdojo_id = @cyberdojo_id
 		gon.cyberdojo_avatar = @cyberdojo_avatar
+		gon.session_id = @currSession.id
+		gon.researcher = @researcher
+
+		#USE TO GRAB NEXT
+		@researcher = params[:researcher]
+		researcher_id = Researcher.find_by(name: @researcher).id
+		all_sessions_markup = Array.new
+
+		@inter_sessions = InterraterSession.all
+		@inter_sessions.each do |interrater|
+			session = Session.find_by(id: interrater.session_id)
+			curr_session_markup = Hash.new
+			curr_session_markup["interRater"] = true
+			curr_session_markup["session"] = session
+			curr_session_markup["markup"] = session.markups
+			curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
+			all_sessions_markup << curr_session_markup
+		end
+
+		@markup_sessions = MarkupAssignment.where(researcher_id: researcher_id)
+		@markup_sessions.each do |assignment|
+			session = Session.find_by(id: assignment.session_id)			
+			curr_session_markup = Hash.new
+			curr_session_markup["interRater"] = false
+			curr_session_markup["session"] = session
+			curr_session_markup["markup"] = session.markups
+			curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
+			all_sessions_markup << curr_session_markup
+		end
+
+		gon.all_sessions_markup = all_sessions_markup	
+
+
+
 	end
 
 
@@ -298,4 +334,35 @@ class MarkupController < ApplicationController
 			format.json { render :json => names }
 		end
 	end
+
+	def markup_comparison
+
+		@cyberdojo_id = params[:id]
+		@cyberdojo_avatar = params[:avatar]
+		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
+		gon.compiles = @currSession.compiles
+
+
+		allMarkups = Hash.new
+		@currSession.markups.each do |markup|
+
+			if allMarkups.has_key?(markup.user)
+				allMarkups[markup.user] << markup
+			else
+				currMarkup = Array.new
+				currMarkup << markup
+				allMarkups[markup.user] = currMarkup
+			end
+			# puts "MARKUP"
+			# puts markup.user
+			# puts markup.inspect
+		end
+
+		gon.allMarkups = allMarkups
+
+		gon.phases = Array.new
+		gon.cyberdojo_id = @cyberdojo_id
+		gon.cyberdojo_avatar = @cyberdojo_avatar
+	end
+
 end
