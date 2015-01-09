@@ -44,8 +44,11 @@ def calc_cycles
   curr_num_tests = 0
   new_test = false
 
+# ALLOWED_LANGS = Set["Java-1.8_JUnit"]
+
   #Get Session
-  Session.all.each do |curr_session|
+  # Session.all.each do |curr_session|
+  Session.where("language_framework = ?", "Java-1.8_JUnit").find_each do |curr_session|
     puts "CYCLE_DIAG: #{curr_session[0]}" if CYCLE_DIAG
 
     #New Cycle
