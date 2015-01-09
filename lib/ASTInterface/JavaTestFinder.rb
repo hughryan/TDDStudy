@@ -75,7 +75,7 @@ class JavaTestFinder
   end
 
   def is_assert(invocation)
-  	valid_assert_names = ["assertArrayEquals", "assertEquals", "assertNotSame", "assertNull", "assertSame", "assertThat", "assertTrue", "assertFalse"]
+    valid_assert_names = ["assertArrayEquals", "assertEquals", "assertFalse", "assertNotEquals", "assertNotNull", "assertNotSame", "assertNull", "assertSame", "assertThat", "assertTrue"]
   	method_name = get_method_name(invocation)
 
   	is_valid = valid_assert_names.include? method_name
