@@ -81,6 +81,10 @@ def calc_cycles
       puts "Current Phase: " + curr_phase.tdd_color.to_s if CYCLE_DIAG
       puts "Current Phase Empty?: " + curr_phase.compiles.empty?.to_s if CYCLE_DIAG
 
+      if(!curr_compile.test_change && !curr_compile.prod_change)
+        puts "NO MEANINGFUL CHANGE" if CYCLE_DIAG
+        next
+      end
       #NEW LOGIC ============================
       case curr_phase.tdd_color
 
