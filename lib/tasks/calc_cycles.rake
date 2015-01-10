@@ -118,7 +118,7 @@ def calc_cycles
                 #reset new_test
                 new_test = false
               else
-                puts "[!!] NON - TDD >> no new test and production edits occured" if CYCLE_DIAG
+                puts "[!1!] NON - TDD >> no new test and production edits occured" if CYCLE_DIAG
             
                 #NON TDD (no red phase occured)
                 curr_cycle.valid_tdd = false
@@ -148,7 +148,7 @@ def calc_cycles
                 #reset new_test
                 new_test = false
               else  
-                puts "[!!] NON - TDD >> no new test for testing phase" if CYCLE_DIAG
+                puts "[!2!] NON - TDD >> no new test for testing phase" if CYCLE_DIAG
             
                 #NON TDD (no red phase occured)
                 curr_cycle.valid_tdd = false
@@ -172,7 +172,7 @@ def calc_cycles
               puts "Saved curr_compile to red phase" if CYCLE_DIAG
             
             else
-              puts "[!!] NON - TDD >> production edits in testing phase" if CYCLE_DIAG
+              puts "[!3!] NON - TDD >> production edits in testing phase" if CYCLE_DIAG
           
               #NON TDD (no red phase occured)
               curr_cycle.valid_tdd = false
@@ -197,7 +197,7 @@ def calc_cycles
               curr_compile.save
             
             else
-              puts "[!!] NON - TDD >> new test in green phase!" if CYCLE_DIAG
+              puts "[!4!] NON - TDD >> new test in green phase!" if CYCLE_DIAG
           
               #NON TDD (no red phase occured)
               curr_cycle.valid_tdd = false
@@ -226,7 +226,7 @@ def calc_cycles
               curr_phase = Phase.new(tdd_color: "blue")
       
             else
-              puts "[!!] NON - TDD >> new test in green phase!" if CYCLE_DIAG
+              puts "[!5!] NON - TDD >> new test in green phase!" if CYCLE_DIAG
           
               #NON TDD (no red phase occured)
               curr_cycle.valid_tdd = false
@@ -291,7 +291,7 @@ def calc_cycles
             
             else
               
-              puts "[!!] NON - TDD >> new test in green phase!" if CYCLE_DIAG
+              puts "[!6!] NON - TDD >> new test in green phase!" if CYCLE_DIAG
               #NON TDD (no red phase occured)
               curr_cycle.valid_tdd = false
               curr_phase.tdd_color = "white"
