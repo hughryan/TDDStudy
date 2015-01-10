@@ -17,6 +17,8 @@ require_relative root + '/lib/ASTInterface/ASTInterface'
 
 
 CYCLE_DIAG = true
+ALLOWED_LANGS = Set["Java-1.8_JUnit"]
+
 
 def root_path
   Rails.root.to_s + '/'
@@ -45,7 +47,7 @@ def calc_cycles
   new_test = false
 
   #Get Session
-  Session.all.each do |curr_session|
+  Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |curr_session|
     puts "CYCLE_DIAG: #{curr_session[0]}" if CYCLE_DIAG
 
     #New Cycle
