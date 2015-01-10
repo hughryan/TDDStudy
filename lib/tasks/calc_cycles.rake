@@ -61,7 +61,7 @@ def calc_cycles
 
     #For Each Light
     curr_session.compiles.each_with_index do |curr_compile, index|
-      
+      new_test = false
       #check for new test in compiles
       if !curr_compile.total_assert_count.nil?
         if curr_compile.total_assert_count > curr_num_tests
@@ -81,6 +81,7 @@ def calc_cycles
 
       puts "Current Phase: " + curr_phase.tdd_color.to_s if CYCLE_DIAG
       puts "Current Phase Empty?: " + curr_phase.compiles.empty?.to_s if CYCLE_DIAG
+      puts "New Test?: " + new_test.to_s if CYCLE_DIAG
 
       if !curr_compile.test_change && !curr_compile.prod_change
           curr_phase.compiles << curr_compile
