@@ -6,7 +6,9 @@ require_relative 'gumtreeFacade.jar'	# Facade to a subset of the Java Gumtree AS
 require_relative 'gumtree.jar'			# Java Gumtree AST parser library (https://github.com/jrfaller/gumtree)
 
 @ast = Java::gumtreeFacade.AST
-# WARNING: the command-line option for --diff requires that filepath arguments be in the form ["/path/to/file1","/path/to/file2"]
+# WARNING: the command-line options  for ASTInterface.rb require the following format:
+#          jruby ASTInterface.rb --tree "/abs/path/to/file"
+#          jruby ASTInterface.rb --diff "/abs/path/to/file1","/abs/path/to/file2"
 
 def treeAST(source, extension)
 	return @ast.getTreeAST(source, extension)
@@ -52,7 +54,7 @@ def findAsserts(path)
 	return results["allAsserts"]
 end
 
-# Optional command-line execution using --tree or --diff options (absolute filepaths required)
+# Optional command-line execution using --tree or --diff options
 options = Optparser.parse(ARGV)
 
 if options.tree

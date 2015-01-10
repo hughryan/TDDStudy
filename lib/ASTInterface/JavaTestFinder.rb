@@ -11,7 +11,19 @@ class JavaTestFinder
     find_nodes(json, found_methods, ->(x){is_method(x)})
 
     found_methods.length
-  end    
+  end
+
+  def find_method_invocations(filePath)
+    json = get_json_from_file(filePath)
+
+    #find all method invocations
+    method_invocations = []
+    find_nodes(json, method_invocations, ->(x){is_method_invocation(x)})
+
+    puts "method_invocations: #{method_invocations}"
+
+    method_invocations.length
+  end
 
   def find_tests(filePath)
     json = get_json_from_file(filePath)
@@ -76,6 +88,7 @@ class JavaTestFinder
 
   def is_assert(invocation)
     valid_assert_names = ["assertArrayEquals", "assertEquals", "assertFalse", "assertNotEquals", "assertNotNull", "assertNotSame", "assertNull", "assertSame", "assertThat", "assertTrue"]
+  	valid_assert_names = ["assertArrayEquals", "assertEquals", "assertNotSame", "assertNull", "assertSame", "assertThat", "assertTrue", "assertFalse"]
   	method_name = get_method_name(invocation)
 
   	is_valid = valid_assert_names.include? method_name
