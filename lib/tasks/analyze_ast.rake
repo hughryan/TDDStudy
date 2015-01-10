@@ -47,11 +47,10 @@ def ast_processing
 				FileUtils.mkdir_p path, :mode => 0700
 
 				files.each do |file|
-					if( File.exist?(path + "/" + file))
-						File.open(path + "/" + file, 'w') { |f| f.write(light.tag.visible_files[file]) }					
-						curr.total_method_count += findMethods(path + "/" + file)
-						curr.total_assert_count += findAsserts(path + "/" + file)
-					end
+					file = File.basename(file)
+					File.open(path + "/" + file, 'w') { |f| f.write(light.tag.visible_files[file]) }					
+					curr.total_method_count += findMethods(path + "/" + file)
+					curr.total_assert_count += findAsserts(path + "/" + file)
 				end
 			
 			print "  " + curr.git_tag.to_s + ":\t" if DEBUG
