@@ -49,7 +49,9 @@ def calc_cycles
 # ALLOWED_LANGS = Set["Java-1.8_JUnit"]
 
   #Get Session
-  Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |curr_session|
+  # Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |curr_session|
+  Session.where("id = ?", 2456).find_each do |curr_session|
+
     puts "CYCLE_DIAG: #{curr_session[0]}" if CYCLE_DIAG
 
     #New Cycle
@@ -90,7 +92,7 @@ def calc_cycles
       
       else
 
-
+puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
         #cycle logic
         case curr_phase.tdd_color
 
@@ -134,7 +136,7 @@ def calc_cycles
             
             else #only prod edits in red phase indicates deviation from TDD
             
-              if new_test
+              if !new_test
                 #save phase before new curr_compile is added
                 curr_phase.save
 
@@ -171,6 +173,20 @@ def calc_cycles
               curr_compile.save
               puts "Saved curr_compile to red phase" if CYCLE_DIAG
             
+            elsif !curr_compile.test_change && curr_compile.prod_change
+                #save phase before new curr_compile is added
+                curr_phase.save
+
+                puts "Start Green Phase" if CYCLE_DIAG
+                curr_phase = Phase.new(tdd_color: "green")
+                
+                #new curr_compile is part of next phase, so save now
+                puts "Saved curr_compile to green phase" if CYCLE_DIAG
+                curr_phase.compiles << curr_compile
+            
+                #reset new_test
+                new_test = false
+
             else
               puts "[!3!] NON - TDD >> production edits in testing phase" if CYCLE_DIAG
           
