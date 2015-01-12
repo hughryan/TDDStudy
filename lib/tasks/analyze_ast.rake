@@ -30,14 +30,19 @@ def build_files(light)
 	if light
 		files = light.tag.visible_files.keys.select{ |filename| filename.include? ".java" }
 		path = "#{BUILD_DIR}/" + light.number.to_s + "/src"
+		
+		puts "Path" +path 
 		FileUtils.mkdir_p path, :mode => 0700
 		
+		puts Dir.pwd
+
 		files.each do |file|
 			#create file and write all content to it
 			File.open(path + "/" + file, 'w') { |f| f.write(light.tag.visible_files[file]) }
 			
 			#save filenames and filepaths
 			filenames << (file)
+			puts path + "/" + file if DEBUG
 			filepaths << (path + "/" + file)
 		end
 	end
@@ -56,7 +61,7 @@ def ast_processing
 
 	# limit to kata sessions that use supported language/testing frameworks
 #	Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
-	Session.where("cyberdojo_id = ?", "35832862D3").find_each do |session|
+	Session.where("id = ?", "2456").find_each do |session|
 		print "id: " + session.id.to_s + ", " if DEBUG
 		print "cyberdojo_id: " + session.cyberdojo_id.to_s + ", " if DEBUG
 	    print "language: " + session.language_framework.to_s + ", " if DEBUG
@@ -71,8 +76,27 @@ def ast_processing
 			prev_files = prev_files.select{ |filename| filename.include? ".java" }
 			curr_files = curr_files.select{ |filename| filename.include? ".java" }
 
+			prev_filenames = prev_files.map{ |file| File.basename(file) }
+			curr_filenames = curr_files.map{ |file| File.basename(file) }
+
 
 			# cycle for each prev_files that exists in curr_files, run diff
+			prev_filenames.each do |filename|
+
+				puts "File To Match" + filename
+				if curr_filenames.include?(filename)
+					puts "FOUND MATCH: " + filename
+					 #compare files to determine if test  
+					  # findMethods("test")
+					 # findAsserts("TEST")
+					 prev_path = "#{BUILD_DIR}/" + prev.git_tag.to_s + "/src"
+					 curr_path = "#{BUILD_DIR}/" + curr.git_tag.to_s + "/src"
+					 findChangeType(filename,prev_path,curr_path)
+					 # findMethods(filename)
+				end
+
+			end
+
 
 			puts "prev: #{prev_files}"
 			puts "curr: #{curr_files}"
@@ -116,5 +140,5 @@ def ast_processing
 		end
 =end
 
-	FileUtils.remove_entry_secure(BUILD_DIR)
+	# FileUtils.remove_entry_secure(BUILD_DIR)
 end

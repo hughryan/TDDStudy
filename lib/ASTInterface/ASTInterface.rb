@@ -26,6 +26,12 @@ def diffAST(src_path, dst_path)
 	return @ast.getDiffAST(src_path, dst_path)
 end
 
+def findChangeType(file_name,before_path,after_path)
+	puts "FIND CHANGE TYPE"
+	puts "BEFORE: " + before_file.inspect
+	puts "AFTER: " + after_file..inspect
+end
+
 def findMethods(path)
 	searcher = JavaTestFinder.new()
 	
