@@ -8,6 +8,7 @@ require_relative root + 'DummyTestRunner'	# required for dojo definition
 
 ALLOWED_LANGS = Set["Java-1.8_JUnit"]
 BUILD_DIR = 'ast_builds'
+DEBUG = false
 
 def root_path
   Rails.root.to_s + '/'
@@ -31,10 +32,10 @@ def build_files(light)
 		files = light.tag.visible_files.keys.select{ |filename| filename.include? ".java" }
 		path = "#{BUILD_DIR}/" + light.number.to_s + "/src"
 		
-		puts "Path" +path 
+		puts "Path" +path if DEBUG
 		FileUtils.mkdir_p path, :mode => 0700
 		
-		puts Dir.pwd
+		puts Dir.pwd if DEBUG
 
 		files.each do |file|
 			if (light.tag.visible_files[file].length > 1)
@@ -70,7 +71,7 @@ def ast_processing
 		print "avatar: " + session.avatar.to_s + "\n" if DEBUG
 
 		#HANDLE THE FIRST COMPILE POINT
-		puts session.compiles[0].inspect
+		puts session.compiles[0].inspect if DEBUG
 		# puts dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[0]
 		firstCompile = session.compiles.first
 		curr_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[0])
@@ -96,19 +97,19 @@ def ast_processing
 			firstCompile.total_assert_count += findAsserts(curr_path + "/" + filename)
 		end
 
-		puts "testChanges: "+ testChanges.to_s
-		puts "productionChanges: "+ productionChanges.to_s
+		puts "testChanges: "+ testChanges.to_s if DEBUG
+		puts "productionChanges: "+ productionChanges.to_s if DEBUG
 	
 		firstCompile.test_change = testChanges
 		firstCompile.prod_change = productionChanges
 		firstCompile.total_method_count
 		firstCompile.total_assert_count
 		firstCompile.save
-		puts "----------------------"
+		puts "----------------------" if DEBUG
 
 
 		session.compiles.each_cons(2) do |prev, curr|
-			puts "prev: " + prev.git_tag.to_s + " -> curr: " + curr.git_tag.to_s
+			puts "prev: " + prev.git_tag.to_s + " -> curr: " + curr.git_tag.to_s 
 
 			prev_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[prev.git_tag-1])
 			curr_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[curr.git_tag-1])
@@ -149,8 +150,8 @@ def ast_processing
 			curr.total_assert_count += findAsserts(curr_path + "/" + filename)
 
 			end
-			puts "testChanges: "+ testChanges.to_s
-			puts "productionChanges: "+ productionChanges.to_s
+			puts "testChanges: "+ testChanges.to_s if DEBUG
+			puts "productionChanges: "+ productionChanges.to_s if DEBUG
 
 			curr.test_change = testChanges
 			curr.prod_change = productionChanges
