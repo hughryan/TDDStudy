@@ -60,8 +60,8 @@ def ast_processing
 	FileUtils.mkdir_p BUILD_DIR, :mode => 0700
 
 	# limit to kata sessions that use supported language/testing frameworks
-#	Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
-	Session.where("id = ?", "2456").find_each do |session|
+	Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
+	# Session.where("id = ?", "2456").find_each do |session|
 		print "id: " + session.id.to_s + ", " if DEBUG
 		print "cyberdojo_id: " + session.cyberdojo_id.to_s + ", " if DEBUG
 	    print "language: " + session.language_framework.to_s + ", " if DEBUG
