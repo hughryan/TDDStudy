@@ -67,6 +67,45 @@ def ast_processing
 	    print "language: " + session.language_framework.to_s + ", " if DEBUG
 		print "avatar: " + session.avatar.to_s + "\n" if DEBUG
 
+		#HANDLE THE FIRST COMPILE POINT
+		puts session.compiles[0].inspect
+		# puts dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[0]
+		firstCompile = session.compiles.first
+		curr_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[0])
+		curr_files = curr_files.select{ |filename| filename.include? ".java" }
+		curr_filenames = curr_files.map{ |file| File.basename(file) }
+
+		testChanges = false
+		productionChanges = false
+		firstCompile.total_method_count = 0
+		firstCompile.total_assert_count = 0
+
+		curr_path = "#{BUILD_DIR}/1/src"
+		curr_filenames.each do |filename|
+
+			puts curr_path + "/" + filename
+			puts "((((((())))))))"
+			if findFileType(curr_path + "/" + filename) == "Production"
+				productionChanges = true
+			end
+			if findFileType(curr_path + "/" + filename) == "Test"
+				testChanges = true
+			end
+			firstCompile.total_method_count += findMethods(curr_path + "/" + filename)
+			firstCompile.total_assert_count += findAsserts(curr_path + "/" + filename)
+		end
+
+		puts "testChanges: "+ testChanges.to_s
+		puts "productionChanges: "+ productionChanges.to_s
+	
+		firstCompile.test_change = testChanges
+		firstCompile.prod_change = productionChanges
+		firstCompile.total_method_count
+		firstCompile.total_assert_count
+		firstCompile.save
+		puts "----------------------"
+
+
 		session.compiles.each_cons(2) do |prev, curr|
 			puts "prev: " + prev.git_tag.to_s + " -> curr: " + curr.git_tag.to_s
 
@@ -79,66 +118,49 @@ def ast_processing
 			prev_filenames = prev_files.map{ |file| File.basename(file) }
 			curr_filenames = curr_files.map{ |file| File.basename(file) }
 
-
+			testChanges = false
+			productionChanges = false
+			curr.total_method_count = 0
+			curr.total_assert_count = 0
 			# cycle for each prev_files that exists in curr_files, run diff
-			prev_filenames.each do |filename|
+			curr_filenames.each do |filename|
 
-				puts "File To Match" + filename
-				if curr_filenames.include?(filename)
-					puts "FOUND MATCH: " + filename
-					 #compare files to determine if test  
-					  # findMethods("test")
-					 # findAsserts("TEST")
-					 prev_path = "#{BUILD_DIR}/" + prev.git_tag.to_s + "/src"
-					 curr_path = "#{BUILD_DIR}/" + curr.git_tag.to_s + "/src"
-					 findChangeType(filename,prev_path,curr_path)
-					 # findMethods(filename)
+				prev_path = "#{BUILD_DIR}/" + prev.git_tag.to_s + "/src"
+				curr_path = "#{BUILD_DIR}/" + curr.git_tag.to_s + "/src"
+				# puts "File To Match" + filename
+				if prev_filenames.include?(filename)
+					 if findChangeType(filename,prev_path,curr_path) == "Production"
+					 	productionChanges = true
+					 end
+					 if findChangeType(filename,prev_path,curr_path) == "Test"
+					 	testChanges = true
+					 end
+				else
+					 if findFileType(curr_path + "/" + filename) == "Production"
+					 	productionChanges = true
+					 end
+					 if findFileType(curr_path + "/" + filename) == "Test"
+					 	testChanges = true
+					 end
 				end
 
+			#Calculate Number of methods and asserts
+			curr.total_method_count += findMethods(curr_path + "/" + filename)
+			curr.total_assert_count += findAsserts(curr_path + "/" + filename)
+
 			end
+			puts "testChanges: "+ testChanges.to_s
+			puts "productionChanges: "+ productionChanges.to_s
 
-
-			puts "prev: #{prev_files}"
-			puts "curr: #{curr_files}"
-
-			prev_filenames = prev_files.map{ |file| File.basename(file) }
-			curr_filenames = curr_files.map{ |file| File.basename(file) }
-
-			intersection = (prev_filenames & curr_filenames)
-			num = intersection.length
-			puts "common (#{num}): #{intersection}"
-
+			curr.test_change = testChanges
+			curr.prod_change = productionChanges
+			curr.total_method_count
+			curr.total_assert_count
+			curr.save
 			puts "----------------------"
 
 		end
 	end
 
-=begin
-		session.compiles.each_with_index do |curr, index|
-			curr.total_method_count = 0
-			curr.total_assert_count = 0
-			light = dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[curr.git_tag]
-
-			if light	# only lights that do not contain nil should be evaluated for files
-				files = light.tag.visible_files.keys.select{ |filename| filename.include? ".java" }
-				path = "#{build_dir}/" + light.number.to_s + "/src"
-				FileUtils.mkdir_p path, :mode => 0700
-
-				files.each do |file|
-					file = File.basename()
-					File.open(path + "/" + file, 'w') { |f| f.write(light.tag.visible_files[file]) }					
-					curr.total_method_count += findMethods(path + "/" + file)
-					curr.total_assert_count += findAsserts(path + "/" + file)
-				end
-			
-			print "  " + curr.git_tag.to_s + ":\t" if DEBUG
-			print "methods: " + curr.total_method_count.to_s + ", " if DEBUG
-			print "asserts: " + curr.total_assert_count.to_s + "\n" if DEBUG
-
-			curr.save
-			end
-		end
-=end
-
-	# FileUtils.remove_entry_secure(BUILD_DIR)
+	FileUtils.remove_entry_secure(BUILD_DIR)
 end

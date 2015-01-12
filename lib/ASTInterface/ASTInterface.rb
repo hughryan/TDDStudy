@@ -27,9 +27,23 @@ def diffAST(src_path, dst_path)
 end
 
 def findChangeType(file_name,before_path,after_path)
-	puts "FIND CHANGE TYPE"
-	puts "BEFORE: " + before_file.inspect
-	puts "AFTER: " + after_file..inspect
+	diffASTResult = diffAST(before_path + "/" + file_name, after_path + "/" + file_name)
+	if diffASTResult.length == 3
+		return "NO Change"
+	else 
+		return findFileType(after_path + "/" + file_name)
+	end
+
+end
+
+def findFileType(file_path)
+	numAsserts = findAsserts(file_path)
+	if numAsserts > 0
+		return "Test"
+	else
+		return "Production"
+	end
+
 end
 
 def findMethods(path)
