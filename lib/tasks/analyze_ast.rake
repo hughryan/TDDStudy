@@ -37,6 +37,7 @@ def build_files(light)
 		puts Dir.pwd
 
 		files.each do |file|
+			if (light.tag.visible_files[file].length > 1)
 			#create file and write all content to it
 			File.open(path + "/" + file, 'w') { |f| f.write(light.tag.visible_files[file]) }
 			
@@ -44,6 +45,7 @@ def build_files(light)
 			filenames << (file)
 			puts path + "/" + file if DEBUG
 			filepaths << (path + "/" + file)
+			end
 		end
 	end
 	
@@ -61,7 +63,7 @@ def ast_processing
 
 	# limit to kata sessions that use supported language/testing frameworks
 	Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
-	# Session.where("id = ?", "2456").find_each do |session|
+	# Session.where("id = ?", "212").find_each do |session|
 		print "id: " + session.id.to_s + ", " if DEBUG
 		print "cyberdojo_id: " + session.cyberdojo_id.to_s + ", " if DEBUG
 	    print "language: " + session.language_framework.to_s + ", " if DEBUG
@@ -84,7 +86,6 @@ def ast_processing
 		curr_filenames.each do |filename|
 
 			puts curr_path + "/" + filename
-			puts "((((((())))))))"
 			if findFileType(curr_path + "/" + filename) == "Production"
 				productionChanges = true
 			end
@@ -124,7 +125,6 @@ def ast_processing
 			curr.total_assert_count = 0
 			# cycle for each prev_files that exists in curr_files, run diff
 			curr_filenames.each do |filename|
-
 				prev_path = "#{BUILD_DIR}/" + prev.git_tag.to_s + "/src"
 				curr_path = "#{BUILD_DIR}/" + curr.git_tag.to_s + "/src"
 				# puts "File To Match" + filename
