@@ -67,7 +67,8 @@ def calc_metrics(session)
 
 	session.compiles.each_with_index do |curr, index|
 
-
+    curr.test_change = false
+    curr.prod_change = false
 		# workingDir = copy_source_files_to_working_dir(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[index])
 
 		# # puts "DDDDDDDDDDDD"
