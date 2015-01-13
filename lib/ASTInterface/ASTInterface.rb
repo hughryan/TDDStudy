@@ -23,7 +23,13 @@ def diffAST(source, destination, extension)
 end
 
 def diffAST(src_path, dst_path)
-	return @ast.getDiffAST(src_path, dst_path)
+	begin
+	 	 return @ast.getDiffAST(src_path, dst_path)
+ 	rescue java.lang.ArrayIndexOutOfBoundsException => e
+   		puts "ERROR FOUND!!"
+   		return "ERROR"
+ 	end
+	
 end
 
 def findChangeType(file_name,before_path,after_path)
