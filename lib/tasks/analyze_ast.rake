@@ -8,7 +8,6 @@ require_relative root + 'DummyTestRunner'	# required for dojo definition
 
 ALLOWED_LANGS = Set["Java-1.8_JUnit"]
 BUILD_DIR = 'ast_builds'
-DEBUG = true
 
 def root_path
   Rails.root.to_s + '/'
