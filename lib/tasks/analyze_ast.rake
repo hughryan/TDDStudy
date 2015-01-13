@@ -8,7 +8,7 @@ require_relative root + 'DummyTestRunner'	# required for dojo definition
 
 ALLOWED_LANGS = Set["Java-1.8_JUnit"]
 BUILD_DIR = 'ast_builds'
-DEBUG = false
+DEBUG = true
 
 def root_path
   Rails.root.to_s + '/'
@@ -62,10 +62,19 @@ end
 def ast_processing
 	FileUtils.mkdir_p BUILD_DIR, :mode => 0700
 
+Session.find_by_sql("Select * from Sessions as s 
+inner join compiles as c on s.id = c.session_id
+where  git_tag =1 AND language_framework LIKE \"Java-1.8_JUnit\";").each do |session_id|
+
+puts "SessionID: " + session_id.inspect
+	puts "SessionID: " + session_id.session_id.to_s
+	puts "SessionID: " + session_id["session_id"].to_s
+
 	# limit to kata sessions that use supported language/testing frameworks
-	Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
-	# Session.where("id = ?", "212").find_each do |session|
-		print "id: " + session.id.to_s + ", " if DEBUG
+	# Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
+	Session.where("id = ?", session_id.session_id).find_each do |session|
+	# Session.includes(:compiles).where( :compiles => { :test_change => nil } ).find_each do |session|
+		# print "id: " + session.id.to_s + ", " if DEBUG
 		print "cyberdojo_id: " + session.cyberdojo_id.to_s + ", " if DEBUG
 	    print "language: " + session.language_framework.to_s + ", " if DEBUG
 		print "avatar: " + session.avatar.to_s + "\n" if DEBUG
@@ -86,7 +95,7 @@ def ast_processing
 		curr_path = "#{BUILD_DIR}/1/src"
 		curr_filenames.each do |filename|
 
-			puts curr_path + "/" + filename
+			puts curr_path + "/" + filename if DEBUG
 			if findFileType(curr_path + "/" + filename) == "Production"
 				productionChanges = true
 			end
@@ -114,6 +123,9 @@ def ast_processing
 			prev_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[prev.git_tag-1])
 			curr_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[curr.git_tag-1])
 
+			puts curr_files.inspect
+
+
 			prev_files = prev_files.select{ |filename| filename.include? ".java" }
 			curr_files = curr_files.select{ |filename| filename.include? ".java" }
 
@@ -128,7 +140,9 @@ def ast_processing
 			curr_filenames.each do |filename|
 				prev_path = "#{BUILD_DIR}/" + prev.git_tag.to_s + "/src"
 				curr_path = "#{BUILD_DIR}/" + curr.git_tag.to_s + "/src"
-				# puts "File To Match" + filename
+				
+				puts "File To Match" + filename
+				
 				if prev_filenames.include?(filename)
 					 if findChangeType(filename,prev_path,curr_path) == "Production"
 					 	productionChanges = true
@@ -157,11 +171,14 @@ def ast_processing
 			curr.prod_change = productionChanges
 			curr.total_method_count
 			curr.total_assert_count
+			puts "CURR SAVE"
 			curr.save
 			puts "----------------------"
 
 		end
 	end
+
+end
 
 	FileUtils.remove_entry_secure(BUILD_DIR)
 end
