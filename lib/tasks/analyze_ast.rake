@@ -31,12 +31,13 @@ def build_files(light)
 		files = light.tag.visible_files.keys.select{ |filename| filename.include? ".java" }
 		path = "#{BUILD_DIR}/" + light.number.to_s + "/src"
 		
-		puts "Path" +path 
+		puts "Path" +path if DEBUG
 		FileUtils.mkdir_p path, :mode => 0700
 		
-		puts Dir.pwd
+		puts Dir.pwd if DEBUG
 
 		files.each do |file|
+			if (light.tag.visible_files[file].length > 1)
 			#create file and write all content to it
 			File.open(path + "/" + file, 'w') { |f| f.write(light.tag.visible_files[file]) }
 			
@@ -44,6 +45,7 @@ def build_files(light)
 			filenames << (file)
 			puts path + "/" + file if DEBUG
 			filepaths << (path + "/" + file)
+			end
 		end
 	end
 	
@@ -59,16 +61,25 @@ end
 def ast_processing
 	FileUtils.mkdir_p BUILD_DIR, :mode => 0700
 
+Session.find_by_sql("Select * from Sessions as s 
+inner join compiles as c on s.id = c.session_id
+where  git_tag =1 AND language_framework LIKE \"Java-1.8_JUnit\" AND c.total_method_count is Null;").each do |session_id|
+
+puts "SessionID: " + session_id.inspect
+	puts "SessionID: " + session_id.session_id.to_s
+	puts "SessionID: " + session_id["session_id"].to_s
+
 	# limit to kata sessions that use supported language/testing frameworks
-	Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
-	# Session.where("id = ?", "2456").find_each do |session|
-		print "id: " + session.id.to_s + ", " if DEBUG
+	# Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
+	Session.where("id = ?", session_id.session_id).find_each do |session|
+	# Session.includes(:compiles).where( :compiles => { :test_change => nil } ).find_each do |session|
+		# print "id: " + session.id.to_s + ", " if DEBUG
 		print "cyberdojo_id: " + session.cyberdojo_id.to_s + ", " if DEBUG
 	    print "language: " + session.language_framework.to_s + ", " if DEBUG
 		print "avatar: " + session.avatar.to_s + "\n" if DEBUG
 
 		#HANDLE THE FIRST COMPILE POINT
-		puts session.compiles[0].inspect
+		puts session.compiles[0].inspect if DEBUG
 		# puts dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[0]
 		firstCompile = session.compiles.first
 		curr_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[0])
@@ -83,8 +94,7 @@ def ast_processing
 		curr_path = "#{BUILD_DIR}/1/src"
 		curr_filenames.each do |filename|
 
-			puts curr_path + "/" + filename
-			puts "((((((())))))))"
+			puts curr_path + "/" + filename if DEBUG
 			if findFileType(curr_path + "/" + filename) == "Production"
 				productionChanges = true
 			end
@@ -95,22 +105,25 @@ def ast_processing
 			firstCompile.total_assert_count += findAsserts(curr_path + "/" + filename)
 		end
 
-		puts "testChanges: "+ testChanges.to_s
-		puts "productionChanges: "+ productionChanges.to_s
+		puts "testChanges: "+ testChanges.to_s if DEBUG
+		puts "productionChanges: "+ productionChanges.to_s if DEBUG
 	
 		firstCompile.test_change = testChanges
 		firstCompile.prod_change = productionChanges
 		firstCompile.total_method_count
 		firstCompile.total_assert_count
 		firstCompile.save
-		puts "----------------------"
+		puts "----------------------" if DEBUG
 
 
 		session.compiles.each_cons(2) do |prev, curr|
-			puts "prev: " + prev.git_tag.to_s + " -> curr: " + curr.git_tag.to_s
+			puts "prev: " + prev.git_tag.to_s + " -> curr: " + curr.git_tag.to_s 
 
 			prev_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[prev.git_tag-1])
 			curr_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[curr.git_tag-1])
+
+			puts curr_files.inspect
+
 
 			prev_files = prev_files.select{ |filename| filename.include? ".java" }
 			curr_files = curr_files.select{ |filename| filename.include? ".java" }
@@ -124,10 +137,11 @@ def ast_processing
 			curr.total_assert_count = 0
 			# cycle for each prev_files that exists in curr_files, run diff
 			curr_filenames.each do |filename|
-
 				prev_path = "#{BUILD_DIR}/" + prev.git_tag.to_s + "/src"
 				curr_path = "#{BUILD_DIR}/" + curr.git_tag.to_s + "/src"
-				# puts "File To Match" + filename
+				
+				puts "File To Match" + filename
+				
 				if prev_filenames.include?(filename)
 					 if findChangeType(filename,prev_path,curr_path) == "Production"
 					 	productionChanges = true
@@ -149,18 +163,21 @@ def ast_processing
 			curr.total_assert_count += findAsserts(curr_path + "/" + filename)
 
 			end
-			puts "testChanges: "+ testChanges.to_s
-			puts "productionChanges: "+ productionChanges.to_s
+			puts "testChanges: "+ testChanges.to_s if DEBUG
+			puts "productionChanges: "+ productionChanges.to_s if DEBUG
 
 			curr.test_change = testChanges
 			curr.prod_change = productionChanges
 			curr.total_method_count
 			curr.total_assert_count
+			puts "CURR SAVE"
 			curr.save
 			puts "----------------------"
 
 		end
 	end
+
+end
 
 	FileUtils.remove_entry_secure(BUILD_DIR)
 end
