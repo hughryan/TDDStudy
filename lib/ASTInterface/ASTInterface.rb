@@ -28,6 +28,9 @@ def diffAST(src_path, dst_path)
  	rescue java.lang.ArrayIndexOutOfBoundsException => e
    		puts "ERROR FOUND!!"
    		return "ERROR"
+   	rescue java.lang.NullPointerException => e
+   		puts "ERROR FOUND!!"
+   		return "ERROR"
  	end
 	
 end
