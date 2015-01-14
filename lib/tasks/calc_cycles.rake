@@ -65,6 +65,7 @@ def calc_cycles
     curr_phase = Phase.new(tdd_color: "red")
     extra_phase = Phase.new(tdd_color: "blue")
 
+    last_light_color = ""
     #For Each Light
     curr_session.compiles.each_with_index do |curr_compile, index|
       new_test = false
@@ -89,7 +90,7 @@ def calc_cycles
       puts "Current Phase Empty?: " + curr_phase.compiles.empty?.to_s if CYCLE_DIAG
       puts "New Test?: " + new_test.to_s if CYCLE_DIAG
 
-      if !curr_compile.test_change && !curr_compile.prod_change
+      if !curr_compile.test_change && !curr_compile.prod_change && (last_light_color == curr_compile.light_color.to_s)
           curr_phase.compiles << curr_compile
           curr_compile.save
           puts "Saved curr_compile to current phase" if CYCLE_DIAG
@@ -360,7 +361,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
       end
       puts "}" if CYCLE_DIAG
       puts "*************" if CYCLE_DIAG
-
+      last_light_color = curr_compile.light_color.to_s
     end #End of For Each Light
 
     #check if the last cycle finished
