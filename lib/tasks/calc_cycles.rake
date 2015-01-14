@@ -48,6 +48,10 @@ def calc_cycles
 
 # ALLOWED_LANGS = Set["Java-1.8_JUnit"]
 
+  Cycle.delete_all
+  Phase.delete_all
+
+
   #Get Session
   # Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |curr_session|
   Session.where("id = ?", 2456).find_each do |curr_session|
