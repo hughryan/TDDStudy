@@ -63,7 +63,7 @@ def ast_processing
 
 Session.find_by_sql("Select * from Sessions as s 
 inner join compiles as c on s.id = c.session_id
-where  git_tag =1 AND language_framework LIKE \"Java-1.8_JUnit\" AND c.total_method_count is Null;").each do |session_id|
+where  git_tag =1 AND language_framework LIKE \"Java-1.8_JUnit\" AND c.prod_change is Null;").each do |session_id|
 
 puts "SessionID: " + session_id.inspect
 	puts "SessionID: " + session_id.session_id.to_s
