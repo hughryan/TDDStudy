@@ -45,6 +45,7 @@ def calc_cycles
   first_cycle = true
   curr_num_tests = 0
   new_test = false
+  valid_red = false
 
 # ALLOWED_LANGS = Set["Java-1.8_JUnit"]
 
@@ -94,7 +95,6 @@ def calc_cycles
           curr_phase.compiles << curr_compile
           curr_compile.save
           puts "Saved curr_compile to current phase" if CYCLE_DIAG
-      
       else
 
 puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
@@ -102,6 +102,11 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
         case curr_phase.tdd_color
 
         when "red"
+
+          if new_test
+            valid_red = true
+          end
+          
           if curr_compile.light_color.to_s == "red" || curr_compile.light_color.to_s == "amber"
             
             if curr_compile.test_change && !curr_compile.prod_change
@@ -111,7 +116,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
             
             elsif curr_compile.test_change && curr_compile.prod_change
             
-              if new_test
+              if valid_red
                 #save phase before new curr_compile is added
                 curr_phase.save
 
@@ -121,9 +126,6 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 #new curr_compile is part of next phase, so save now
                 puts "Saved curr_compile to green phase" if CYCLE_DIAG
                 curr_phase.compiles << curr_compile
-                
-                #reset new_test
-                new_test = false
               else
                 puts "[!1!] NON - TDD >> no new test and production edits occured" if CYCLE_DIAG
             
@@ -134,10 +136,9 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 #save curr_compile to phase
                 curr_phase.compiles << curr_compile
                 curr_compile.save
-            
-                #reset new_test
-                new_test = false
               end
+              #reset new_test
+              valid_red = false
             
             else #only prod edits in red phase indicates deviation from TDD
             
@@ -151,9 +152,6 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 #new curr_compile is part of next phase, so save now
                 puts "Saved curr_compile to green phase" if CYCLE_DIAG
                 curr_phase.compiles << curr_compile
-            
-                #reset new_test
-                new_test = false
               else  
                 puts "[!2!] NON - TDD >> no new test for testing phase" if CYCLE_DIAG
             
@@ -164,14 +162,13 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 #save curr_compile to phase
                 curr_phase.compiles << curr_compile
                 curr_compile.save
-            
-                #reset new_test
-                new_test = false
               end
-            
+              #reset new_test
+              valid_red = false
+
             end
           
-          else #green curr_compile state should not happen in red phase
+          else #green curr_compile with valid_red indicates green phase
           
             if curr_compile.test_change && !curr_compile.prod_change
               curr_phase.compiles << curr_compile
@@ -190,7 +187,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 curr_phase.compiles << curr_compile
             
                 #reset new_test
-                new_test = false
+                valid_red = false
 
             else
               puts "[!3!] NON - TDD >> production edits in testing phase" if CYCLE_DIAG
@@ -204,7 +201,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               curr_compile.save
             
               #reset new_test
-              new_test = false
+              valid_red = false
             end
 
           end
