@@ -170,12 +170,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
           
           else #green curr_compile with valid_red indicates green phase
           
-            if curr_compile.test_change && !curr_compile.prod_change
-              curr_phase.compiles << curr_compile
-              curr_compile.save
-              puts "Saved curr_compile to red phase" if CYCLE_DIAG
-            
-            elsif !curr_compile.test_change && curr_compile.prod_change
+            if valid_red
                 #save phase before new curr_compile is added
                 curr_phase.save
 
@@ -183,12 +178,18 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 curr_phase = Phase.new(tdd_color: "green")
                 
                 #new curr_compile is part of next phase, so save now
-                puts "Saved curr_compile to green phase" if CYCLE_DIAG
+                puts "Saved curr_compile to green phase and end green phase" if CYCLE_DIAG
                 curr_phase.compiles << curr_compile
-            
-                #reset new_test
-                valid_red = false
+                curr_phase.save
 
+                #on to blue
+                puts "Start Blue Phase" if CYCLE_DIAG
+                curr_phase = Phase.new(tdd_color: "blue")
+            
+            elsif curr_compile.test_change && !curr_compile.prod_change
+              curr_phase.compiles << curr_compile
+              curr_compile.save
+              puts "Saved curr_compile to red phase" if CYCLE_DIAG
             else
               puts "[!3!] NON - TDD >> production edits in testing phase" if CYCLE_DIAG
           
@@ -199,11 +200,10 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               #save curr_compile to phase
               curr_phase.compiles << curr_compile
               curr_compile.save
-            
-              #reset new_test
-              valid_red = false
-            end
 
+            end  
+            #reset new_test
+            valid_red = false
           end
         
         when "green"
