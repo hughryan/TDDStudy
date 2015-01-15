@@ -91,8 +91,6 @@ def calc_cycles
       puts "New Test?: " + new_test.to_s if CYCLE_DIAG
       puts "valid red?: " + valid_red.to_s if CYCLE_DIAG
 
-      
-
       #Add some better situational awareness about cycles and phases
       puts "########## curr_cycle ##########"
       # puts curr_cycle.inspect
@@ -149,9 +147,9 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
 
               if valid_red
                 #save phase before new curr_compile is added
-                curr_phase.save
                 curr_cycle.phases << curr_phase
-
+                curr_phase.save
+                
                 puts "Start Green Phase (both test and production changes and red or amber compile)" if CYCLE_DIAG
                 curr_phase = Phase.new(tdd_color: "green")
                 
