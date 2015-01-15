@@ -104,6 +104,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
 
         when "red"
 
+          #check for new test in red phase, if there is one mark this as a valid red phase
           if new_test
             valid_red = true
           end
@@ -117,12 +118,18 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
             
             elsif curr_compile.test_change && curr_compile.prod_change
             
+              #######################################################
+              #     Possible Bug
+              # the current compile could have the finished test in it
+              #
+              #######################################################
+
               if valid_red
                 #save phase before new curr_compile is added
                 curr_phase.save
                 curr_cycle.phases << curr_phase
 
-                puts "Start Green Phase1" if CYCLE_DIAG
+                puts "Start Green Phase (both test and production changes and red or amber compile)" if CYCLE_DIAG
                 curr_phase = Phase.new(tdd_color: "green")
                 
                 #new curr_compile is part of next phase, so save now
@@ -149,7 +156,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 curr_cycle.phases << curr_phase
                 curr_phase.save
 
-                puts "Start Green Phase2" if CYCLE_DIAG
+                puts "Start Green Phase (only production changes and red or amber compile)" if CYCLE_DIAG
                 curr_phase = Phase.new(tdd_color: "green")
                 
                 #new curr_compile is part of next phase, so save now
@@ -166,7 +173,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 curr_phase.compiles << curr_compile
                 curr_compile.save
               end
-              #reset new_test
+              #reset valid red marker
               valid_red = false
 
             end
@@ -178,7 +185,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 curr_phase.save
                 curr_cycle.phases << curr_phase
 
-                puts "Start Green Phase3" if CYCLE_DIAG
+                puts "Start Green Phase (green compile during valid red phase)" if CYCLE_DIAG
                 curr_phase = Phase.new(tdd_color: "green")
                 
                 #new curr_compile is part of next phase, so save now
@@ -265,7 +272,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
 
         when "blue"
           
-          if curr_compile.light_color.to_s == "red" || ( curr_compile.light_color.to_s == "red" && new_test )
+          if curr_compile.light_color.to_s == "red" || ( curr_compile.light_color.to_s == "amber" && new_test )
             #save phase to cycle, save cycle to session
             curr_cycle.phases << curr_phase
             curr_phase.save
@@ -281,7 +288,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
             valid_red = true
             puts "Saved curr_compile to red phase" if CYCLE_DIAG    
               
-          else #curr_compile is green
+          else #curr_compile is green or amber without a new test
       
             if !new_test
       
