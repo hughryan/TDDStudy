@@ -66,7 +66,7 @@ def calc_cycles
     curr_phase = Phase.new(tdd_color: "red")
     extra_phase = Phase.new(tdd_color: "blue")
 
-    last_light_color = ""
+    last_light_color = "red"
     #For Each Light
     curr_session.compiles.each_with_index do |curr_compile, index|
       new_test = false
@@ -119,8 +119,9 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               if valid_red
                 #save phase before new curr_compile is added
                 curr_phase.save
+                curr_cycle.phases << curr_phase
 
-                puts "Start Green Phase" if CYCLE_DIAG
+                puts "Start Green Phase1" if CYCLE_DIAG
                 curr_phase = Phase.new(tdd_color: "green")
                 
                 #new curr_compile is part of next phase, so save now
@@ -144,9 +145,10 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
             
               if !new_test
                 #save phase before new curr_compile is added
+                curr_cycle.phases << curr_phase
                 curr_phase.save
 
-                puts "Start Green Phase" if CYCLE_DIAG
+                puts "Start Green Phase2" if CYCLE_DIAG
                 curr_phase = Phase.new(tdd_color: "green")
                 
                 #new curr_compile is part of next phase, so save now
@@ -173,8 +175,9 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
             if valid_red
                 #save phase before new curr_compile is added
                 curr_phase.save
+                curr_cycle.phases << curr_phase
 
-                puts "Start Green Phase" if CYCLE_DIAG
+                puts "Start Green Phase3" if CYCLE_DIAG
                 curr_phase = Phase.new(tdd_color: "green")
                 
                 #new curr_compile is part of next phase, so save now
