@@ -266,7 +266,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
 
         when "blue"
           
-          if curr_compile.light_color.to_s == "red", curr_compile.light_color.to_s == "red" && new_test 
+          if curr_compile.light_color.to_s == "red" || ( curr_compile.light_color.to_s == "red" && new_test )
             #save phase to cycle, save cycle to session
             curr_cycle.phases << curr_phase
             curr_phase.save
