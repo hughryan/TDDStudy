@@ -227,15 +227,15 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               #save curr_compile to phase
               curr_phase.compiles << curr_compile
               curr_compile.save
-            
-              #reset new_test
-              new_test = false
+
             end
 
           else #green curr_compile indicates the green phase has ended, move on to refactor (or test if need be)
       
             if !new_test
-              #save current curr_compile to phase and phase to cycle
+              #save curr_compile to phase and phase to cycle
+              curr_phase.compiles << curr_compile
+              curr_compile.save
               curr_cycle.phases << curr_phase
               curr_phase.save
               
@@ -257,9 +257,6 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               curr_phase.compiles << curr_compile
               curr_compile.save
             
-              #reset new_test
-              new_test = false
-      
             end
           
           end
@@ -271,12 +268,14 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
             curr_cycle.phases << curr_phase
             curr_phase.save
             curr_session.cycles << curr_cycle
+            curr_cycle.valid_tdd = true
             curr_cycle.save
 
             #new cycle, phase
             curr_phase = Phase.new(tdd_color: "red")
             curr_cycle = Cycle.new(cycle_position: pos)
             curr_phase.compiles << curr_compile
+            valid_red = true
             puts "Saved curr_compile to red phase" if CYCLE_DIAG    
               
           else #curr_compile is green
@@ -292,13 +291,10 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               
               puts "[!6!] NON - TDD >> new test in blue phase!" if CYCLE_DIAG
               #NON TDD (no red phase occured)
-              curr_cycle.valid_tdd = false
               curr_phase.tdd_color = "white"
               #save curr_compile to phase
               curr_phase.compiles << curr_compile
               curr_compile.save
-              #reset new_test
-              new_test = false
             
             end
 
@@ -315,6 +311,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               curr_phase.save
               curr_session.cycles << curr_cycle
               curr_cycle.save
+              curr_cycle.valid_tdd = false
               puts "Exit white phase" if CYCLE_DIAG
               curr_phase = Phase.new(tdd_color: "red")
               curr_cycle = Cycle.new(cycle_position: pos)
@@ -334,10 +331,11 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
 
         end #end of cycle logic
 
-      end
+      end #end of if else 
       puts "}" if CYCLE_DIAG
       puts "*************" if CYCLE_DIAG
       last_light_color = curr_compile.light_color.to_s
+
     end #End of For Each Light
 
     #check if the last cycle finished
