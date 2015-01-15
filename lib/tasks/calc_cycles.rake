@@ -187,6 +187,10 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 curr_phase.compiles << curr_compile
                 curr_phase.save
 
+                #save phase since green phase was over in one compile
+                curr_cycle.phases << curr_phase
+                curr_phase.save
+                
                 #on to blue
                 puts "Start Blue Phase" if CYCLE_DIAG
                 curr_phase = Phase.new(tdd_color: "blue")
