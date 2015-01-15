@@ -165,8 +165,8 @@ class MarkupController < ApplicationController
 				print  "cycleEnd:"
 				puts cycleEnd
 
-				totalCycleSloc = totalCycleSloc + phase.total_sloc_count
-				totalCycleTime = totalCycleTime + phase.seconds_in_phase
+				# totalCycleSloc = totalCycleSloc + phase.total_sloc_count
+				# totalCycleTime = totalCycleTime + phase.seconds_in_phase
 
 				allPhases << phase
 			end

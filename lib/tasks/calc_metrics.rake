@@ -67,7 +67,8 @@ def calc_metrics(session)
 
 	session.compiles.each_with_index do |curr, index|
 
-
+    curr.test_change = false
+    curr.prod_change = false
 		# workingDir = copy_source_files_to_working_dir(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[index])
 
 		# # puts "DDDDDDDDDDDD"
@@ -314,6 +315,6 @@ def calc_lines(prev, curr, session)
 end
 
 desc "TODO"
-task :calcMetrics => :environment do
+task :calc_metrics => :environment do
   build_metric_data  
 end

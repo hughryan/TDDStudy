@@ -1,21 +1,21 @@
 function addNextRecordLink() {
 
-  var selectedSessionIndex = 0;
-  for (var i = 0; i < gon.all_sessions_markup.length; i++) {
-    if ((gon.all_sessions_markup[i].markup.length == 0) && (gon.all_sessions_markup[i].session.id != gon.session_id)) {
-      selectedSessionIndex = i;
-      break;
-    }
-  }
+  // var selectedSessionIndex = 0;
+  // for (var i = 0; i < gon.all_sessions_markup.length; i++) {
+  //   if ((gon.all_sessions_markup[i].markup.length == 0) && (gon.all_sessions_markup[i].session.id != gon.session_id)) {
+  //     selectedSessionIndex = i;
+  //     break;
+  //   }
+  // }
 
-  if (selectedSessionIndex == gon.all_sessions_markup.length) {
-    console.log("no session Found");
-  } else {
-    console.log(gon.all_sessions_markup[i]);
-    var nSesh = gon.all_sessions_markup[i].session;
-    var a = "";
-    $("#nextKata").html("<a href='manualCatTool?researcher=" + gon.researcher + "&id=" + nSesh.cyberdojo_id + "&avatar=" + nSesh.avatar + "&kataName=" + nSesh.kata_name + "'>NEXT KATA</a>");
-  }
+  // if (selectedSessionIndex == gon.all_sessions_markup.length) {
+  //   console.log("no session Found");
+  // } else {
+  //   console.log(gon.all_sessions_markup[i]);
+  //   var nSesh = gon.all_sessions_markup[i].session;
+  //   var a = "";
+  //   $("#nextKata").html("<a href='manualCatTool?researcher=" + gon.researcher + "&id=" + nSesh.cyberdojo_id + "&avatar=" + nSesh.avatar + "&kataName=" + nSesh.kata_name + "'>NEXT KATA</a>");
+  // }
 
 }
 function createHiveData(red, green, blue) {
@@ -502,6 +502,7 @@ function drawUncatagorizedKata() {
     .range([1, width - 40]);
 
   var y = d3.scale.linear()
+   // .domain([0, data[data.length-2].total_assert_count])
     .range([scaleHeight, scaleHeight - 10]);
 
   var yAxis = d3.svg.axis()
@@ -618,9 +619,46 @@ function drawUncatagorizedKata() {
     })
     .y(function(d) {
       // console.log(d.total_test_method_count);
-      return y(d.total_test_method_count);
+      return y(d.total_assert_count);
     })
     .interpolate("linear");
+
+  //The line SVG Path we draw
+  var lineGraph = chart.append("path")
+    .attr("d", lineFunction(data))
+    .attr("stroke", "#737373")
+    .attr("stroke-width", 2)
+    .attr("fill", "#737373");
+
+
+ // chart.selectAll("h")
+ //    .data(cycles)
+ //    .enter().append("rect")
+ //    .attr("x", function(d, i) {
+ //      return x(d.startCompile - 1);
+ //    })
+ //    .attr("y", 20)
+ //    .attr("width",
+ //      function(d, i) {
+ //        return x(d.endCompile - d.startCompile + 1);
+ //      })
+ //    .attr("height", 40)
+ //    .attr("rx", 6)
+ //    .attr("ry", 6)
+ //    .attr("stroke", "grey")
+ //    .attr("fill", function(d) {
+ //      if (d.valid_tdd == true) {
+ //        return "#BABABA";
+ //      }
+ //      if (d.valid_tdd == false) {
+ //        return "#6F6F6F";
+ //      }
+
+ //    })
+ //    .attr("transform", "translate(" + margin.left + ",-10)");
+
+
+
 
   //The line SVG Path we draw
   var lineGraph = chart.append("path")
@@ -1492,7 +1530,7 @@ function initializeKeyBindings() {
 
   // console.log("INIT BINDINGS");
   $(document).keydown(function(e) {
-    console.log(e.which);
+    // console.log(e.which);
     switch (e.which) {
       case 65: //a
         addNewPhase(brush.extent()[0], brush.extent()[1], "red");
