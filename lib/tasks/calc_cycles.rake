@@ -91,7 +91,7 @@ def calc_cycles
       puts "New Test?: " + new_test.to_s if CYCLE_DIAG
       puts "valid red?: " + valid_red.to_s if CYCLE_DIAG
 
-      if !curr_compile.test_change && !curr_compile.prod_change && (last_light_color == curr_compile.light_color.to_s)
+      if !curr_compile.test_change && !curr_compile.prod_change# && (last_light_color == curr_compile.light_color.to_s)
           curr_phase.compiles << curr_compile
           curr_compile.save
           puts "Saved curr_compile to current phase" if CYCLE_DIAG
@@ -119,9 +119,9 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
 
               if valid_red
                 #save phase before new curr_compile is added
-                curr_phase.save
                 curr_cycle.phases << curr_phase
-
+                curr_phase.save
+                
                 puts "Start Green Phase (both test and production changes and red or amber compile)" if CYCLE_DIAG
                 curr_phase = Phase.new(tdd_color: "green")
                 
