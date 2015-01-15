@@ -91,11 +91,39 @@ def calc_cycles
       puts "New Test?: " + new_test.to_s if CYCLE_DIAG
       puts "valid red?: " + valid_red.to_s if CYCLE_DIAG
 
-      if !curr_compile.test_change && !curr_compile.prod_change# && (last_light_color == curr_compile.light_color.to_s)
+      #Add some better situational awareness about cycles and phases
+      puts "########## curr_cycle ##########"
+      # puts curr_cycle.inspect
+      if(curr_cycle.id == nil)
+        puts "NULL CYCLE"
+      else
+        puts "CurrCycle.id:" + curr_cycle.id.to_s
+        puts "CurrCycle.session_id:" + curr_cycle.session_id.to_s
+        puts "CurrCycle.session_id:" + curr_cycle.session_id.to_s
+        curr_cycle.phases.each do |phase|
+          phase.inspect
+        end
+      end
+      puts "&&&&&&&&& curr_phase &&&&&&&&&&"
+      puts curr_phase.inspect
+      puts "curr_phase.id: " + curr_phase.id.to_s
+      puts "curr_phase.tdd_color: " + curr_phase.tdd_color.to_s
+      curr_phase.compiles.each do |compile|
+        puts "compile.git_tag: "+ compile.git_tag.to_s
+        puts "compile.light_color: "+ compile.light_color.to_s
+
+      end
+    
+
+
+
+      if !curr_compile.test_change && !curr_compile.prod_change && (last_light_color == curr_compile.light_color.to_s)
           curr_phase.compiles << curr_compile
           curr_compile.save
           puts "Saved curr_compile to current phase" if CYCLE_DIAG
       else
+
+
 
 puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
         #cycle logic
