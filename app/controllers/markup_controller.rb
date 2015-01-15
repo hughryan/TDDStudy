@@ -31,6 +31,38 @@ class MarkupController < ApplicationController
 		Rails.root.to_s + '/'
 	end
 
+	def calculatePrecisionAndRecall(session)
+		puts "%%%%%%%%%%%%%%%%%%%%%%%%% Recall %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+		#calc recall
+		compileColor = Hash.new
+		session.cycles.each do |cycle|
+			# puts cycle.inspect
+			cycle.phases.each do |phase|
+				phase.compiles.each do |compile|
+					# puts compile.git_tag
+					# puts compile.light_color
+					compileColor[compile.git_tag] = compile.light_color
+				end
+			end
+		end
+		numMarkupCompiles = compileColor.keys.length
+		totalMarkups = session.compiles.length
+		puts compileColor.inspect
+		puts "Number of Markups: "+ numMarkupCompiles.to_s
+		puts "Number of Compile Points: "+ totalMarkups.to_s
+
+		recall = (numMarkupCompiles/totalMarkups)
+		puts "Recall:" + recall.to_s
+		returnValues = Hash.new
+		returnValues["recall"] = recall
+
+		#calc precision
+		puts "%%%%%%%%%%%%%%%%%%%%%%%%% Precision %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+		puts session.markups.first.inspect
+		puts session.markups.uniq
+		puts "%%%%%%%%%%%%%%%%%%%%%%%%% END %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+		return returnValues
+	end
 
 	def researcher
 		@researcher = params[:researcher]
@@ -40,6 +72,7 @@ class MarkupController < ApplicationController
 		@inter_sessions = InterraterSession.all
 		@inter_sessions.each do |interrater|
 			session = Session.find_by(id: interrater.session_id)
+			puts calculatePrecisionAndRecall(session).inspect
 			curr_session_markup = Hash.new
 			curr_session_markup["interRater"] = true
 			curr_session_markup["session"] = session
@@ -50,7 +83,8 @@ class MarkupController < ApplicationController
 
 		@markup_sessions = MarkupAssignment.where(researcher_id: researcher_id)
 		@markup_sessions.each do |assignment|
-			session = Session.find_by(id: assignment.session_id)			
+			session = Session.find_by(id: assignment.session_id)
+			calculatePrecisionAndRecall(session)			
 			curr_session_markup = Hash.new
 			curr_session_markup["interRater"] = false
 			curr_session_markup["session"] = session
