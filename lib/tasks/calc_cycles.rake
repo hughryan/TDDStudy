@@ -69,6 +69,13 @@ def calc_cycles
     #For Each Light
     curr_session.compiles.each_with_index do |curr_compile, index|
       new_test = false
+      
+      #check for first emtpy compile
+      if index == 0 && (!curr_compile.test_change && !curr_compile.prod_change)
+        curr_compile.total_assert_count = 0
+        curr_compile.save
+      end
+
       #check for new test in compiles
       if !curr_compile.total_assert_count.nil?
         if curr_compile.total_assert_count > curr_num_tests
@@ -113,18 +120,13 @@ def calc_cycles
         puts "compile.light_color: "+ compile.light_color.to_s
 
       end
-    
-
-
-
+      
+      #check for empty compile (no edits)
       if !curr_compile.test_change && !curr_compile.prod_change && (last_light_color == curr_compile.light_color.to_s)
           curr_phase.compiles << curr_compile
           curr_compile.save
           puts "Saved curr_compile to current phase" if CYCLE_DIAG
       else
-
-
-
 puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
         #cycle logic
         case curr_phase.tdd_color
