@@ -266,45 +266,23 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
 
         when "blue"
           
-          if curr_compile.light_color.to_s == "red" ||  curr_compile.light_color.to_s == "amber" 
-       
-            if new_test
-              #save the current data as blue
-              curr_cycle.phases << curr_phase
-              curr_phase.save
+          if curr_compile.light_color.to_s == "red", curr_compile.light_color.to_s == "red" && new_test 
+            #save phase to cycle, save cycle to session
+            curr_cycle.phases << curr_phase
+            curr_phase.save
+            curr_session.cycles << curr_cycle
+            curr_cycle.save
 
-              #End the Cycle
-              pos += 1
-              curr_session.cycles << curr_cycle
-              curr_cycle.valid_tdd = true
-              curr_cycle.save
-              puts "Saved cycle" if CYCLE_DIAG
-              curr_cycle = Cycle.new(cycle_position: pos)
-              #start new phase
-              puts "Start red phase" if CYCLE_DIAG
-              #copy extraFrame to phaseFrame because extraFrame consists of new red phase
-              extra_phase.compiles.each do |current|
-                curr_phase.compiles << current
-              end
-              curr_phase.tdd_color = "red"
-              curr_phase.compiles << curr_compile
-              puts "Saved curr_compile to red phase" if CYCLE_DIAG
-            else
-              #save curr_compile to extraFrame
-              extra_phase.compiles << curr_compile
-              curr_compile.save  
-            end
-
+            #new cycle, phase
+            curr_phase = Phase.new(tdd_color: "red")
+            curr_cycle = Cycle.new(cycle_position: pos)
+            curr_phase.compiles << curr_compile
+            puts "Saved curr_compile to red phase" if CYCLE_DIAG    
+              
           else #curr_compile is green
       
             if !new_test
       
-              if not extra_phase.compiles.empty?
-                #concatenate extraFrame to phaseFrame
-                extra_phase.compiles.each do |current|
-                  curr_phase.compiles << current          
-                end
-              end
               #save curr_compile to phase
               curr_phase.compiles << curr_compile
               curr_compile.save
@@ -312,7 +290,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
             
             else
               
-              puts "[!6!] NON - TDD >> new test in green phase!" if CYCLE_DIAG
+              puts "[!6!] NON - TDD >> new test in blue phase!" if CYCLE_DIAG
               #NON TDD (no red phase occured)
               curr_cycle.valid_tdd = false
               curr_phase.tdd_color = "white"
@@ -330,8 +308,6 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
         
           if curr_compile.light_color.to_s == "red" || curr_compile.light_color.to_s == "amber" 
             
-
-            ##TODO: this is a placeholder, replace the following branch with new test logic
             if curr_compile.test_change || !curr_compile.prod_change
 
               pos += 1
