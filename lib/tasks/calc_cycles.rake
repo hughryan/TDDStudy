@@ -332,7 +332,13 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               puts "Saved curr_compile to blue phase" if CYCLE_DIAG
             
             else
-              
+              #if they are doing tdd there will only be test edits in the brown phase
+              if curr_compile.test_change && !curr_compile.prod_change
+                puts "BROWN PHASE"
+                curr_phase.tdd_color = "brown"
+                curr_phase.compiles << curr_compile
+                curr_compile.save
+              else  #if they are changeing multiple files, its not valid TDD
               puts "[!6!] NON - TDD >> new test in blue phase!" if CYCLE_DIAG
               #NON TDD (no red phase occured)
               curr_phase.tdd_color = "white"
@@ -340,6 +346,8 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               curr_phase.compiles << curr_compile
               curr_compile.save
             
+              end
+              
             end
 
           end
