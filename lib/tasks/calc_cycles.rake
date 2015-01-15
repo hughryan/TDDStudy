@@ -302,8 +302,11 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
           
           if (curr_compile.light_color.to_s == "red" ||  curr_compile.light_color.to_s == "amber") && new_test
             #save phase to cycle, save cycle to session
-            curr_cycle.phases << curr_phase
-            curr_phase.save
+            if  curr_phase.compiles.length > 0 
+              curr_cycle.phases << curr_phase
+              curr_phase.save
+            end
+            
             curr_session.cycles << curr_cycle
             curr_cycle.valid_tdd = true
             curr_cycle.save
