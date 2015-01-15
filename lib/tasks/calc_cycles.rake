@@ -90,6 +90,7 @@ def calc_cycles
       puts "Current Phase: " + curr_phase.tdd_color.to_s if CYCLE_DIAG
       puts "Current Phase Empty?: " + curr_phase.compiles.empty?.to_s if CYCLE_DIAG
       puts "New Test?: " + new_test.to_s if CYCLE_DIAG
+      puts "valid red?: " + valid_red.to_s if CYCLE_DIAG
 
       if !curr_compile.test_change && !curr_compile.prod_change && (last_light_color == curr_compile.light_color.to_s)
           curr_phase.compiles << curr_compile
@@ -141,9 +142,9 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               #reset new_test
               valid_red = false
             
-            else #only prod edits in red phase indicates deviation from TDD
+            else #only prod edits in red phase SHOULD indicate on to green
             
-              if !new_test
+              if valid_red
                 #save phase before new curr_compile is added
                 curr_cycle.phases << curr_phase
                 curr_phase.save
@@ -193,6 +194,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               curr_phase.compiles << curr_compile
               curr_compile.save
               puts "Saved curr_compile to red phase" if CYCLE_DIAG
+            
             else
               puts "[!3!] NON - TDD >> production edits in testing phase" if CYCLE_DIAG
           
@@ -272,6 +274,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
             curr_cycle.save
 
             #new cycle, phase
+            pos += 1 #cycle position
             curr_phase = Phase.new(tdd_color: "red")
             curr_cycle = Cycle.new(cycle_position: pos)
             curr_phase.compiles << curr_compile
