@@ -337,7 +337,12 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 puts "BROWN PHASE"
                 curr_phase.tdd_color = "brown"
                 curr_phase.compiles << curr_compile
+                curr_cycle.phases << curr_phase
                 curr_compile.save
+                
+
+                puts "Start Green Phase (only production changes and red or amber compile)" if CYCLE_DIAG
+                curr_phase = Phase.new(tdd_color: "green")
               else  #if they are changeing multiple files, its not valid TDD
               puts "[!6!] NON - TDD >> new test in blue phase!" if CYCLE_DIAG
               #NON TDD (no red phase occured)
