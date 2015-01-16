@@ -157,11 +157,23 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 curr_cycle.phases << curr_phase
                 curr_phase.save
                 
-                puts "Start Green Phase (both test and production changes and red or amber compile)" if CYCLE_DIAG
-                curr_phase = Phase.new(tdd_color: "green")
+                #EXPERIMENTING
+                # puts "Start Green Phase (both test and production changes and red or amber compile)" if CYCLE_DIAG
+                # curr_phase = Phase.new(tdd_color: "green")
                 
-                #new curr_compile is part of next phase, so save now
-                puts "Saved curr_compile to green phase" if CYCLE_DIAG
+                # #new curr_compile is part of next phase, so save now
+                # puts "Saved curr_compile to green phase" if CYCLE_DIAG
+                # curr_phase.compiles << curr_compile
+                # curr_compile.save
+
+                puts "[!1!] NON - TDD >> no new test and production edits occured" if CYCLE_DIAG
+            
+                #NON TDD (no red phase occured)
+                curr_phase = Phase.new(tdd_color: "green")
+                curr_cycle.valid_tdd = false
+                curr_phase.tdd_color = "white"
+            
+                #save curr_compile to phase
                 curr_phase.compiles << curr_compile
                 curr_compile.save
               else
@@ -366,7 +378,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
         
           if curr_compile.light_color.to_s == "red" || curr_compile.light_color.to_s == "amber" 
             
-            if curr_compile.test_change || !curr_compile.prod_change
+            if curr_compile.test_change && !curr_compile.prod_change && new_test
 
               pos += 1
               curr_cycle.phases << curr_phase
