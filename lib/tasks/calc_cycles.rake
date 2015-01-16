@@ -53,9 +53,14 @@ def calc_cycles
   Phase.delete_all
 
 
+Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s 
+INNER JOIN interrater_sessions as i on i.session_id = s.id").each do |session_id|
+
+  #
   #Get Session
+  # Session.includes(:cycles).where(cycles: { id: nil })
   # Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |curr_session|
-  Session.where("id = ?", 2456).find_each do |curr_session|
+  Session.where("id = ?", session_id.id).find_each do |curr_session|
 
     puts "CYCLE_DIAG: #{curr_session[0]}" if CYCLE_DIAG
 
@@ -406,5 +411,6 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
     curr_cycle.save
 
   end # end of for all sessions
+end
 
 end
