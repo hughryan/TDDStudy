@@ -27,6 +27,19 @@ end
 
 
 def calc_cycles
+
+  #CLEAN OUT OLD RESULTS
+  Cycle.delete_all
+  Phase.delete_all
+
+  #SELECT KATAS WE WANT TO COMPUTE CYCLES
+  Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s 
+  INNER JOIN interrater_sessions as i on i.session_id = s.id").each do |session_id|
+
+
+  puts "CURR SESSION ID: " + session_id.id.to_s if CYCLE_DIAG
+
+  #Setup inital values for each session
   pos = 0
   prev_outer = nil
   prev_cycle_end = nil
@@ -47,19 +60,6 @@ def calc_cycles
   new_test = false
   valid_red = false
 
-# ALLOWED_LANGS = Set["Java-1.8_JUnit"]
-
-  Cycle.delete_all
-  Phase.delete_all
-
-
-Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s 
-INNER JOIN interrater_sessions as i on i.session_id = s.id").each do |session_id|
-
-  #
-  #Get Session
-  # Session.includes(:cycles).where(cycles: { id: nil })
-  # Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |curr_session|
   Session.where("id = ?", session_id.id).find_each do |curr_session|
 
     puts "CYCLE_DIAG: #{curr_session[0]}" if CYCLE_DIAG
