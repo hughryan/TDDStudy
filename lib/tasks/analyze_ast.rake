@@ -22,6 +22,27 @@ def dojo
   Dojo.new(root_path,externals)
 end
 
+def defaultSetup(curr_path)
+	file = File.open(curr_path + "\/Untitled.java" , "rb")
+	contents = file.read
+
+	test_file = File.open(curr_path + "\/UntitledTest.java" , "rb")
+	test_contents = test_file.read
+
+	templateProduction = "\npublic class Untitled {\n    \n    public static int answer() {\n        return 42;\n    }\n}\n"
+	template_test = "import org.junit.*;\nimport static org.junit.Assert.*;\n\npublic class UntitledTest {\n    \n    @Test\n    public void hitch_hiker() {\n        int expected = 6 * 9;\n        int actual = Untitled.answer();\n        assertEquals(expected, actual);\n    }\n}\n"
+
+	if(templateProduction == contents)
+		if template_test == test_contents
+		puts "EQUAL"
+		return true
+		end
+	end
+
+	return false
+end
+
+
 def build_files(light)
 	filenames = []
 	filepaths = []
@@ -63,15 +84,16 @@ def ast_processing
 
 Session.find_by_sql("Select * from Sessions as s 
 inner join compiles as c on s.id = c.session_id
-where  git_tag =1 AND language_framework LIKE \"Java-1.8_JUnit\" AND c.prod_change is Null;").each do |session_id|
+where  git_tag =1 AND language_framework LIKE \"Java-1.8_JUnit\";").each do |session_id|
 
-puts "SessionID: " + session_id.inspect
-	puts "SessionID: " + session_id.session_id.to_s
-	puts "SessionID: " + session_id["session_id"].to_s
+# puts "SessionID: " + session_id.inspect
+# 	puts "SessionID: " + session_id.session_id.to_s
+# 	puts "SessionID: " + session_id["session_id"].to_s
 
 	# limit to kata sessions that use supported language/testing frameworks
 	# Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
 	Session.where("id = ?", session_id.session_id).find_each do |session|
+	# Session.where("id = ?", 2456).find_each do |session|
 	# Session.includes(:compiles).where( :compiles => { :test_change => nil } ).find_each do |session|
 		# print "id: " + session.id.to_s + ", " if DEBUG
 		print "cyberdojo_id: " + session.cyberdojo_id.to_s + ", " if DEBUG
@@ -80,6 +102,7 @@ puts "SessionID: " + session_id.inspect
 
 		#HANDLE THE FIRST COMPILE POINT
 		puts session.compiles[0].inspect if DEBUG
+
 		# puts dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[0]
 		firstCompile = session.compiles.first
 		curr_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[0])
@@ -92,19 +115,26 @@ puts "SessionID: " + session_id.inspect
 		firstCompile.total_assert_count = 0
 
 		curr_path = "#{BUILD_DIR}/1/src"
-		curr_filenames.each do |filename|
 
-			puts curr_path + "/" + filename if DEBUG
-			if findFileType(curr_path + "/" + filename) == "Production"
-				productionChanges = true
+		if defaultSetup(curr_path)
+			productionChanges = false
+			testChanges = false
+			firstCompile.total_method_count = 0
+			firstCompile.total_assert_count = 0
+		else
+			curr_filenames.each do |filename|
+
+				puts curr_path + "/" + filename if DEBUG
+				if findFileType(curr_path + "/" + filename) == "Production"
+					productionChanges = true
+				end
+				if findFileType(curr_path + "/" + filename) == "Test"
+					testChanges = true
+				end
+				firstCompile.total_method_count += findMethods(curr_path + "/" + filename)
+				firstCompile.total_assert_count += findAsserts(curr_path + "/" + filename)
 			end
-			if findFileType(curr_path + "/" + filename) == "Test"
-				testChanges = true
-			end
-			firstCompile.total_method_count += findMethods(curr_path + "/" + filename)
-			firstCompile.total_assert_count += findAsserts(curr_path + "/" + filename)
 		end
-
 		puts "testChanges: "+ testChanges.to_s if DEBUG
 		puts "productionChanges: "+ productionChanges.to_s if DEBUG
 	
@@ -176,7 +206,6 @@ puts "SessionID: " + session_id.inspect
 
 		end
 	end
-
 end
 
 	FileUtils.remove_entry_secure(BUILD_DIR)
