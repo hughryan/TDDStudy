@@ -68,6 +68,8 @@ td.markup_length {
 <th>Lang/<br>Framework</th>
 <th>Markups</th>
 <th>Markup Agreement</th>
+<th>Precision</th>
+<th>Recall</th>
 <th>InterRated</th>
 <th>Markup</th>
 <th>Comparison</th>
@@ -84,6 +86,8 @@ td.markup_length {
 <th>Lang/<br>Framework</th>
 <th>Markups</th>
 <th>Markup Agreement</th>
+<th>Precision</th>
+<th>Recall</th>
 <th>InterRated</th>
 <th>Markup</th>
 <th>Comparison</th>
@@ -186,6 +190,14 @@ $(document).ready(function() {
     }, {
       "className": 'markup_agreement',
       "data": 'numAgreed',
+      "width": '20px'
+    }, {
+      "className": 'precision',
+      "data": 'precision',
+      "width": '20px'
+    }, {
+      "className": 'recall',
+      "data": 'recall',
       "width": '20px'
     }, {
       "className": 'inter_rated',

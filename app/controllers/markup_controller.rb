@@ -39,27 +39,57 @@ class MarkupController < ApplicationController
 			# puts cycle.inspect
 			cycle.phases.each do |phase|
 				phase.compiles.each do |compile|
-					# puts compile.git_tag
-					# puts compile.light_color
-					compileColor[compile.git_tag] = compile.light_color
+					compileColor[compile.git_tag] = phase.tdd_color
 				end
 			end
 		end
 		numMarkupCompiles = compileColor.keys.length
 		totalMarkups = session.compiles.length
-		puts compileColor.inspect
-		puts "Number of Markups: "+ numMarkupCompiles.to_s
-		puts "Number of Compile Points: "+ totalMarkups.to_s
+		# puts compileColor.inspect
+		# puts "Number of Markups: "+ numMarkupCompiles.to_s
+		# puts "Number of Compile Points: "+ totalMarkups.to_s
 
-		recall = (numMarkupCompiles/totalMarkups)
+		recall = (numMarkupCompiles.to_f/totalMarkups.to_f)
 		puts "Recall:" + recall.to_s
-		returnValues = Hash.new
-		returnValues["recall"] = recall
+		returnValues = Array.new
+		returnValues[1] = recall
 
 		#calc precision
 		puts "%%%%%%%%%%%%%%%%%%%%%%%%% Precision %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-		puts session.markups.first.inspect
-		puts session.markups.uniq
+		# puts session.markups.first.inspect
+		aMarkupUser =  session.markups.select(:user).distinct.first.user
+		# puts "markupUser: "+ aMarkupUser
+		# puts "Session id: " + session.id.to_s
+		allUserMarkups = Markup.where(user: aMarkupUser, session_id: session.id)
+
+		# puts "Hash: " + compileColor.inspect 
+		# puts allUserMarkups.inspect
+
+		numCorrect = 0
+		numIncorrect = 0
+
+		allUserMarkups.each do |markup|
+			# puts markup.inspect
+			# puts "markup.first_compile_in_phase: " + markup.first_compile_in_phase.to_s
+			# puts "markup.last_compile_in_phase: " + markup.last_compile_in_phase.to_s
+			# puts "markup.tdd_color: " + markup.tdd_color.to_s
+			# # for 
+			for i in (markup.first_compile_in_phase+1)..markup.last_compile_in_phase
+   				# puts i 
+   				puts "compileColor[i].to_s: "+ compileColor[i].to_s
+   				puts "markup.tdd_color.to_s: " + markup.tdd_color.to_s
+   				if(compileColor[i].to_s == markup.tdd_color.to_s)
+   					numCorrect = numCorrect + 1
+   				else
+   					numIncorrect = numIncorrect + 1
+   				end
+			end
+		end
+		puts "numCorrect: "+ numCorrect.to_s
+		puts "numIncorrect: "+ numIncorrect.to_s
+		precision = (numCorrect.to_f/(numCorrect.to_f + numIncorrect.to_f))
+		puts "Precision: " + precision.to_s
+		returnValues[0] = precision
 		puts "%%%%%%%%%%%%%%%%%%%%%%%%% END %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 		return returnValues
 	end
@@ -72,8 +102,12 @@ class MarkupController < ApplicationController
 		@inter_sessions = InterraterSession.all
 		@inter_sessions.each do |interrater|
 			session = Session.find_by(id: interrater.session_id)
-			puts calculatePrecisionAndRecall(session).inspect
+			p_and_r = calculatePrecisionAndRecall(session)
+			# puts p_and_r.inspect
+			# puts p_and_r[1]
 			curr_session_markup = Hash.new
+			curr_session_markup["precision"] = p_and_r[0]
+			curr_session_markup["recall"] = p_and_r[1]
 			curr_session_markup["interRater"] = true
 			curr_session_markup["session"] = session
 			curr_session_markup["markup"] = session.markups
@@ -84,8 +118,10 @@ class MarkupController < ApplicationController
 		@markup_sessions = MarkupAssignment.where(researcher_id: researcher_id)
 		@markup_sessions.each do |assignment|
 			session = Session.find_by(id: assignment.session_id)
-			calculatePrecisionAndRecall(session)			
+			p_and_r = calculatePrecisionAndRecall(session)
 			curr_session_markup = Hash.new
+			curr_session_markup["precision"] =  p_and_r[0]
+			curr_session_markup["recall"] =  p_and_r[1]
 			curr_session_markup["interRater"] = false
 			curr_session_markup["session"] = session
 			curr_session_markup["markup"] = session.markups
