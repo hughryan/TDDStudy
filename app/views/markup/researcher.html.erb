@@ -55,7 +55,10 @@ td.markup_length {
 </style>
 
 <h2>Manual Markup Assignments for <%= @researcher %></h3>
+<b>Precision: </b><a id="PrecisionValue"></a>
+<b>Recall: </b><a id="RecallValue"></a>
 <BR><BR>
+
 
 <table id="myTable" class="display" cellspacing="0" width="100%">
 <thead>
@@ -245,5 +248,8 @@ $('#myTable').on('click', 'td.comparison', function() {
   window.location.href = "markup_comparison?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
 });
 
+
+$("#PrecisionValue").html(gon.totalMarkedCompiles/gon.totalCompiles);
+$("#RecallValue").html(gon.totalNumCorrect/(gon.totalNumCorrect +gon.totalNumInCorrect ));
 
 </script>
