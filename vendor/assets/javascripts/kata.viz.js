@@ -1,8 +1,3 @@
-function drawAlgorithmMarkup(){
-  console.log("drawAlgorithmMarkup");
-}
-
-
 function addNextRecordLink() {
 
   // var selectedSessionIndex = 0;

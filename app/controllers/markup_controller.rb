@@ -412,25 +412,6 @@ class MarkupController < ApplicationController
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
 		gon.compiles = @currSession.compiles
 
-		allPhases  = Array.new
-		Cycle.where(session_id: @currSession.id).each do |cycle|
-			Phase.where(cycle_id: cycle.id).each do |phase|
-				phaseHash = Hash.new()
-				phaseHash["color"] = phase.tdd_color
-				compilesInPhase = Array.new
-				puts "%%%%%%%%%%%%%%%%PHASE%%%%%%%%%%%%%%%%%%%"
-				# puts compile.git_tag.to_s
-				Compile.where(phase_id: phase.id).each do |compile|
-					compilesInPhase << compile.git_tag
-					puts "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-					puts compile.git_tag.to_s
-				end
-				phaseHash["compiles"] = compilesInPhase
-				allPhases << phaseHash
-			end
-		end
-
-		gon.phases = allPhases
 
 		allMarkups = Hash.new
 		@currSession.markups.each do |markup|
@@ -449,6 +430,7 @@ class MarkupController < ApplicationController
 
 		gon.allMarkups = allMarkups
 
+		gon.phases = Array.new
 		gon.cyberdojo_id = @cyberdojo_id
 		gon.cyberdojo_avatar = @cyberdojo_avatar
 	end
