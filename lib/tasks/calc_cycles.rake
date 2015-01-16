@@ -392,8 +392,12 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               curr_phase.compiles << curr_compile
               curr_compile.save
               valid_red = true
+            else
+              #save curr_compile to phase
+            curr_phase.compiles << curr_compile
+            curr_compile.save
+            puts "Inside white phase" if CYCLE_DIAG
             end
-
           else        
 
             #save curr_compile to phase
