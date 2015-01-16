@@ -391,7 +391,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               curr_cycle = Cycle.new(cycle_position: pos)
               curr_phase.compiles << curr_compile
               curr_compile.save
-            
+              valid_red = true
             end
 
           else        
