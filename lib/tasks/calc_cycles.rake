@@ -27,6 +27,19 @@ end
 
 
 def calc_cycles
+
+  #CLEAN OUT OLD RESULTS
+  Cycle.delete_all
+  Phase.delete_all
+
+  #SELECT KATAS WE WANT TO COMPUTE CYCLES
+  Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s 
+  INNER JOIN interrater_sessions as i on i.session_id = s.id").each do |session_id|
+
+
+  puts "CURR SESSION ID: " + session_id.id.to_s if CYCLE_DIAG
+
+  #Setup inital values for each session
   pos = 0
   prev_outer = nil
   prev_cycle_end = nil
@@ -47,15 +60,7 @@ def calc_cycles
   new_test = false
   valid_red = false
 
-# ALLOWED_LANGS = Set["Java-1.8_JUnit"]
-
-  Cycle.delete_all
-  Phase.delete_all
-
-
-  #Get Session
-  # Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |curr_session|
-  Session.where("id = ?", 2456).find_each do |curr_session|
+  Session.where("id = ?", session_id.id).find_each do |curr_session|
 
     puts "CYCLE_DIAG: #{curr_session[0]}" if CYCLE_DIAG
 
@@ -152,11 +157,23 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
                 curr_cycle.phases << curr_phase
                 curr_phase.save
                 
-                puts "Start Green Phase (both test and production changes and red or amber compile)" if CYCLE_DIAG
-                curr_phase = Phase.new(tdd_color: "green")
+                #EXPERIMENTING
+                # puts "Start Green Phase (both test and production changes and red or amber compile)" if CYCLE_DIAG
+                # curr_phase = Phase.new(tdd_color: "green")
                 
-                #new curr_compile is part of next phase, so save now
-                puts "Saved curr_compile to green phase" if CYCLE_DIAG
+                # #new curr_compile is part of next phase, so save now
+                # puts "Saved curr_compile to green phase" if CYCLE_DIAG
+                # curr_phase.compiles << curr_compile
+                # curr_compile.save
+
+                puts "[!1!] NON - TDD >> no new test and production edits occured" if CYCLE_DIAG
+            
+                #NON TDD (no red phase occured)
+                curr_phase = Phase.new(tdd_color: "green")
+                curr_cycle.valid_tdd = false
+                curr_phase.tdd_color = "white"
+            
+                #save curr_compile to phase
                 curr_phase.compiles << curr_compile
                 curr_compile.save
               else
@@ -361,7 +378,7 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
         
           if curr_compile.light_color.to_s == "red" || curr_compile.light_color.to_s == "amber" 
             
-            if curr_compile.test_change || !curr_compile.prod_change
+            if curr_compile.test_change && !curr_compile.prod_change && new_test
 
               pos += 1
               curr_cycle.phases << curr_phase
@@ -374,9 +391,13 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
               curr_cycle = Cycle.new(cycle_position: pos)
               curr_phase.compiles << curr_compile
               curr_compile.save
-            
+              valid_red = true
+            else
+              #save curr_compile to phase
+            curr_phase.compiles << curr_compile
+            curr_compile.save
+            puts "Inside white phase" if CYCLE_DIAG
             end
-
           else        
 
             #save curr_compile to phase
@@ -406,5 +427,6 @@ puts "%%%%%%%%%%%  Start CASE  %%%%%%%%%%%"
     curr_cycle.save
 
   end # end of for all sessions
+end
 
 end

@@ -90,6 +90,11 @@ class MarkupController < ApplicationController
 		precision = (numCorrect.to_f/(numCorrect.to_f + numIncorrect.to_f))
 		puts "Precision: " + precision.to_s
 		returnValues[0] = precision
+
+		@totalNumCorrect = @totalNumCorrect + numCorrect
+		@totalNumInCorrect = @totalNumInCorrect + numIncorrect
+		@totalCompiles = @totalCompiles + totalMarkups
+		@totalMarkedCompiles = @totalMarkedCompiles + numMarkupCompiles
 		puts "%%%%%%%%%%%%%%%%%%%%%%%%% END %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 		return returnValues
 	end
@@ -98,6 +103,12 @@ class MarkupController < ApplicationController
 		@researcher = params[:researcher]
 		researcher_id = Researcher.find_by(name: @researcher).id
 		all_sessions_markup = Array.new
+
+		@totalNumCorrect = 0
+		@totalNumInCorrect = 0
+		@totalCompiles = 0
+		@totalMarkedCompiles = 0
+
 
 		@inter_sessions = InterraterSession.all
 		@inter_sessions.each do |interrater|
@@ -129,7 +140,12 @@ class MarkupController < ApplicationController
 			all_sessions_markup << curr_session_markup
 		end
 
-		gon.all_sessions_markup = all_sessions_markup		
+		gon.all_sessions_markup = all_sessions_markup	
+		gon.totalNumCorrect = @totalNumCorrect
+		gon.totalNumInCorrect = @totalNumInCorrect
+		gon.totalCompiles = @totalCompiles
+		gon.totalMarkedCompiles = @totalMarkedCompiles
+
 	end
 
 	def manualCatTool
@@ -412,6 +428,25 @@ class MarkupController < ApplicationController
 		@currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
 		gon.compiles = @currSession.compiles
 
+		allPhases  = Array.new
+		Cycle.where(session_id: @currSession.id).each do |cycle|
+			Phase.where(cycle_id: cycle.id).each do |phase|
+				phaseHash = Hash.new()
+				phaseHash["color"] = phase.tdd_color
+				compilesInPhase = Array.new
+				puts "%%%%%%%%%%%%%%%%PHASE%%%%%%%%%%%%%%%%%%%"
+				# puts compile.git_tag.to_s
+				Compile.where(phase_id: phase.id).each do |compile|
+					compilesInPhase << compile.git_tag
+					puts "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+					puts compile.git_tag.to_s
+				end
+				phaseHash["compiles"] = compilesInPhase
+				allPhases << phaseHash
+			end
+		end
+
+		gon.phases = allPhases
 
 		allMarkups = Hash.new
 		@currSession.markups.each do |markup|
@@ -430,7 +465,6 @@ class MarkupController < ApplicationController
 
 		gon.allMarkups = allMarkups
 
-		gon.phases = Array.new
 		gon.cyberdojo_id = @cyberdojo_id
 		gon.cyberdojo_avatar = @cyberdojo_avatar
 	end

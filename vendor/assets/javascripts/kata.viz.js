@@ -1,3 +1,65 @@
+function drawAlgorithmMarkup(phases){
+  console.log("drawAlgorithmMarkup");
+
+  //   //Draw phase bars
+  // chart.selectAll("f")
+  //   .data(phaseData)
+  //   .enter().append("rect")
+  //   .attr("x", function(d, i) {
+  //     return x(d.first_compile_in_phase - 1);
+  //   })
+  //   .attr("y", phaseHeight)
+  //   .attr("width",
+  //     function(d, i) {
+  //       if (d.last_compile_in_phase == compiles.length) {
+  //         return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
+  //       } else {
+  //         return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
+  //       }
+  //     })
+  //   .attr("height", 10)
+  //   .attr("stroke", "grey")
+  //   .attr("fill",
+  //     function(d) {
+  //       return TDDColor(d.tdd_color);
+  //     })
+  //   .attr("transform", "translate(" + margin.left + ",10)");
+
+  phaseBars = chart.selectAll("f")
+      .data(phases)
+      .enter().append("rect")
+      .attr("x", function(d, i) {
+        return x(d.compiles[0]-1);
+      })
+      .attr("y", phaseHeight -20 )
+      .attr("width",
+        function(d, i) {
+          return x(d.compiles[d.compiles.length-1] - d.compiles[0]+1);
+        })
+      .attr("height", 15)
+      .attr("stroke", "grey")
+      .attr("fill",
+        function(d) {
+          return TDDColor(d.color);
+        })
+      .attr("transform", "translate(" + margin.left + ",10)");
+
+    // compilesArray[0]
+    chart.append("svg:text")
+      .attr("x", function(d, i) {
+        return x(1);
+      })
+      .attr("y", phaseHeight -20)
+      .attr("dy", ".35em")
+      // .attr("text-anchor", "right")
+      .style("font", "300 12px Helvetica Neue")
+      .text("ALGORITHM")
+      .attr("fill", "white")
+      .attr("transform", "translate(6,18)");
+
+}
+
+
 function addNextRecordLink() {
 
   // var selectedSessionIndex = 0;

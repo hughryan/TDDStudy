@@ -83,9 +83,16 @@ end
 def ast_processing
 	FileUtils.mkdir_p BUILD_DIR, :mode => 0700
 
-Session.find_by_sql("Select * from Sessions as s 
-inner join compiles as c on s.id = c.session_id
-where  git_tag =1 AND language_framework LIKE \"Java-1.8_JUnit\";").each do |session_id|
+
+#TO CLEAR UPDATE compiles SET test_change = null
+
+Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s 
+INNER JOIN interrater_sessions as i on i.session_id = s.id;").each do |session_id|
+
+
+# Session.find_by_sql("Select * from Sessions as s 
+# inner join compiles as c on s.id = c.session_id
+# where  git_tag =1 AND language_framework LIKE \"Java-1.8_JUnit\";").each do |session_id|
 
 # puts "SessionID: " + session_id.inspect
 # 	puts "SessionID: " + session_id.session_id.to_s
@@ -93,7 +100,7 @@ where  git_tag =1 AND language_framework LIKE \"Java-1.8_JUnit\";").each do |ses
 
 	# limit to kata sessions that use supported language/testing frameworks
 	# Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
-	Session.where("id = ?", session_id.session_id).find_each do |session|
+	Session.where("id = ?", session_id.id).find_each do |session|
 	# Session.where("id = ?", 2456).find_each do |session|
 	# Session.includes(:compiles).where( :compiles => { :test_change => nil } ).find_each do |session|
 		# print "id: " + session.id.to_s + ", " if DEBUG
