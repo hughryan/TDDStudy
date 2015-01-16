@@ -23,22 +23,23 @@ def dojo
 end
 
 def defaultSetup(curr_path)
-	file = File.open(curr_path + "\/Untitled.java" , "rb")
-	contents = file.read
+	if(File.exist?(curr_path + "\/Untitled.java") && File.exist?(curr_path + "\/UntitledTest.java"))
+		file = File.open(curr_path + "\/Untitled.java" , "rb")
+		contents = file.read
 
-	test_file = File.open(curr_path + "\/UntitledTest.java" , "rb")
-	test_contents = test_file.read
+		test_file = File.open(curr_path + "\/UntitledTest.java" , "rb")
+		test_contents = test_file.read
 
-	templateProduction = "\npublic class Untitled {\n    \n    public static int answer() {\n        return 42;\n    }\n}\n"
-	template_test = "import org.junit.*;\nimport static org.junit.Assert.*;\n\npublic class UntitledTest {\n    \n    @Test\n    public void hitch_hiker() {\n        int expected = 6 * 9;\n        int actual = Untitled.answer();\n        assertEquals(expected, actual);\n    }\n}\n"
+		templateProduction = "\npublic class Untitled {\n    \n    public static int answer() {\n        return 42;\n    }\n}\n"
+		template_test = "import org.junit.*;\nimport static org.junit.Assert.*;\n\npublic class UntitledTest {\n    \n    @Test\n    public void hitch_hiker() {\n        int expected = 6 * 9;\n        int actual = Untitled.answer();\n        assertEquals(expected, actual);\n    }\n}\n"
 
-	if(templateProduction == contents)
-		if template_test == test_contents
-		puts "EQUAL"
-		return true
+		if(templateProduction == contents)
+			if template_test == test_contents
+			puts "EQUAL"
+			return true
+			end
 		end
 	end
-
 	return false
 end
 
