@@ -57,6 +57,11 @@ class MarkupController < ApplicationController
 		#calc precision
 		puts "%%%%%%%%%%%%%%%%%%%%%%%%% Precision %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 		# puts session.markups.first.inspect
+		numCorrect = 0
+		numIncorrect = 0
+
+		puts session.markups.select(:user)
+		if session.markups.select(:user) == nil
 		aMarkupUser =  session.markups.select(:user).distinct.first.user
 		# puts "markupUser: "+ aMarkupUser
 		# puts "Session id: " + session.id.to_s
@@ -65,8 +70,7 @@ class MarkupController < ApplicationController
 		# puts "Hash: " + compileColor.inspect 
 		# puts allUserMarkups.inspect
 
-		numCorrect = 0
-		numIncorrect = 0
+
 
 		allUserMarkups.each do |markup|
 			# puts markup.inspect
@@ -90,7 +94,7 @@ class MarkupController < ApplicationController
 		precision = (numCorrect.to_f/(numCorrect.to_f + numIncorrect.to_f))
 		puts "Precision: " + precision.to_s
 		returnValues[0] = precision
-
+	end
 		@totalNumCorrect = @totalNumCorrect + numCorrect
 		@totalNumInCorrect = @totalNumInCorrect + numIncorrect
 		@totalCompiles = @totalCompiles + totalMarkups
