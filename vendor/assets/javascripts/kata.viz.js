@@ -676,23 +676,23 @@ function drawUncatagorizedKata() {
 		.style("font-size", "16px");
 
 
-	var lineFunction = d3.svg.line()
-		.x(function(d) {
-			// console.log(d.git_tag);
-			return x(d.git_tag);
-		})
-		.y(function(d) {
-			// console.log(d.total_test_method_count);
-			return y(d.total_assert_count);
-		})
-		.interpolate("linear");
+	// var lineFunction = d3.svg.line()
+	// 	.x(function(d) {
+	// 		// console.log(d.git_tag);
+	// 		return x(d.git_tag);
+	// 	})
+	// 	.y(function(d) {
+	// 		// console.log(d.total_test_method_count);
+	// 		return y(d.total_assert_count);
+	// 	})
+	// 	.interpolate("linear");
 
-	//The line SVG Path we draw
-	var lineGraph = chart.append("path")
-		.attr("d", lineFunction(data))
-		.attr("stroke", "#737373")
-		.attr("stroke-width", 2)
-		.attr("fill", "#737373");
+	// //The line SVG Path we draw
+	// var lineGraph = chart.append("path")
+	// 	.attr("d", lineFunction(data))
+	// 	.attr("stroke", "#737373")
+	// 	.attr("stroke-width", 2)
+	// 	.attr("fill", "#737373");
 
 
 	// chart.selectAll("h")
@@ -723,12 +723,12 @@ function drawUncatagorizedKata() {
 
 
 
-	//The line SVG Path we draw
-	var lineGraph = chart.append("path")
-		.attr("d", lineFunction(data))
-		.attr("stroke", "#737373")
-		.attr("stroke-width", 2)
-		.attr("fill", "#737373");
+	// //The line SVG Path we draw
+	// var lineGraph = chart.append("path")
+	// 	.attr("d", lineFunction(data))
+	// 	.attr("stroke", "#737373")
+	// 	.attr("stroke-width", 2)
+	// 	.attr("fill", "#737373");
 
 	var gBrush = chart.append("g")
 		.attr("class", "brush")
@@ -960,6 +960,40 @@ function drawKataViz() {
 		.style("stroke", "#737373");
 
 
+
+	// TODO WHY IS THIS BREAKING?
+	chart.append("g")
+		.data(cycles)
+		.enter().append("rect")
+		.attr("x", function(d, i) {
+			// return x(d.startCompile - 1);
+			return x(d.all_phases[0].compiles[0]);
+		})
+		.attr("y", 20)
+		.attr("width",
+			function(d, i) {
+				// return x(d.endCompile - d.startCompile + 1);
+				return x(d.all_phases[d.all_phases.length-1].compiles[d.all_phases[d.all_phases.length-1].compiles.length-1] -  d.all_phases[0].compiles[0])
+			})
+		.attr("height", 40)
+		.attr("rx", 6)
+		.attr("ry", 6)
+		.attr("stroke", "grey")
+		.attr("fill", function(d) {
+			if (d.valid_tdd == true) {
+				return "#BABABA";
+			}
+			if (d.valid_tdd == false) {
+				return "#6F6F6F";
+			}
+
+		})
+		.attr("transform", "translate(" + margin.left + ",-10)");
+
+
+
+
+
 	//Draw phase bars
 	chart.selectAll("f")
 		.data(phaseData)
@@ -1026,34 +1060,6 @@ function drawKataViz() {
 		.style("font-size", "16px");
 
 
-	// TODO WHY IS THIS BREAKING?
-	chart.append("g")
-		.data(cycles)
-		.enter().append("rect")
-		.attr("x", function(d, i) {
-			// return x(d.startCompile - 1);
-			return x(d.all_phases[0].compiles[0]);
-		})
-		.attr("y", 20)
-		.attr("width",
-			function(d, i) {
-				// return x(d.endCompile - d.startCompile + 1);
-				return x(d.all_phases[d.all_phases.length-1].compiles[d.all_phases[d.all_phases.length-1].compiles.length-1] -  d.all_phases[0].compiles[0])
-			})
-		.attr("height", 40)
-		.attr("rx", 6)
-		.attr("ry", 6)
-		.attr("stroke", "grey")
-		.attr("fill", function(d) {
-			if (d.valid_tdd == true) {
-				return "#BABABA";
-			}
-			if (d.valid_tdd == false) {
-				return "#6F6F6F";
-			}
-
-		})
-		.attr("transform", "translate(" + margin.left + ",-10)");
 
 
 

@@ -213,11 +213,21 @@ class MarkupController < ApplicationController
     end
 
     gon.all_sessions_markup = all_sessions_markup
+  end
 
+
+
+  def display_kata
+    @researcher = params[:researcher]
+    @cyberdojo_id = params[:id]
+    @cyberdojo_avatar = params[:avatar]
+    @currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
+    gon.compiles = @currSession.compiles
+    gon.cyberdojo_id = @cyberdojo_id
+    gon.cyberdojo_avatar = @cyberdojo_avatar
 
 
   end
-
 
 
   def timelineWithBrush
