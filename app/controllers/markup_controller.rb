@@ -228,7 +228,7 @@ class MarkupController < ApplicationController
     @currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
     gon.compiles = @currSession.compiles
 
-    cycleHash = Hash.new()
+    cycleArray = Array.new()
     allPhases  = Array.new()
     Cycle.where(session_id: @currSession.id).each do |cycle|
       currPhases = Array.new()
@@ -250,14 +250,14 @@ class MarkupController < ApplicationController
       currCompile = Hash.new()
       currCompile["valid_tdd"] = cycle.valid_tdd
       currCompile["all_phases"] = currPhases
-      cycleHash[cycle.id] = currCompile
+      cycleArray << currCompile
 
     end
 
     gon.phases = allPhases
     gon.cyberdojo_id = @cyberdojo_id
     gon.cyberdojo_avatar = @cyberdojo_avatar
-    gon.cycles = cycleHash
+    gon.cycles = cycleArray
 
     # allCycles = Array.new
     # allPhases = Array.new
