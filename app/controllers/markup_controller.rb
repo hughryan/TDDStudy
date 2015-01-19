@@ -228,61 +228,104 @@ class MarkupController < ApplicationController
     @currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
     gon.compiles = @currSession.compiles
 
-    allCycles = Array.new
-    allPhases = Array.new
-    normalizedPhaseTime = Array.new
-    normalizedPhaseSLOC = Array.new
-    @currSession.cycles.each do |cycle|
-      puts cycle.inspect
-      currCycle = Hash.new
-      currCycle[:valid_tdd] = cycle.valid_tdd
-      # currCycle[:startCompile] = cycle.phases.first.compiles.first.git_tag
-      # currCycle[:endCompile] = cycle.phases.last.compiles.last.git_tag
-      allCycles << currCycle
-
-      cycleStart = 0
-      cycleEnd = 0
-      puts cycle.phases.inspect
-      totalCycleTime = 0
-      totalCycleSloc = 0
-      currPhaseTime = Hash.new
-      currPhaseSloc = Hash.new
-      cycle.phases.each do |phase|
-        # phase.first_compile_in_phase = phase.compiles.first.git_tag
-        # phase.last_compile_in_phase = phase.compiles.last.git_tag
-        # print  "cycleStart:"
-        # puts cycleStart
-        # print  "cycleEnd:"
-        # puts cycleEnd
-
-        # totalCycleSloc = totalCycleSloc + phase.total_sloc_count
-        # totalCycleTime = totalCycleTime + phase.seconds_in_phase
-
-        allPhases << phase
+    cycleHash = Hash.new()
+    allPhases  = Array.new()
+    Cycle.where(session_id: @currSession.id).each do |cycle|
+      currPhases = Array.new()
+      Phase.where(cycle_id: cycle.id).each do |phase|
+        phaseHash = Hash.new()
+        phaseHash["color"] = phase.tdd_color
+        compilesInPhase = Array.new
+        puts "%%%%%%%%%%%%%%%%PHASE%%%%%%%%%%%%%%%%%%%"
+        # puts compile.git_tag.to_s
+        Compile.where(phase_id: phase.id).each do |compile|
+          compilesInPhase << compile.git_tag
+          puts "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+          puts compile.git_tag.to_s
+        end
+        phaseHash["compiles"] = compilesInPhase
+        allPhases << phaseHash
+        currPhases << phaseHash
       end
-      cycle.phases.each do |phase|
-        print "totalCycleSloc"
-        puts totalCycleSloc
-        print  "totalCycleTime"
-        puts totalCycleTime
-        currPhaseTime[phase.tdd_color] = phase.total_sloc_count.to_f/totalCycleSloc.to_f
-        currPhaseSloc[phase.tdd_color] = phase.seconds_in_phase.to_f/totalCycleTime.to_f
-        normalizedPhaseTime.push(currPhaseTime)
-        normalizedPhaseSLOC.push(currPhaseSloc)
-        print "currPhaseTime::"
-        puts currPhaseTime.inspect
-        print "currPhaseSloc::"
-        puts currPhaseSloc.inspect
-      end
+      currCompile = Hash.new()
+      currCompile["valid_tdd"] = cycle.valid_tdd
+      currCompile["all_phases"] = currPhases
+      cycleHash[cycle.id] = currCompile
+
     end
-    puts allPhases.size
-    puts allPhases
+
     gon.phases = allPhases
     gon.cyberdojo_id = @cyberdojo_id
     gon.cyberdojo_avatar = @cyberdojo_avatar
-    gon.normalizedPhaseTime = normalizedPhaseTime
-    gon.normalizedPhaseSLOC = normalizedPhaseSLOC
-    gon.cycles = allCycles
+    gon.cycles = cycleHash
+
+    # allCycles = Array.new
+    # allPhases = Array.new
+    # normalizedPhaseTime = Array.new
+    # normalizedPhaseSLOC = Array.new
+    # @currSession.cycles.each do |cycle|
+    #   puts cycle.inspect
+    #   currCycle = Hash.new
+    #   currCycle[:valid_tdd] = cycle.valid_tdd
+    #   # currCycle[:startCompile] = cycle.phases.first.compiles.first.git_tag
+    #   # currCycle[:endCompile] = cycle.phases.last.compiles.last.git_tag
+    #   allCycles << currCycle
+
+    #   cycleStart = 0
+    #   cycleEnd = 0
+    #   puts cycle.phases.inspect
+    #   totalCycleTime = 0
+    #   totalCycleSloc = 0
+    #   currPhaseTime = Hash.new
+    #   currPhaseSloc = Hash.new
+    #   cycle.phases.each do |phase|
+    #     # phase.first_compile_in_phase = phase.compiles.first.git_tag
+    #     # phase.last_compile_in_phase = phase.compiles.last.git_tag
+    #     # print  "cycleStart:"
+    #     # puts cycleStart
+    #     # print  "cycleEnd:"
+    #     # puts cycleEnd
+    #     total_sloc_count = 0
+    #     seconds_in_phase = 0
+    #     phase.compiles.each do |compile|
+    #       puts "compile.total_sloc_count: "+ compile.total_sloc_count.to_s
+    #       puts "compile.seconds_since_last_light: "+ compile.seconds_since_last_light.to_s
+    #       total_sloc_count = total_sloc_count + compile.total_sloc_count
+    #       seconds_in_phase = seconds_in_phase + compile.seconds_since_last_light
+    #     end
+    #     puts "total_sloc_count: "+ total_sloc_count.to_s
+
+
+    #     totalCycleSloc = totalCycleSloc + total_sloc_count
+    #     totalCycleTime = totalCycleTime + seconds_in_phase
+    #     phase.total_sloc_count = totalCycleSloc
+    #     phase.seconds_in_phase = totalCycleTime
+    #     phase.save
+    #     allPhases << phase
+    #   end
+    #   cycle.phases.each do |phase|
+    #     print "totalCycleSloc"
+    #     puts totalCycleSloc
+    #     print  "totalCycleTime"
+    #     puts totalCycleTime
+    #     currPhaseTime[phase.tdd_color] = phase.total_sloc_count.to_f/totalCycleSloc.to_f
+    #     currPhaseSloc[phase.tdd_color] = phase.seconds_in_phase.to_f/totalCycleTime.to_f
+    #     normalizedPhaseTime.push(currPhaseTime)
+    #     normalizedPhaseSLOC.push(currPhaseSloc)
+    #     print "currPhaseTime::"
+    #     puts currPhaseTime.inspect
+    #     print "currPhaseSloc::"
+    #     puts currPhaseSloc.inspect
+    #   end
+    # end
+    # puts allPhases.size
+    # puts allPhases
+    # gon.phases = allPhases
+    # gon.cyberdojo_id = @cyberdojo_id
+    # gon.cyberdojo_avatar = @cyberdojo_avatar
+    # gon.normalizedPhaseTime = normalizedPhaseTime
+    # gon.normalizedPhaseSLOC = normalizedPhaseSLOC
+    # gon.cycles = allCycles
 
   end
 
