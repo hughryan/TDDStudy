@@ -964,23 +964,19 @@ function drawKataViz() {
     .data(phaseData)
     .enter().append("rect")
     .attr("x", function(d, i) {
-      return x(d.first_compile_in_phase - 1);
+      return x(d.compiles[0]);
     })
-    .attr("y", phaseHeight)
+    .attr("y", phaseHeight-10)
     .attr("width",
       function(d, i) {
-        if (d.last_compile_in_phase == compiles.length) {
-          return x(d.last_compile_in_phase - d.first_compile_in_phase + 1);
-        } else {
-          return x(d.last_compile_in_phase - d.first_compile_in_phase + 2);
-        }
-      })
-    .attr("height", 10)
+        return x(d.compiles[d.compiles.length-1] - d.compiles[0]+1);
+    })
+    .attr("height", 15)
     .attr("stroke", "grey")
     .attr("fill",
-      function(d) {
-        return TDDColor(d.tdd_color);
-      })
+        function(d) {
+          return TDDColor(d.color);
+        })
     .attr("transform", "translate(" + margin.left + ",10)");
 
 
@@ -1141,7 +1137,7 @@ function drawKataViz() {
   //       .attr("fill","orange");
   //   //     // .attr("transform", "translate(" + margin.left + ",10)");
 
-
+//TODO WHY IS THIS BREAKING?
   chart.selectAll("h")
     .data(cycles)
     .enter().append("rect")
