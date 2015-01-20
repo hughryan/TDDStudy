@@ -238,22 +238,79 @@ function buildpulseChart(TDDData) {
 				.datum(data)
 				.call(my_pulsePlot);
 		})
-
-	// // var metrics = mapPulseArrayToMetrics(TDDPulse, metricFunction);
-	// var my_pulsePlot =
-	// 	pulsePlot()
-	// 	.width(100)
-	// 	.height(100)
-	// 	.innerRadius(10)
-	// 	.outerRadius(50);
-
-	// $('#PulseAreaDetail').append("<div class='pulseChart' id='pulse'></div>");
-	// var data = createHiveData(TDDData[0].red, TDDData[0].green, TDDData[0].blue);
-	// d3.select("#pulse")
-	// 	.datum(data)
-	// 	.call(my_pulsePlot);
 }
 
+
+function buildAggPulseChart(TDDData){
+
+	
+metrics = TDDData;
+	var data = [];
+  	for(var k = 0; k <metrics.length; k++){
+  		currMetric = metrics[k];
+  		var blue = currMetric.blue;
+  		var red = currMetric.red;
+  		var green = currMetric.green;
+  		if(blue == 0 || isNaN(blue)){
+  		blue = 0.001;
+  		}
+	  	if(red == 0 || isNaN(red)){
+	  		red = 0.001;
+	  	}
+	  	if(green == 0 || isNaN(green)){
+	  		green = 0.001;
+	  	}
+	  	data.push({source: {x: 0, y0: 0.0, y1: red}, target: {x: 1, y0: 0.0, y1: red}, group:  3});
+		data.push({source: {x: 1, y0: 0.0, y1: green}, target: {x: 2, y0: 0.0, y1: green}, group:  7});
+		data.push({source: {x: 2, y0: 0.0, y1: blue}, target: {x: 0, y0: 0.0, y1: blue}, group:  11});
+  	}
+
+
+			curr_TDD_data = TDDData[0];
+			// console.log(element);
+			// var metrics = mapPulseArrayToMetrics(TDDPulse, metricFunction);
+			var my_pulsePlot =
+				pulsePlot()
+				.width(100)
+				.height(100)
+				.innerRadius(10)
+				.outerRadius(50);
+
+			// var curr_width = $('#PulseAreaDetail').width();
+			// $('#PulseAreaDetail').width(curr_width + 100);
+			$('#aggHivePlot').append("<div class='aggPulseChart' id='aggPulse'></div>");
+			// var data = createHiveData(curr_TDD_data.red, curr_TDD_data.green, curr_TDD_data.blue);
+			d3.select("#aggPulse")
+				.datum(data)
+				.call(my_pulsePlot);
+	
+
+	 //  function createAggHiveData(metrics){
+  // 	var data = [];
+  // 	for(var k = 0; k <metrics.length; k++){
+  // 		currMetric = metrics[k];
+  // 		var blue = currMetric.blue;
+  // 		var red = currMetric.red;
+  // 		var green = currMetric.green;
+  // 		if(blue == 0 || isNaN(blue)){
+  // 		blue = 0.001;
+  // 		}
+	 //  	if(red == 0 || isNaN(red)){
+	 //  		red = 0.001;
+	 //  	}
+	 //  	if(green == 0 || isNaN(green)){
+	 //  		green = 0.001;
+	 //  	}
+	 //  	data.push({source: {x: 0, y0: 0.0, y1: red}, target: {x: 1, y0: 0.0, y1: red}, group:  3});
+		// data.push({source: {x: 1, y0: 0.0, y1: green}, target: {x: 2, y0: 0.0, y1: green}, group:  7});
+		// data.push({source: {x: 2, y0: 0.0, y1: blue}, target: {x: 0, y0: 0.0, y1: blue}, group:  11});
+  // 	}
+
+		// return data;
+  // }
+
+
+}
 
 function brushended() {
 	if (!d3.event.sourceEvent) return; // only transition after input

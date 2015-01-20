@@ -5,7 +5,8 @@
 <style>
 
 body {
-    position: fixed;
+  position: fixed;
+  font-family: helvetica;
 }
 
 #username{
@@ -77,19 +78,19 @@ font-family: sans-serif;
 }
 
 #accordion{
-  overflow: scroll;
+overflow: scroll;
 }
 
 .entireDiffArea{
-padding-top:10px;
-padding-right:14px;
-margin-top: 10px;
+  padding-top:10px;
+  padding-right:14px;
+  margin-top: 10px;
 
 }
 
 .diffTitle{
   border: 2px solid #ddd;
-/*background: white url("images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;*/
+  /*background: white url("images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;*/
 font-weight: normal;
 color: #212121;
 border-top-right-radius: 4px;
@@ -150,27 +151,45 @@ border-top-left-radius: 4px;
 #PulseAreaDetail{
 width:100px;
 height:100px;
+overflow: scroll;
 }
 
 .pulseChart{
   float:left;
 }
+#aggHivePlot{
+  width:100px;
+  height: 100px;
+    float:left;
+    background-color: white;
+}
+
+#header{
+  width:100%;
+  height:100px;
+  float:left;
+   /*border: 2px solid;*/
+    border-radius: 25px;
+    background-color: #efefef;
+    margin-right: 30px;
+    margin-bottom: 20px;
+}
+#headerTitle{
+float: left;
+padding-top: 30px;
+padding-left: 10px;
+font-size: 55px;
+font-family: monospace;
+color: rgb(76, 76, 76);
+}
 </style>
 
 <div id="header">
-<h3>
-<div id="nextKata">NO CANDIDATE FOUND</div>
-<div id="username">
-Researcher: <%= params[:researcher] %>
+<div id="aggHivePlot"></div>
+<div id="headerTitle"><%= params[:kataName] %></div>
+
+
 </div>
-</h3>
-
-<h3>CyberDojo Id: <%= params[:id] %>
-Avatar: <%= params[:avatar] %>
-Kata Name: <%= params[:kataName] %>
-</h3>
-
-
 <body>
 <div id="PulseAreaDetail"></div>
 
@@ -192,6 +211,8 @@ cycles = gon.cycles;
 username = "<%= params[:researcher] %>";
 
 pageSetup();
+$('#header').width($(window).width());
+$('#PulseAreaDetail').width($(window).width());
 
 drawKataBackground();
 drawCompilePoints();
@@ -200,5 +221,6 @@ drawCycleArea();
 diplay_kata_algorithm(gon.phases);
 
 buildpulseChart(gon.normalizedPhaseSLOC);
+buildAggPulseChart(gon.normalizedPhaseSLOC);
 
 </script>
