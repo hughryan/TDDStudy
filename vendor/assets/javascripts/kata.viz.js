@@ -33,8 +33,30 @@ function drawCycleArea(){
 
 }
 
+function diplay_kata_algorithm(phases) {
+	phaseBars = chart.selectAll("f")
+		.data(phases)
+		.enter().append("rect")
+		.attr("x", function(d, i) {
+			return x(d.compiles[0] - 1);
+		})
+		.attr("y", phaseHeight )
+		.attr("width",
+			function(d, i) {
+				return x(d.compiles[d.compiles.length - 1] - d.compiles[0] + 1);
+			})
+		.attr("height", 15)
+		.attr("stroke", "grey")
+		.attr("fill",
+			function(d) {
+				return TDDColor(d.color);
+			})
+		.attr("transform", "translate(" + margin.left + ",10)")
+		;
+}
 
-function drawAlgorithmMarkup(phases) {
+
+function drawAlgorithmMarkup(phases,show_label) {
 	console.log("drawAlgorithmMarkup");
 
 	//   //Draw phase bars
@@ -80,7 +102,8 @@ function drawAlgorithmMarkup(phases) {
 			})
 		.attr("transform", "translate(" + margin.left + ",10)");
 
-	// compilesArray[0]
+	if(show_label){
+		// compilesArray[0]
 	chart.append("svg:text")
 		.attr("x", function(d, i) {
 			return x(1);
@@ -91,7 +114,9 @@ function drawAlgorithmMarkup(phases) {
 		.style("font", "300 12px Helvetica Neue")
 		.text("ALGORITHM")
 		.attr("fill", "white")
-		.attr("transform", "translate(6,18)");
+		.attr("transform", "translate(6,18)");	
+	}
+
 
 }
 
@@ -191,24 +216,43 @@ function pageSetup() {
 	});
 }
 
-
-
 function buildpulseChart(TDDData) {
-	// var metrics = mapPulseArrayToMetrics(TDDPulse, metricFunction);
-	var my_pulsePlot =
-		pulsePlot()
-		.width(100)
-		.height(100)
-		.innerRadius(10)
-		.outerRadius(50);
 
-	$('#PulseAreaDetail').append("<div class='pulseChart' id='pulse'></div>");
-	var data = createHiveData(TDDData[0].red, TDDData[0].green, TDDData[0].blue);
-	d3.select("#pulse")
-		.datum(data)
-		.call(my_pulsePlot);
+	TDDData.forEach(
+		function(element, index) {
+			curr_TDD_data = element;
+			console.log(element);
+			// var metrics = mapPulseArrayToMetrics(TDDPulse, metricFunction);
+			var my_pulsePlot =
+				pulsePlot()
+				.width(100)
+				.height(100)
+				.innerRadius(10)
+				.outerRadius(50);
+
+			var curr_width = $('#PulseAreaDetail').width();
+			$('#PulseAreaDetail').width(curr_width + 100);
+			$('#PulseAreaDetail').append("<div class='pulseChart' id='pulse"+index+"'></div>");
+			var data = createHiveData(curr_TDD_data.red, curr_TDD_data.green, curr_TDD_data.blue);
+			d3.select("#pulse"+index)
+				.datum(data)
+				.call(my_pulsePlot);
+		})
+
+	// // var metrics = mapPulseArrayToMetrics(TDDPulse, metricFunction);
+	// var my_pulsePlot =
+	// 	pulsePlot()
+	// 	.width(100)
+	// 	.height(100)
+	// 	.innerRadius(10)
+	// 	.outerRadius(50);
+
+	// $('#PulseAreaDetail').append("<div class='pulseChart' id='pulse'></div>");
+	// var data = createHiveData(TDDData[0].red, TDDData[0].green, TDDData[0].blue);
+	// d3.select("#pulse")
+	// 	.datum(data)
+	// 	.call(my_pulsePlot);
 }
-
 
 
 function brushended() {

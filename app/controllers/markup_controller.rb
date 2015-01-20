@@ -239,6 +239,53 @@ class MarkupController < ApplicationController
     end
     gon.allCycles = allCycles
 
+    normalizedPhaseTime = Array.new()
+    normalizedPhaseSLOC = Array.new()
+    allPhases  = Array.new
+
+    Cycle.where(session_id: @currSession.id).each do |cycle|
+      currPhaseTime = Hash.new
+      currPhaseSloc = Hash.new
+      #Find Total Cycle Time
+      totalCycleSloc = 0
+      totalCycleTime = 0
+      Phase.where(cycle_id: cycle.id).each do |phase|
+        Compile.where(phase_id: phase.id).each do |compile|
+          totalCycleSloc = totalCycleSloc + compile.total_sloc_count
+          totalCycleTime = totalCycleTime + compile.seconds_since_last_light
+        end
+      end
+
+      total_sloc_count = 0
+      seconds_in_phase = 0
+      Phase.where(cycle_id: cycle.id).each do |phase|
+        phaseHash = Hash.new()
+        phaseHash["color"] = phase.tdd_color
+        compilesInPhase = Array.new
+        # puts "%%%%%%%%%%%%%%%%PHASE%%%%%%%%%%%%%%%%%%%"
+        # puts compile.git_tag.to_s
+
+        Compile.where(phase_id: phase.id).each do |compile|
+          compilesInPhase << compile.git_tag
+          # puts "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+          puts compile.git_tag.to_s
+          total_sloc_count = total_sloc_count + compile.total_sloc_count
+          seconds_in_phase = seconds_in_phase + compile.seconds_since_last_light
+        end
+        phaseHash["compiles"] = compilesInPhase
+        allPhases << phaseHash
+
+        currPhaseTime[phase.tdd_color] = total_sloc_count.to_f/totalCycleSloc.to_f
+        currPhaseSloc[phase.tdd_color] = seconds_in_phase.to_f/totalCycleTime.to_f
+      end
+      normalizedPhaseTime.push(currPhaseTime)
+      normalizedPhaseSLOC.push(currPhaseSloc)
+    end
+
+    gon.phases = allPhases
+
+    gon.normalizedPhaseTime = normalizedPhaseTime
+    gon.normalizedPhaseSLOC = normalizedPhaseSLOC
   end
 
 

@@ -146,6 +146,15 @@ border-top-left-radius: 4px;
 .nextKata{
   width: 20%;
 }
+
+#PulseAreaDetail{
+width:100px;
+height:100px;
+}
+
+.pulseChart{
+  float:left;
+}
 </style>
 
 <div id="header">
@@ -163,11 +172,7 @@ Kata Name: <%= params[:kataName] %>
 
 
 <body>
-<div id="instructions">'a' - mark red cycle : 's' - mark as green cycle : 'd' - mark as blue cycle : 'f' mark as white cycle : 'g' mark as brown cycle<br>
-left and right arrow - move entire brush left and right <br>
-shift + arrow - grow that side : alt (option) + arrow - shrink that side<br>
-x - delete all cycles under brush<br>
-</div>
+<div id="PulseAreaDetail"></div>
 
 <div id="viz"></div>
 <svg class="chart"></svg>
@@ -192,5 +197,8 @@ drawKataBackground();
 drawCompilePoints();
 drawAxisAndBars();
 drawCycleArea();
+diplay_kata_algorithm(gon.phases);
+
+buildpulseChart(gon.normalizedPhaseSLOC);
 
 </script>
