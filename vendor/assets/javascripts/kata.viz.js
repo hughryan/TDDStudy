@@ -813,23 +813,23 @@ function drawUncatagorizedKata() {
 		.style("font-size", "16px");
 
 
-	// var lineFunction = d3.svg.line()
-	// 	.x(function(d) {
-	// 		// console.log(d.git_tag);
-	// 		return x(d.git_tag);
-	// 	})
-	// 	.y(function(d) {
-	// 		// console.log(d.total_test_method_count);
-	// 		return y(d.total_assert_count);
-	// 	})
-	// 	.interpolate("linear");
+  // var lineFunction = d3.svg.line()
+  //   .x(function(d) {
+  //     // console.log(d.git_tag);
+  //     return x(d.git_tag);
+  //   })
+  //   .y(function(d) {
+  //     // console.log(d.total_test_method_count);
+  //     return y(d.total_assert_count);
+  //   })
+  //   .interpolate("linear");
 
-	// //The line SVG Path we draw
-	// var lineGraph = chart.append("path")
-	// 	.attr("d", lineFunction(data))
-	// 	.attr("stroke", "#737373")
-	// 	.attr("stroke-width", 2)
-	// 	.attr("fill", "#737373");
+  // //The line SVG Path we draw
+  // var lineGraph = chart.append("path")
+  //   .attr("d", lineFunction(data))
+  //   .attr("stroke", "#737373")
+  //   .attr("stroke-width", 2)
+  //   .attr("fill", "#737373");
 
 
 	// chart.selectAll("h")
@@ -860,12 +860,13 @@ function drawUncatagorizedKata() {
 
 
 
-	// //The line SVG Path we draw
-	// var lineGraph = chart.append("path")
-	// 	.attr("d", lineFunction(data))
-	// 	.attr("stroke", "#737373")
-	// 	.attr("stroke-width", 2)
-	// 	.attr("fill", "#737373");
+
+  // //The line SVG Path we draw
+  // var lineGraph = chart.append("path")
+  //   .attr("d", lineFunction(data))
+  //   .attr("stroke", "#737373")
+  //   .attr("stroke-width", 2)
+  //   .attr("fill", "#737373");
 
 	var gBrush = chart.append("g")
 		.attr("class", "brush")
