@@ -1,3 +1,39 @@
+function drawCycleArea(){
+	chart.selectAll("h")
+    .data(gon.allCycles)
+    .enter().append("rect")
+    .attr("x", function(d, i) {
+    	if(d.valid_tdd){
+    		      return x(d.startCompile - 1);
+    	}
+
+    })
+    .attr("y", 20)
+    .attr("width",
+      function(d, i) {
+      	if(d.valid_tdd){
+        return x(d.endCompile - d.startCompile + 1);
+      }
+      })
+    .attr("height", 40)
+    .attr("rx", 6)
+    .attr("ry", 6)
+    .attr("stroke", "grey")
+    .attr("fill", function(d) {
+      if (d.valid_tdd == true) {
+        return "#BABABA";
+      }
+      if (d.valid_tdd == false) {
+        
+        // return "#6F6F6F";
+      }
+
+    })
+    .attr("transform", "translate(" + margin.left + ",-10)");
+
+}
+
+
 function drawAlgorithmMarkup(phases) {
 	console.log("drawAlgorithmMarkup");
 

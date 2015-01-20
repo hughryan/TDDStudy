@@ -2,9 +2,9 @@ root = '../'
 require 'set'
 require 'fileutils'
 require_relative root + 'ASTInterface/ASTInterface'
-require_relative root + 'OsDisk'			# required for dojo definition
-require_relative root + 'Git'				# required for dojo definition
-require_relative root + 'DummyTestRunner'	# required for dojo definition
+require_relative root + 'OsDisk'      # required for dojo definition
+require_relative root + 'Git'       # required for dojo definition
+require_relative root + 'DummyTestRunner' # required for dojo definition
 
 ALLOWED_LANGS = Set["Java-1.8_JUnit"]
 BUILD_DIR = 'ast_builds'
@@ -87,7 +87,7 @@ def ast_processing
   #TO CLEAR UPDATE compiles SET test_change = null
 
   Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s
-INNER JOIN interrater_sessions as i on i.session_id = s.id;").each do |session_id|
+  INNER JOIN interrater_sessions as i on i.session_id = s.id;").each do |session_id|
 
 
     # Session.find_by_sql("Select * from Sessions as s
@@ -95,13 +95,13 @@ INNER JOIN interrater_sessions as i on i.session_id = s.id;").each do |session_i
     # where  git_tag =1 AND language_framework LIKE \"Java-1.8_JUnit\";").each do |session_id|
 
     # puts "SessionID: " + session_id.inspect
-    # 	puts "SessionID: " + session_id.session_id.to_s
-    # 	puts "SessionID: " + session_id["session_id"].to_s
+    #   puts "SessionID: " + session_id.session_id.to_s
+    #   puts "SessionID: " + session_id["session_id"].to_s
 
     # limit to kata sessions that use supported language/testing frameworks
     # Session.where("language_framework = ?", ALLOWED_LANGS).find_each do |session|
     Session.where("id = ?", session_id.id).find_each do |session|
-      # Session.where("id = ?", 2456).find_each do |session|
+      # Session.where("id = ?", 7871).find_each do |session|
       # Session.includes(:compiles).where( :compiles => { :test_change => nil } ).find_each do |session|
       # print "id: " + session.id.to_s + ", " if DEBUG
       print "cyberdojo_id: " + session.cyberdojo_id.to_s + ", " if DEBUG

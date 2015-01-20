@@ -226,6 +226,18 @@ class MarkupController < ApplicationController
     gon.cyberdojo_id = @cyberdojo_id
     gon.cyberdojo_avatar = @cyberdojo_avatar
 
+    allCycles = Array.new()
+    Cycle.where(session_id: @currSession.id).each do |cycle|
+      curr_cycle = Hash.new()
+      # endCompile: 3startCompile: 1valid_tdd: true
+      # puts "CYCLE:!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      # puts cycle.phases.first.compiles.first.git_tag.to_s
+      curr_cycle["startCompile"] = cycle.phases.first.compiles.first.git_tag
+      curr_cycle["endCompile"] = cycle.phases.last.compiles.last.git_tag
+      curr_cycle["valid_tdd"] = cycle.valid_tdd
+      allCycles << curr_cycle
+    end
+    gon.allCycles = allCycles
 
   end
 
