@@ -30,6 +30,8 @@ Rails.application.routes.draw do
 
   get 'markup/manualCatTool' => 'markup#manualCatTool'
 
+  get 'markup/display_kata' => 'markup#display_kata'
+
   get 'markup/timelineWithBrush' => 'markup#timelineWithBrush'
 
   get 'markup/retrieve_session' => 'markup#retrieve_session'

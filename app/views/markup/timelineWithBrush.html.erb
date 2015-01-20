@@ -106,8 +106,20 @@ console.log(gon.cycles);
 //checkLogin();
 pageSetup();
 
-TDDData = gon.normalizedPhaseSLOC;
-drawKataViz();
+
+
+drawKataBackground();
+drawCompilePoints();
+drawAxisAndBars();
+
+// drawAlgorithmMarkup(gon.phases);
+
+// drawEachUserMarkups(gon.allMarkups);
+// highlightDiffs(gon.allMarkups);
+
+// TDDData = gon.normalizedPhaseSLOC;
+
+// drawKataViz();
 buildpulseChart(gon.normalizedPhaseSLOC);
 
 </script>
