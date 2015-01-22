@@ -60,8 +60,7 @@ class MarkupController < ApplicationController
     numCorrect = 0
     numIncorrect = 0
 
-    puts session.markups.select(:user)
-    if session.markups.select(:user) == nil
+    if session.markups.count > 0
       aMarkupUser =  session.markups.select(:user).distinct.first.user
       # puts "markupUser: "+ aMarkupUser
       # puts "Session id: " + session.id.to_s
