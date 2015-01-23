@@ -18,11 +18,11 @@ $(function() {
 <input type="hidden" id="refreshed" value="no">
 <script type="text/javascript">
 //this will reload the page.  Kinda a hack, will implement ajax table loading when I have more time.
-onload=function(){
-  var e=document.getElementById("refreshed");
-  if(e.value=="no")e.value="yes";
-  else{e.value="no";location.reload();}
-    }
+// onload=function(){
+//   var e=document.getElementById("refreshed");
+//   if(e.value=="no")e.value="yes";
+//   else{e.value="no";location.reload();}
+//     }
     </script>
 
     <style>
@@ -258,7 +258,11 @@ $('#myTable').on('click', 'td.view_kata', function() {
   var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
   var avatar = $(this).parent().find(".avatar").html();
   var kata_name = $(this).parent().find(".kata_name").html();
-  window.location.href = "timelineWithBrush?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+  // window.location.href = "timelineWithBrush?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+
+  var newLocation = "timelineWithBrush?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+
+  window.open(newLocation);
 });
 
 $('#myTable').on('click', 'td.markup', function() {
@@ -266,7 +270,9 @@ $('#myTable').on('click', 'td.markup', function() {
   var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
   var avatar = $(this).parent().find(".avatar").html();
   var kata_name = $(this).parent().find(".kata_name").html();
-  window.location.href = "manualCatTool?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+  // window.location.href = "manualCatTool?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+  var newLocation = "manualCatTool?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+window.open(newLocation);
 });
 
 $('#myTable').on('click', 'td.comparison', function() {
@@ -274,7 +280,9 @@ $('#myTable').on('click', 'td.comparison', function() {
   var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
   var avatar = $(this).parent().find(".avatar").html();
   var kata_name = $(this).parent().find(".kata_name").html();
-  window.location.href = "markup_comparison?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+  // window.location.href = "markup_comparison?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+  var newLocation = "markup_comparison?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
+  window.open(newLocation);
 });
 
 
