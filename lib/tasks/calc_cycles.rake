@@ -33,9 +33,9 @@ def calc_cycles
   Phase.delete_all
 
   #SELECT KATAS WE WANT TO COMPUTE CYCLES
-  # Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s
-  # INNER JOIN interrater_sessions as i on i.session_id = s.id").each do |session_id|
-  Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s INNER JOIN interrater_sessions as i on i.session_id = s.id WHERE s.id = 6126").each do |session_id|
+  Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s
+  INNER JOIN interrater_sessions as i on i.session_id = s.id").each do |session_id|
+    #Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s INNER JOIN interrater_sessions as i on i.session_id = s.id WHERE s.id = 2659").each do |session_id|
 
 
 
@@ -410,6 +410,11 @@ def calc_cycles
                   #if they are doing tdd there will only be test edits in the brown phase
                   if curr_compile.test_change && !curr_compile.prod_change
                     #if not empty, save current blue phase.
+                    if  curr_phase.compiles.length > 0
+                      curr_cycle.phases << curr_phase
+                      curr_phase.save
+                      curr_phase = Phase.new(tdd_color: "brown")
+                    end
 
                     puts "BROWN PHASE"
                     curr_phase.tdd_color = "brown"

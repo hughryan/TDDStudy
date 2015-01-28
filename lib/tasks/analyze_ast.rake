@@ -89,6 +89,8 @@ def ast_processing
   Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s
   INNER JOIN interrater_sessions as i on i.session_id = s.id;").each do |session_id|
 
+    # Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s INNER JOIN interrater_sessions as i on i.session_id = s.id WHERE s.id = 2659").each do |session_id|
+
 
     # Session.find_by_sql("Select * from Sessions as s
     # inner join compiles as c on s.id = c.session_id
@@ -211,10 +213,11 @@ def ast_processing
         puts "CURR SAVE"
         curr.save
         puts "----------------------"
-
+        FileUtils.remove_entry_secure(BUILD_DIR)
       end
+
     end
   end
 
-  FileUtils.remove_entry_secure(BUILD_DIR)
+
 end
