@@ -143,6 +143,8 @@ def calc_cycles
             if curr_compile.total_assert_count > curr_num_tests
               new_test = true
               curr_num_tests = curr_compile.total_assert_count
+            elsif curr_compile.total_assert_count < curr_num_tests
+              curr_num_tests = curr_compile.total_assert_count
             end
           end
           puts "CYCLE_DIAG CURR: #{curr_compile}" if CYCLE_DIAG
