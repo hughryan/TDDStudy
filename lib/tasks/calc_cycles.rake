@@ -33,9 +33,14 @@ def calc_cycles
   Phase.delete_all
 
   #SELECT KATAS WE WANT TO COMPUTE CYCLES
+  # Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s
+  # INNER JOIN interrater_sessions as i on i.session_id = s.id").each do |session_id|
+
   Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s
-  INNER JOIN interrater_sessions as i on i.session_id = s.id").each do |session_id|
-    #Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s INNER JOIN interrater_sessions as i on i.session_id = s.id WHERE s.id = 2659").each do |session_id|
+  INNER JOIN markup_assignments as m on m.session_id = s.id").each do |session_id|
+
+
+    # Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s WHERE s.id = 3394").each do |session_id|
 
 
 
@@ -142,6 +147,8 @@ def calc_cycles
           if !curr_compile.total_assert_count.nil?
             if curr_compile.total_assert_count > curr_num_tests
               new_test = true
+              curr_num_tests = curr_compile.total_assert_count
+            elsif curr_compile.total_assert_count < curr_num_tests
               curr_num_tests = curr_compile.total_assert_count
             end
           end
