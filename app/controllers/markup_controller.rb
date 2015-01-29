@@ -120,35 +120,35 @@ class MarkupController < ApplicationController
     @totalMarkedCompiles = 0
 
 
-    @inter_sessions = InterraterSession.all
-    @inter_sessions.each do |interrater|
-      session = Session.find_by(id: interrater.session_id)
-      p_and_r = calculatePrecisionAndRecall(session)
-      # puts p_and_r.inspect
-      # puts p_and_r[1]
-      curr_session_markup = Hash.new
-      curr_session_markup["precision"] = p_and_r[0]
-      curr_session_markup["recall"] = p_and_r[1]
-      curr_session_markup["interRater"] = true
-      curr_session_markup["session"] = session
-      curr_session_markup["markup"] = session.markups
-      curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
-      all_sessions_markup << curr_session_markup
-    end
-
-    # @markup_sessions = MarkupAssignment.where(researcher_id: researcher_id)
-    # @markup_sessions.each do |assignment|
-    #   session = Session.find_by(id: assignment.session_id)
+    # @inter_sessions = InterraterSession.all
+    # @inter_sessions.each do |interrater|
+    #   session = Session.find_by(id: interrater.session_id)
     #   p_and_r = calculatePrecisionAndRecall(session)
+    #   # puts p_and_r.inspect
+    #   # puts p_and_r[1]
     #   curr_session_markup = Hash.new
-    #   curr_session_markup["precision"] =  p_and_r[0]
-    #   curr_session_markup["recall"] =  p_and_r[1]
-    #   curr_session_markup["interRater"] = false
+    #   curr_session_markup["precision"] = p_and_r[0]
+    #   curr_session_markup["recall"] = p_and_r[1]
+    #   curr_session_markup["interRater"] = true
     #   curr_session_markup["session"] = session
     #   curr_session_markup["markup"] = session.markups
     #   curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
     #   all_sessions_markup << curr_session_markup
     # end
+
+    @markup_sessions = MarkupAssignment.where(researcher_id: researcher_id)
+    @markup_sessions.each do |assignment|
+      session = Session.find_by(id: assignment.session_id)
+      p_and_r = calculatePrecisionAndRecall(session)
+      curr_session_markup = Hash.new
+      curr_session_markup["precision"] =  p_and_r[0]
+      curr_session_markup["recall"] =  p_and_r[1]
+      curr_session_markup["interRater"] = false
+      curr_session_markup["session"] = session
+      curr_session_markup["markup"] = session.markups
+      curr_session_markup["compile_count"] = Array.new.push(session.compiles.count)
+      all_sessions_markup << curr_session_markup
+    end
 
     gon.all_sessions_markup = all_sessions_markup
     gon.totalNumCorrect = @totalNumCorrect
