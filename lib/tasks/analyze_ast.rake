@@ -23,6 +23,7 @@ def dojo
 end
 
 def defaultSetup(curr_path)
+  puts "DEFAULT_SETUP"
   if(File.exist?(curr_path + "\/Untitled.java") && File.exist?(curr_path + "\/UntitledTest.java"))
     file = File.open(curr_path + "\/Untitled.java" , "rb")
     contents = file.read
@@ -32,6 +33,34 @@ def defaultSetup(curr_path)
 
     templateProduction = "\npublic class Untitled {\n    \n    public static int answer() {\n        return 42;\n    }\n}\n"
     template_test = "import org.junit.*;\nimport static org.junit.Assert.*;\n\npublic class UntitledTest {\n    \n    @Test\n    public void hitch_hiker() {\n        int expected = 6 * 9;\n        int actual = Untitled.answer();\n        assertEquals(expected, actual);\n    }\n}\n"
+
+
+
+    if(templateProduction == contents)
+      if template_test == test_contents
+        puts "EQUAL"
+        return true
+      end
+    end
+  end
+
+  if(File.exist?(curr_path + "\/Hiker.java") && File.exist?(curr_path + "\/HikerTest.java"))
+    file = File.open(curr_path + "\/Hiker.java" , "rb")
+    contents = file.read
+
+    # puts "FILE:"
+    # puts contents.inspect
+
+    test_file = File.open(curr_path + "\/HikerTest.java" , "rb")
+    test_contents = test_file.read
+
+    # puts "Test FILE:"
+    # puts test_contents.inspect
+
+    templateProduction = "\npublic class Hiker {\n\n    public static int answer() {\n        return 6 * 9;\n    }\n}\n"
+    template_test = "import org.junit.*;\nimport static org.junit.Assert.*;\n\npublic class HikerTest {\n\n    @Test\n    public void life_the_universe_and_everything() {\n        int expected = 42;\n        int actual = Hiker.answer();\n        assertEquals(expected, actual);\n    }\n}\n"
+
+
 
     if(templateProduction == contents)
       if template_test == test_contents
@@ -88,6 +117,8 @@ def ast_processing
 
   Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s
   INNER JOIN interrater_sessions as i on i.session_id = s.id;").each do |session_id|
+
+    # Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s INNER JOIN interrater_sessions as i on i.session_id = s.id WHERE s.id = 8801").each do |session_id|
 
 
     # Session.find_by_sql("Select * from Sessions as s
@@ -211,10 +242,11 @@ def ast_processing
         puts "CURR SAVE"
         curr.save
         puts "----------------------"
-
+        FileUtils.remove_entry_secure(BUILD_DIR)
       end
+
     end
   end
 
-  FileUtils.remove_entry_secure(BUILD_DIR)
+
 end
