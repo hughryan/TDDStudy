@@ -33,6 +33,13 @@ class MarkupController < ApplicationController
 
   def calculatePrecisionAndRecall(session)
     puts "%%%%%%%%%%%%%%%%%%%%%%%%% Recall %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    puts "Session.markups.count: " + session.markups.count.to_s
+    if(session.markups.count == 0)
+      returnValues = Array.new
+      returnValues[0] = "NA"
+      returnValues[1] = "NA"
+      return returnValues
+    end
     #calc recall
     compileColor = Hash.new
     session.cycles.each do |cycle|

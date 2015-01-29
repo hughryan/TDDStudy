@@ -107,6 +107,11 @@ $(document).ready(function() {
   // console.log(gon);
   gon.all_sessions_markup.forEach(
     function(element, index) {
+      if(element.markup.length ==0)
+      {
+        return;
+      }
+      console.log("Num Markups:" + element.markup.length);
       // console.log(element);
       // console.log(index);
       var totalMarkedUpPhases = 0;
@@ -147,8 +152,8 @@ console.log(element.session);
         for (var k = 0; k < element.compile_count[0]; k++) {
           var inagreement = true;
           for (var l = 1; l < keys.length; l++) {
-            console.log("MarkupGrid[keys[0]][k]"+MarkupGrid[keys[0]][k]);
-            console.log("MarkupGrid[keys[l]][k]"+MarkupGrid[keys[l]][k]);
+            // console.log("MarkupGrid[keys[0]][k]"+MarkupGrid[keys[0]][k]);
+            // console.log("MarkupGrid[keys[l]][k]"+MarkupGrid[keys[l]][k]);
             if (MarkupGrid[keys[0]][k] != MarkupGrid[keys[l]][k]) {
               inagreement = false;
 // console.log(MarkupGrid);

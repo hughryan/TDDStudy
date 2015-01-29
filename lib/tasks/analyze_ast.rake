@@ -115,10 +115,10 @@ def ast_processing
 
   #TO CLEAR UPDATE compiles SET test_change = null
 
-  Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s
-  INNER JOIN interrater_sessions as i on i.session_id = s.id;").each do |session_id|
+  # Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s
+  # INNER JOIN interrater_sessions as i on i.session_id = s.id;").each do |session_id|
 
-    # Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s INNER JOIN interrater_sessions as i on i.session_id = s.id WHERE s.id = 8801").each do |session_id|
+  Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s INNER JOIN interrater_sessions as i on i.session_id = s.id WHERE s.id = 1246").each do |session_id|
 
 
     # Session.find_by_sql("Select * from Sessions as s

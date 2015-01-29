@@ -35,7 +35,7 @@ def calc_cycles
   #SELECT KATAS WE WANT TO COMPUTE CYCLES
   Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s
   INNER JOIN interrater_sessions as i on i.session_id = s.id").each do |session_id|
-    #Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s INNER JOIN interrater_sessions as i on i.session_id = s.id WHERE s.id = 2659").each do |session_id|
+    # Session.find_by_sql("SELECT s.id,s.kata_name,s.cyberdojo_id,s.avatar FROM Sessions as s INNER JOIN interrater_sessions as i on i.session_id = s.id WHERE s.id = 10137").each do |session_id|
 
 
 
