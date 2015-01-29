@@ -537,6 +537,18 @@ function drawCompilePoints() {
 			return TDDColor(d.light_color);
 		})
 		.attr("stroke-width", 2);
+
+		
+		bar.append("text")
+	.text(function(d){
+		return d.total_assert_count;
+	}).attr("x", function(d, i) {
+			return x(d.git_tag);
+		})
+		.attr("y", -5)
+		.attr("width", 10)
+		.attr("height", 10)
+		.attr("transform", "translate(" + margin.left + "," + lineHeight + ")");
 }
 
 function drawAxisAndBars() {
@@ -801,6 +813,7 @@ function drawUncatagorizedKata() {
 		})
 		.attr("stroke-width", 2);
 
+
 		bar.append("text")
 	.text(function(d){
 		return d.total_assert_count;
@@ -1012,6 +1025,18 @@ function drawallMarkups() {
 		})
 		.attr("stroke-width", 2);
 
+
+		bar.append("text")
+	.text(function(d){
+		return d.total_assert_count;
+	}).attr("x", function(d, i) {
+			return x(d.git_tag);
+		})
+		.attr("y", -5)
+		.attr("width", 10)
+		.attr("height", 10)
+		.attr("transform", "translate(" + margin.left + "," + lineHeight + ")");
+
 	//Axis
 	var currTDDBar = chart.append("g")
 		.attr("class", "x axis")
@@ -1196,6 +1221,18 @@ function drawKataViz() {
 			return TDDColor(d.light_color);
 		})
 		.attr("stroke-width", 2);
+
+
+		bar.append("text")
+	.text(function(d){
+		return d.total_assert_count;
+	}).attr("x", function(d, i) {
+			return x(d.git_tag);
+		})
+		.attr("y", -5)
+		.attr("width", 10)
+		.attr("height", 10)
+		.attr("transform", "translate(" + margin.left + "," + lineHeight + ")");
 
 	var currTDDBar = chart.append("g")
 		.attr("class", "x axis")
