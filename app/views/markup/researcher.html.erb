@@ -138,7 +138,13 @@ $(document).ready(function() {
 
 
       }
+      if(Object.keys(markedupBy).length > 0){
       element.session.markedupBy = JSON.stringify(markedupBy);
+    }
+      else{
+        element.session.markedupBy = "None"
+      }
+
       // console.log(MarkupGrid);
 console.log(element.session);
       var numAgreed = 0;
