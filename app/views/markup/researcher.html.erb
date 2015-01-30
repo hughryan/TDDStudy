@@ -183,13 +183,16 @@ console.log(element.session);
 
 var totalAgreed = 0
 var totalMarkup = 0
-for(var i =0; i < gon.all_sessions_markup.length; i++)
-{
-  // console.log(gon.all_sessions_markup[i].numAgreed);
-  totalMarkup += gon.all_sessions_markup[i].compile_count[0];
-  totalAgreed += gon.all_sessions_markup[i].numAgreed;
-  gon.all_sessions_markup[i].interaterAgreement = gon.all_sessions_markup[i].numAgreed / gon.all_sessions_markup[i].compile_count[0];
-}
+  for (var i = 0; i < gon.all_sessions_markup.length; i++) {
+    if (gon.all_sessions_markup[i].markup.length > 0) {
+      // console.log(gon.all_sessions_markup[i].numAgreed);
+      totalMarkup += gon.all_sessions_markup[i].compile_count[0];
+      totalAgreed += gon.all_sessions_markup[i].numAgreed;
+      gon.all_sessions_markup[i].interaterAgreement = gon.all_sessions_markup[i].numAgreed / gon.all_sessions_markup[i].compile_count[0];
+    }else{
+      gon.all_sessions_markup[i].interaterAgreement = "NA"
+    }
+  }
 // console.log(totalAgreed);
 // console.log(totalMarkup);
 $("#InterRater").html(totalAgreed / totalMarkup);
