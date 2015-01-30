@@ -83,6 +83,7 @@ def calc_cycles
       #For Each Light
       curr_session.compiles.each_with_index do |curr_compile, index|
         new_test = false
+        curr_num_tests = curr_compile.total_assert_count
         ##TODO: introduce case for first compile situations
 
         if !started_kata
