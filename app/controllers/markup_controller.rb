@@ -193,6 +193,8 @@ class MarkupController < ApplicationController
       @totalNumInCorrect = 0
       @totalCompiles = 0
       @totalMarkedCompiles = 0
+      @totalRecall = 0
+      @totalRecallWrong = 0
 
 
       @inter_sessions = InterraterSession.all
