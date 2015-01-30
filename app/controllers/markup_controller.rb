@@ -56,16 +56,15 @@ class MarkupController < ApplicationController
     # puts "Number of Markups: "+ numMarkupCompiles.to_s
     # puts "Number of Compile Points: "+ totalMarkups.to_s
 
-    recall = (numMarkupCompiles.to_f/totalMarkups.to_f)
-    puts "Recall:" + recall.to_s
-    returnValues = Array.new
-    returnValues[1] = recall
+
 
     #calc precision
     puts "%%%%%%%%%%%%%%%%%%%%%%%%% Precision %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     # puts session.markups.first.inspect
     numCorrect = 0
     numIncorrect = 0
+    recallWrong = 0
+    recallRight = 0
 
     if session.markups.count > 0
       aMarkupUser =  session.markups.select(:user).distinct.first.user
@@ -88,6 +87,17 @@ class MarkupController < ApplicationController
           # puts i
           puts "compileColor[i].to_s: "+ compileColor[i].to_s
           puts "markup.tdd_color.to_s: " + markup.tdd_color.to_s
+          if markup.tdd_color.to_s != "white"
+            puts "WHITE COMPILE"
+            if compileColor[i].to_s == "white"
+              puts "RECALL WRONG"
+              recallWrong = recallWrong +1
+            else
+              puts "RECALL WRITE"
+              recallRight = recallRight + 1
+            end
+          end
+
           if(compileColor[i].to_s == markup.tdd_color.to_s)
             numCorrect = numCorrect + 1
           else
@@ -95,16 +105,25 @@ class MarkupController < ApplicationController
           end
         end
       end
+      # recall = (numMarkupCompiles.to_f/totalMarkups.to_f)
+      @recall = (recallRight.to_f/(recallRight.to_f + recallWrong.to_f))
+      puts "Recall:" + @recall.to_s
+      returnValues = Array.new
+      returnValues[1] = @recall
+
       puts "numCorrect: "+ numCorrect.to_s
       puts "numIncorrect: "+ numIncorrect.to_s
       precision = (numCorrect.to_f/(numCorrect.to_f + numIncorrect.to_f))
       puts "Precision: " + precision.to_s
       returnValues[0] = precision
     end
+
     @totalNumCorrect = @totalNumCorrect + numCorrect
     @totalNumInCorrect = @totalNumInCorrect + numIncorrect
     @totalCompiles = @totalCompiles + totalMarkups
     @totalMarkedCompiles = @totalMarkedCompiles + numMarkupCompiles
+    @totalRecall = @totalRecall + recallRight
+    @totalRecallWrong = @totalRecallWrong + recallWrong
     puts "%%%%%%%%%%%%%%%%%%%%%%%%% END %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     return returnValues
   end
@@ -121,7 +140,8 @@ class MarkupController < ApplicationController
       @totalNumInCorrect = 0
       @totalCompiles = 0
       @totalMarkedCompiles = 0
-
+      @totalRecall = 0
+      @totalRecallWrong = 0
 
       @inter_sessions = InterraterSession.all
       @inter_sessions.each do |interrater|
@@ -158,6 +178,9 @@ class MarkupController < ApplicationController
       gon.totalNumInCorrect = @totalNumInCorrect
       gon.totalCompiles = @totalCompiles
       gon.totalMarkedCompiles = @totalMarkedCompiles
+
+      gon.totalRecall = @totalRecall
+      gon.totalRecallWrong = @totalRecallWrong
 
 
 
@@ -208,6 +231,8 @@ class MarkupController < ApplicationController
       gon.totalCompiles = @totalCompiles
       gon.totalMarkedCompiles = @totalMarkedCompiles
 
+      gon.totalRecall = @totalRecall
+      gon.totalRecallWrong = @totalRecallWrong
     end
 
   end
