@@ -102,95 +102,94 @@ $(function() {
 
 <script>
 $(document).ready(function() {
-  // console.log(gon);
-  gon.all_sessions_markup.forEach(
-    function(element, index) {
-      if(element.markup.length ==0)
-      {
-        element.numAgreed = "NA"
-        element.session.markedupBy = "None"
-        return;
-      }
-      console.log("Num Markups:" + element.markup.length);
-      // console.log(element);
-      // console.log(index);
-      var totalMarkedUpPhases = 0;
-      var markedupBy = new Object();
-      var MarkupGrid = new Object();
-      for (var i = 0; i < element.markup.length; i++) {
-        var numMarkedupPhases = element.markup[i].last_compile_in_phase - element.markup[i].first_compile_in_phase;
-        var tempMarkup = markedupBy[element.markup[i].user];
-        if (tempMarkup == undefined) {
-          tempMarkup = 0;
-        }
-        markedupBy[element.markup[i].user] = tempMarkup + numMarkedupPhases;
-
-        var currMarkup = element.markup[i];
-
-        if (MarkupGrid[currMarkup.user] == undefined) {
-          MarkupGrid[currMarkup.user] = new Array();
-        }
-
-        for (var j = currMarkup.first_compile_in_phase; j < currMarkup.last_compile_in_phase; j++) {
-          // console.log("currMarkup.user: " + currMarkup.user);
-          // console.log("currMarkup.tdd_color: " + currMarkup.tdd_color);
-          // console.log("currMarkup.first_compile_in_phase: " + currMarkup.first_compile_in_phase);
-          // console.log("currMarkup.last_compile_in_phase: " + currMarkup.last_compile_in_phase);
-          // console.log("j" + j);
-          MarkupGrid[currMarkup.user][j] = currMarkup.tdd_color;
-        }
-
-
-
-      }
-      if(markedupBy == null){
-        element.session.markedupBy = "None"
-      }
-      else{
-        element.session.markedupBy = JSON.stringify(markedupBy);
-      }
-
-      // console.log(MarkupGrid);
-console.log(element.session);
-      var numAgreed = 0;
-      var keys = Object.keys(MarkupGrid);
-      if (keys.length > 1) {
-        for (var k = 0; k < element.compile_count[0]; k++) {
-          var inagreement = true;
-          for (var l = 1; l < keys.length; l++) {
-            // console.log("MarkupGrid[keys[0]][k]"+MarkupGrid[keys[0]][k]);
-            // console.log("MarkupGrid[keys[l]][k]"+MarkupGrid[keys[l]][k]);
-            if (MarkupGrid[keys[0]][k] != MarkupGrid[keys[l]][k]) {
-              inagreement = false;
-// console.log(MarkupGrid);
-// console.log("k:"+k);
-// console.log("l:"+l);
-              break;
+      // console.log(gon);
+      gon.all_sessions_markup.forEach(
+        function(element, index) {
+          if (element.markup.length == 0) {
+            element.numAgreed = "NA"
+            element.session.markedupBy = "None"
+            return;
+          }
+          console.log("Num Markups:" + element.markup.length);
+          // console.log(element);
+          // console.log(index);
+          var totalMarkedUpPhases = 0;
+          var markedupBy = new Object();
+          var MarkupGrid = new Object();
+          for (var i = 0; i < element.markup.length; i++) {
+            var numMarkedupPhases = element.markup[i].last_compile_in_phase - element.markup[i].first_compile_in_phase;
+            var tempMarkup = markedupBy[element.markup[i].user];
+            if (tempMarkup == undefined) {
+              tempMarkup = 0;
             }
-          }
-          if (inagreement) {
-            numAgreed = numAgreed + 1;
-          }
-        }
-      } else {
-        numAgreed = 0;
-      }
-      // console.log(numAgreed);
-      element.numAgreed = numAgreed
-    });
+            markedupBy[element.markup[i].user] = tempMarkup + numMarkedupPhases;
 
-var totalAgreed = 0
-var totalMarkup = 0
-  for (var i = 0; i < gon.all_sessions_markup.length; i++) {
-    if (gon.all_sessions_markup[i].markup.length > 0) {
-      // console.log(gon.all_sessions_markup[i].numAgreed);
-      totalMarkup += gon.all_sessions_markup[i].compile_count[0];
-      totalAgreed += gon.all_sessions_markup[i].numAgreed;
-      gon.all_sessions_markup[i].interaterAgreement = gon.all_sessions_markup[i].numAgreed / gon.all_sessions_markup[i].compile_count[0];
-    }else{
-      gon.all_sessions_markup[i].interaterAgreement = "NA"
-    }
-  }
+            var currMarkup = element.markup[i];
+
+            if (MarkupGrid[currMarkup.user] == undefined) {
+              MarkupGrid[currMarkup.user] = new Array();
+            }
+
+            for (var j = currMarkup.first_compile_in_phase; j < currMarkup.last_compile_in_phase; j++) {
+              // console.log("currMarkup.user: " + currMarkup.user);
+              // console.log("currMarkup.tdd_color: " + currMarkup.tdd_color);
+              // console.log("currMarkup.first_compile_in_phase: " + currMarkup.first_compile_in_phase);
+              // console.log("currMarkup.last_compile_in_phase: " + currMarkup.last_compile_in_phase);
+              // console.log("j" + j);
+              MarkupGrid[currMarkup.user][j] = currMarkup.tdd_color;
+            }
+
+
+
+          }
+          if (markedupBy == null) {
+            element.session.markedupBy = "None"
+          } else {
+            element.session.markedupBy = JSON.stringify(markedupBy);
+          }
+
+          // console.log(MarkupGrid);
+          console.log(element.session);
+          var numAgreed = 0;
+          var keys = Object.keys(MarkupGrid);
+          if (keys.length > 1) {
+            for (var k = 0; k < element.compile_count[0]; k++) {
+              var inagreement = true;
+              for (var l = 1; l < keys.length; l++) {
+                // console.log("MarkupGrid[keys[0]][k]"+MarkupGrid[keys[0]][k]);
+                // console.log("MarkupGrid[keys[l]][k]"+MarkupGrid[keys[l]][k]);
+                if (MarkupGrid[keys[0]][k] != MarkupGrid[keys[l]][k]) {
+                  inagreement = false;
+                  // console.log(MarkupGrid);
+                  // console.log("k:"+k);
+                  // console.log("l:"+l);
+                  break;
+                }
+              }
+              if (inagreement) {
+                numAgreed = numAgreed + 1;
+              }
+            }
+          } else {
+            numAgreed = 0;
+          }
+          // console.log(numAgreed);
+          element.numAgreed = numAgreed
+        });
+
+      var totalAgreed = 0;
+      var totalMarkup = 0;
+      var totalPrecision = 0;
+      for (var i = 0; i < gon.all_sessions_markup.length; i++) {
+        if (gon.all_sessions_markup[i].markup.length > 0) {
+          // console.log(gon.all_sessions_markup[i].numAgreed);
+          totalMarkup += gon.all_sessions_markup[i].compile_count[0];
+          totalAgreed += gon.all_sessions_markup[i].numAgreed;
+          gon.all_sessions_markup[i].interaterAgreement = gon.all_sessions_markup[i].numAgreed / gon.all_sessions_markup[i].compile_count[0];
+        } else {
+          gon.all_sessions_markup[i].interaterAgreement = "NA"
+        }
+      }
 // console.log(totalAgreed);
 // console.log(totalMarkup);
 $("#InterRater").html(totalAgreed / totalMarkup);
