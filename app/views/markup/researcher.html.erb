@@ -109,6 +109,8 @@ $(document).ready(function() {
     function(element, index) {
       if(element.markup.length ==0)
       {
+        element.numAgreed = "NA"
+        element.session.markedupBy = "None"
         return;
       }
       console.log("Num Markups:" + element.markup.length);
@@ -143,11 +145,11 @@ $(document).ready(function() {
 
 
       }
-      if(Object.keys(markedupBy).length > 0){
-      element.session.markedupBy = JSON.stringify(markedupBy);
-    }
-      else{
+      if(markedupBy == null){
         element.session.markedupBy = "None"
+      }
+      else{
+        element.session.markedupBy = JSON.stringify(markedupBy);
       }
 
       // console.log(MarkupGrid);
