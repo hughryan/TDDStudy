@@ -311,7 +311,7 @@ def calc_test_coverage_in_dir(curLight,currTestClass,currLightDir)
         puts "String includes 'OK ('"
         puts "#{obj}: #{item}"
 
-        re2 = /OK \((?<testRuns>\d+) tests\)/
+        re2 = /OK \((?<testRuns>\d+) tests*\)/
         result2 = re2.match(item)
 
         unless result2.nil?
