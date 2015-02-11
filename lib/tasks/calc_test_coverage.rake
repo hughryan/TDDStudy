@@ -32,7 +32,8 @@ def calc_test_coverage
   #   # 2454    #
 
   # Session.find_by_sql("SELECT s.* FROM Sessions as s Join compiles as c on c.session_id = s.id WHERE s.language_framework LIKE \"Java-1.8_JUnit\" AND c.statement_coverage is Null and git_tag =1").each do |session_id|
-  Session.find_by_sql("SELECT s.* FROM Sessions as s Join compiles as c on c.session_id = s.id WHERE s.language_framework LIKE \"Java-1.8_JUnit\" AND c.statement_coverage is Null AND git_tag =1 AND s.id != 5064").each do |session_id|
+  # Session.find_by_sql("SELECT s.* FROM Sessions as s Join compiles as c on c.session_id = s.id WHERE s.language_framework LIKE \"Java-1.8_JUnit\" AND c.statement_coverage is Null AND git_tag =1 AND s.id != 5064").each do |session_id|
+  Session.find_by_sql("SELECT * FROM Sessions where id = 3578").each do |session_id|
 
     puts "CURR SESSION ID: " + session_id.id.to_s if CYCLE_DIAG
     puts session_id.inspect
