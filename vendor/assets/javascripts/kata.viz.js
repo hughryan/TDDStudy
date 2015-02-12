@@ -539,16 +539,16 @@ function drawCompilePoints() {
 		.attr("stroke-width", 2);
 
 		
-		bar.append("text")
-	.text(function(d){
-		return d.total_assert_count;
-	}).attr("x", function(d, i) {
-			return x(d.git_tag);
-		})
-		.attr("y", -5)
-		.attr("width", 10)
-		.attr("height", 10)
-		.attr("transform", "translate(" + margin.left + "," + lineHeight + ")");
+	// 	bar.append("text")
+	// .text(function(d){
+	// 	return d.total_assert_count;
+	// }).attr("x", function(d, i) {
+	// 		return x(d.git_tag);
+	// 	})
+	// 	.attr("y", -5)
+	// 	.attr("width", 10)
+	// 	.attr("height", 10)
+	// 	.attr("transform", "translate(" + margin.left + "," + lineHeight + ")");
 }
 
 function drawAxisAndBars() {
