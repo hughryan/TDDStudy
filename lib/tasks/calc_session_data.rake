@@ -67,7 +67,7 @@ def calc_session_data
         curr_red = false
       end
 
-      total_edited_line_count = compile.total_edited_line_count
+      total_edited_line_count += compile.total_edited_line_count
       production_edited_line_count += compile.production_edited_line_count
       test_edited_line_count += compile.test_edited_line_count
       if compile.total_test_run_count != nil
