@@ -305,10 +305,20 @@ class MarkupController < ApplicationController
 
 
   def display_kata
-    @researcher = params[:researcher]
-    @cyberdojo_id = params[:id]
-    @cyberdojo_avatar = params[:avatar]
-    @currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
+    @session_id = params[:id]
+    # @researcher = params[:researcher]
+    # @cyberdojo_id = params[:id]
+    # @cyberdojo_avatar = params[:avatar]
+
+    # @currSession = Session.where(cyberdojo_id: @cyberdojo_id, avatar: @cyberdojo_avatar).first  #.first
+    @currSession = Session.where(id: @session_id).first
+
+    puts "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+    puts @currSession.inspect
+
+    @cyberdojo_id = @currSession.cyberdojo_id
+    @cyberdojo_avatar = @currSession.avatar
+
     gon.compiles = @currSession.compiles
     gon.cyberdojo_id = @cyberdojo_id
     gon.cyberdojo_avatar = @cyberdojo_avatar
