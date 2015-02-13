@@ -109,28 +109,30 @@ def calc_edit_size
           diffASTResult = diffAST(prev_path + "/" + filename,curr_path + "/" + filename)
           # puts "XXXXXXXXXXXXXXXXXXXXXXXX"
           # puts "diffASTResult.length: " + diffASTResult.length.to_s
-          # puts diffASTResult
-          # puts JSON.parse(diffASTResult)
-          # puts JSON.parse(diffASTResult).length
-          if productionChanges
-            production_AST_nodes += JSON.parse(diffASTResult).length
-          elsif testChanges
-            test_AST_nodes += JSON.parse(diffASTResult).length
-          else
-            puts "++++++++++++++++++++ NOT PRODUCTION OR TEST CHANGE ++++++++++++++++++++"
-          end
-        else
-          newAST = treeAST(curr_path + "/" + filename)
+          puts diffASTResult
+          unless diffASTResult == "ERROR"
+            puts JSON.parse(diffASTResult)
+            # puts JSON.parse(diffASTResult).length
 
-          if productionChanges
-            production_AST_nodes += JSON.parse(newAST).length
-          elsif testChanges
-            test_AST_nodes += JSON.parse(newAST).length
+            if productionChanges
+              production_AST_nodes += JSON.parse(diffASTResult).length
+            elsif testChanges
+              test_AST_nodes += JSON.parse(diffASTResult).length
+            else
+              puts "++++++++++++++++++++ NOT PRODUCTION OR TEST CHANGE ++++++++++++++++++++"
+            end
           else
-            puts "++++++++++++++++++++ NOT PRODUCTION OR TEST CHANGE ++++++++++++++++++++"
+            newAST = treeAST(curr_path + "/" + filename)
+
+            if productionChanges
+              production_AST_nodes += JSON.parse(newAST).length
+            elsif testChanges
+              test_AST_nodes += JSON.parse(newAST).length
+            else
+              puts "++++++++++++++++++++ NOT PRODUCTION OR TEST CHANGE ++++++++++++++++++++"
+            end
           end
         end
-
       end
 
       puts "test_AST_nodes: "+ test_AST_nodes.to_s if DEBUG
