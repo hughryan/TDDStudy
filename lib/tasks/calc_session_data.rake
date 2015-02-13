@@ -24,7 +24,7 @@ end
 
 def calc_session_data
 
-  Session.where(language_framework: "Java-1.8_JUnit").limit(10).each do |session|
+  Session.where(language_framework: "Java-1.8_JUnit").each do |session|
     puts "*******************  NEW CYCLE  *******************"
     puts session.inspect
 
@@ -66,10 +66,15 @@ def calc_session_data
         amber_light_count += 1
         curr_red = false
       end
-
-      total_edited_line_count += compile.total_edited_line_count
-      production_edited_line_count += compile.production_edited_line_count
-      test_edited_line_count += compile.test_edited_line_count
+      if compile.total_edited_line_count != nil
+        total_edited_line_count += compile.total_edited_line_count
+      end
+      if compile.production_edited_line_count != nil
+        production_edited_line_count += compile.production_edited_line_count
+      end
+      if compile.test_edited_line_count != nil
+        test_edited_line_count += compile.test_edited_line_count
+      end
       if compile.total_test_run_count != nil
         cumulative_test_run_count += compile.total_test_run_count
       end
