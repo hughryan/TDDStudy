@@ -82,10 +82,10 @@ def build_files(light)
     files = light.tag.visible_files.keys.select{ |filename| filename.include? ".java" }
     path = "#{BUILD_DIR}/" + light.number.to_s + "/src"
 
-    puts "Path: " +path if DEBUG
+    # puts "Path: " +path if DEBUG
     FileUtils.mkdir_p path, :mode => 0700
 
-    puts Dir.pwd if DEBUG
+    # puts Dir.pwd if DEBUG
 
     files.each do |file|
       if (light.tag.visible_files[file].length > 1)
@@ -94,7 +94,7 @@ def build_files(light)
 
         #save filenames and filepaths
         filenames << (file)
-        puts path + "/" + file if DEBUG
+        # puts path + "/" + file if DEBUG
         filepaths << (path + "/" + file)
       end
     end

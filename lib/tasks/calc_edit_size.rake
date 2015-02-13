@@ -32,7 +32,7 @@ end
 
 def calc_edit_size
 
-  Session.where(language_framework: "Java-1.8_JUnit").limit(5).each do |session|
+  Session.where(language_framework: "Java-1.8_JUnit").each do |session|
     puts "^^^^^^^^^^^^^^^^^^^  NEW Session  ^^^^^^^^^^^^^^^^^^^"
     print "cyberdojo_id: " + session.cyberdojo_id.to_s + ", " if DEBUG
     print "language: " + session.language_framework.to_s + ", " if DEBUG
@@ -79,7 +79,7 @@ def calc_edit_size
         prev_path = "#{BUILD_DIR}/" + prev.git_tag.to_s + "/src"
         curr_path = "#{BUILD_DIR}/" + curr.git_tag.to_s + "/src"
 
-        puts "File To Match" + filename
+        # puts "File To Match" + filename
 
         match = false
 
@@ -101,8 +101,8 @@ def calc_edit_size
         end
 
 
-        puts "productionChanges: "+ productionChanges.to_s
-        puts "testChanges: " + testChanges.to_s
+        # puts "productionChanges: "+ productionChanges.to_s
+        # puts "testChanges: " + testChanges.to_s
 
         if match == true
           # puts "Total Number of Changes is: "
