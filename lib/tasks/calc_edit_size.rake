@@ -32,7 +32,28 @@ end
 
 def calc_edit_size
 
-  Session.where(language_framework: "Java-1.8_JUnit").each do |session|
+  # Session.where(language_framework: "Java-1.8_JUnit").each do |session|
+  #   SELECT DISTINCT(s.id) FROM sessions as s
+  # INNER JOIN compiles as c on s.id = c.session_id
+  # WHERE s.language_framework LIKE "Java-1.8_JUnit"
+  # AND c.total_edited_line_count IS NULL
+  # AND c.git_tag > 1
+
+  Session.find_by_sql("SELECT s.* FROM sessions as s
+  INNER JOIN compiles as c on s.id = c.session_id
+  WHERE s.language_framework LIKE \"Java-1.8_JUnit\"
+  AND c.total_edited_line_count IS NULL").each do |session|
+
+    # Session.find_by_sql("SELECT * FROM sessions WHERE id = 735").each do |session|
+
+    # 735
+
+    # puts session.inspect
+    # puts "^^^^^^^^^^^^^^^^^^^  NEW Session  ^^^^^^^^^^^^^^^^^^^"
+    # puts session.compiles.inspect
+    # puts "^^^^^^^^^^^^^^^^^^^  NEW Session  ^^^^^^^^^^^^^^^^^^^"
+    # puts session.compiles.first.inspect
+
     puts "^^^^^^^^^^^^^^^^^^^  NEW Session  ^^^^^^^^^^^^^^^^^^^"
     print "cyberdojo_id: " + session.cyberdojo_id.to_s + ", " if DEBUG
     print "language: " + session.language_framework.to_s + ", " if DEBUG
@@ -47,6 +68,10 @@ def calc_edit_size
     curr_files = curr_files.select{ |filename| filename.include? ".java" }
     curr_filenames = curr_files.map{ |file| File.basename(file) }
 
+    firstCompile.total_edited_line_count = 0
+    firstCompile.production_edited_line_count = 0
+    firstCompile.test_edited_line_count = 0
+    firstCompile.save
 
 
     curr_path = "#{BUILD_DIR}/1/src"
