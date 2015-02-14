@@ -39,10 +39,13 @@ def calc_edit_size
   # AND c.total_edited_line_count IS NULL
   # AND c.git_tag > 1
 
+  #5768 runs out of memory
+
   Session.find_by_sql("SELECT s.* FROM sessions as s
   INNER JOIN compiles as c on s.id = c.session_id
   WHERE s.language_framework LIKE \"Java-1.8_JUnit\"
-  AND c.total_edited_line_count IS NULL").each do |session|
+  AND c.total_edited_line_count IS NULL 
+  AND s.id != 5768").each do |session|
 
     # Session.find_by_sql("SELECT * FROM sessions WHERE id = 735").each do |session|
 
