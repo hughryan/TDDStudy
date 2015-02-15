@@ -152,13 +152,17 @@ def calc_edit_size
           else
             newAST = treeAST(curr_path + "/" + filename)
 
-            if productionChanges
-              production_AST_nodes += JSON.parse(newAST).length
-            elsif testChanges
-              test_AST_nodes += JSON.parse(newAST).length
-            else
-              puts "++++++++++++++++++++ NOT PRODUCTION OR TEST CHANGE ++++++++++++++++++++"
+            unless newAST == "ERROR"
+
+              if productionChanges
+                production_AST_nodes += JSON.parse(newAST).length
+              elsif testChanges
+                test_AST_nodes += JSON.parse(newAST).length
+              else
+                puts "++++++++++++++++++++ NOT PRODUCTION OR TEST CHANGE ++++++++++++++++++++"
+              end
             end
+
           end
         end
       end
