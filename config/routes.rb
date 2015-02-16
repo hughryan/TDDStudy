@@ -22,6 +22,8 @@ Rails.application.routes.draw do
 
   get 'markup/' => 'markup#index'
 
+  get 'markup/markCompleted' => 'markup#markCompleted'
+
   post 'markup/store_markup' => 'markup#store_markup'
 
   post 'markup/del_markup' => 'markup#del_markup'
@@ -39,6 +41,8 @@ Rails.application.routes.draw do
   get 'markup/markup_comparison' => 'markup#markup_comparison'
 
   get 'markup/:researcher' => 'markup#researcher'
+
+
 
 
   get 'cycle_catagorizer/cycle_catgories'

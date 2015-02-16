@@ -31,6 +31,12 @@ class MarkupController < ApplicationController
     Rails.root.to_s + '/'
   end
 
+  def markCompleted
+    allSessions = Session.where(language_framework: "Java-1.8_JUnit", kata_name: "Fizz_Buzz", potential_complete: true)
+    gon.allSessions = allSessions
+  end
+
+
   def calculatePrecisionAndRecall(session)
     puts "%%%%%%%%%%%%%%%%%%%%%%%%% Recall %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
     puts "Session.markups.count: " + session.markups.count.to_s
