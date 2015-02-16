@@ -30,7 +30,7 @@ $(function() {
       background: url('<%= image_url('icons/icon_component.gif') %>') no-repeat center center;
       cursor: pointer;
     }
-    td.markup {
+    td.mark_kata {
       background: url('<%= image_url('icons/pencil.png') %>') no-repeat center center;
       cursor: pointer;
     }
@@ -63,22 +63,26 @@ $(function() {
     <thead>
      <tr>
     <th>Display<br>Kata</th>
+    <th>Database<br>ID</th>
     <th>CyberDojo<br>ID</th>
     <th>Avatar</th>
     <th>Kata<br>Name</th>
     <th>Potential<br>Complete</th>
     <th>is<br>Complete?</th>
+        <th>Mark Kata</th>
     </tr>
     </thead>
 
     <tfoot>
     <tr>
     <th>Display<br>Kata</th>
+    <th>Database<br>ID</th>
     <th>CyberDojo<br>ID</th>
     <th>Avatar</th>
     <th>Kata<br>Name</th>
     <th>Potential<br>Complete</th>
     <th>is<br>Complete?</th>
+    <th>Mark Kata</th>
     </tr>
     </tfoot>
 
@@ -187,10 +191,14 @@ $(document).ready(function() {
       "defaultContent": '',
       "width": '20px'
     },  {
+      "className": 'id',
+      "data": 'id',
+      "width": '20px'
+    },  {
       "className": 'cyberdojo_id',
       "data": 'cyberdojo_id',
       "width": '50px'
-    }, {
+    },{
       "className": 'avatar',
       "data": 'avatar',
       "width": '30px'
@@ -209,6 +217,12 @@ $(document).ready(function() {
       "data": 'is_complete',
       "width": '40px'
 
+    },{
+      "className": 'mark_kata',
+      "orderable": false,
+      "data": null,
+      "defaultContent": '',
+      "width": '20px'
     }]
   });
 });
@@ -227,14 +241,18 @@ $('#myTable').on('click', 'td.view_kata', function() {
   window.open(newLocation);
 });
 
-$('#myTable').on('click', 'td.markup', function() {
-  var researcher = "<%= @researcher %>"
-  var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
-  var avatar = $(this).parent().find(".avatar").html();
-  var kata_name = $(this).parent().find(".kata_name").html();
+$('#myTable').on('click', 'td.mark_kata', function() {
+  console.log("WOOHOO");
+  console.log($(this).parent());
+  // var researcher = "<%= @researcher %>"
+  // var cyberdojo_id = $(this).parent().find(".cyberdojo_id").html();
+  // var avatar = $(this).parent().find(".avatar").html();
+  // var kata_name = $(this).parent().find(".kata_name").html();
+ var id = $(this).parent().find(".id").html();
+
   // window.location.href = "manualCatTool?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
-  var newLocation = "manualCatTool?researcher=" + researcher + "&id=" + cyberdojo_id + "&avatar=" + avatar + "&kataName=" + kata_name;
-window.open(newLocation);
+  var newLocation = "markKata?id=" + id;
+  window.open(newLocation);
 });
 
 $('#myTable').on('click', 'td.comparison', function() {

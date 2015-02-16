@@ -34,6 +34,20 @@ class MarkupController < ApplicationController
   def markCompleted
     allSessions = Session.where(language_framework: "Java-1.8_JUnit", kata_name: "Fizz_Buzz", potential_complete: true)
     gon.allSessions = allSessions
+
+  end
+
+  def markKata
+    id = params[:id]
+    currSession = Session.where(id: id).first
+
+    puts currSession.inspect
+    puts currSession.cyberdojo_id
+
+    allFiles = dojo.katas[currSession.cyberdojo_id].avatars[currSession.avatar].lights[currSession.total_light_count.to_i-1].tag.visible_files
+
+    gon.allFiles = allFiles
+
   end
 
 

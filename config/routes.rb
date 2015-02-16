@@ -24,6 +24,8 @@ Rails.application.routes.draw do
 
   get 'markup/markCompleted' => 'markup#markCompleted'
 
+  get 'markup/markKata' => 'markup#markKata'
+
   post 'markup/store_markup' => 'markup#store_markup'
 
   post 'markup/del_markup' => 'markup#del_markup'
