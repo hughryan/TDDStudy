@@ -29,10 +29,64 @@ def calc_cyclomatic_complexity
     puts session.inspect
 
     lastCompile = session.compiles.last
-    index = session.compiles.length -1
-    @avatar = dojo.katas[session.cyberdojo_id].avatars[session.avatar]
-    curr_light = @avatar.lights[index]
-    copy_source_files_for_cyclomatic_complexity(curr_light,compile)
+    index = (session.compiles.count)-1
+    # @avatar = dojo.katas[session.cyberdojo_id].avatars[session.avatar]
+    # curr_light = @avatar.lights[index]
+    # copy_source_files_for_cyclomatic_complexity(curr_light,lastCompile)
+    total_cc = 0
+    production_cc = 0
+    test_cc = 0
+    curr_light = dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[index]
+    curr_files = build_files(curr_light)
+    curr_files = curr_files.select{ |filename| filename.include? ".java" }
+    curr_filenames = curr_files.map{ |file| File.basename(file) }
+    path = "#{BUILD_DIR}/" + lastCompile.git_tag.to_s + "/src"
+    cycloComplex = 0
+
+    Dir.entries(path).each do |currFile|
+      # unless currFile.nil?
+      # puts "currFile: " + currFile.to_s
+      if currFile.to_s.length > 3
+        file = path.to_s + "/" + currFile.to_s
+        puts "output"
+        puts `./vendor/complexity/javancss #{file}`
+        # puts "./cloc-1.62.pl --by-file --quiet --sum-one --exclude-list-file=./clocignore --csv #{file}"
+        # puts `pwd`
+        # puts command
+        # csv = CSV.parse(command)
+        # puts " csv.to_s: " + csv.to_s
+        # unless(csv.inspect == "[]")
+
+        begin
+          # puts "File Type: " + findFileType(file)
+          if findFileType(file) == "Production"
+            # puts "sloc: " + csv[2][4].to_i.to_s
+            production_cc = cycloComplex
+            # production_sloc = production_sloc + csv[2][4].to_i
+            # puts "PRODUCTION SLOC: " + production_sloc.to_s
+          end
+          if findFileType(file) == "Test"
+            # test_sloc = test_sloc + csv[2][4].to_i
+            test_cc = cycloComplex
+            # puts "TEST SLOC: " + test_sloc.to_s
+          end
+        rescue
+          # puts "Error: Reading in calc_sloc"
+        end
+        # sloc = sloc + csv[2][4].to_i
+        # end
+        total_cc += cycloComplex
+      end
+    end
+    puts "production_cc: " + production_cc.to_s
+    puts "test_cc: "+ test_cc.to_s
+    puts "total_cc: "+total_cc.to_s
+    # compile.test_sloc_count = test_sloc.to_s
+    # compile.total_sloc_count = sloc.to_s
+    # compile.production_sloc_count = production_sloc.to_s
+
+
+
 
 
     # session.save
@@ -93,6 +147,12 @@ def copy_source_files_for_cyclomatic_complexity(curLight,compile)
     end
   end
   # @statement_coverage = calc_test_coverage_in_dir(curLight,currTestClass,currLightDir)
+
+
+
+
+
+
 
   puts "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
   puts "Current Light Color: " + curLight.colour.to_s
