@@ -150,11 +150,17 @@ border-top-left-radius: 4px;
 
 <div id="header">
 <h3>
-<div id="nextKata">NO CANDIDATE FOUND</div>
+<!-- <div id="nextKata">NO CANDIDATE FOUND</div>
+<div id="username">
+Researcher: <%= params[:researcher] %> -->
+<!-- </div> -->
 </h3>
 
-<h3>CyberDojo Id: <%= params[:id] %>
+<!-- <h3>CyberDojo Id: <%= params[:id] %>
+Avatar: <%= params[:avatar] %>
+Kata Name: <%= params[:kataName] %>
 </h3>
+ -->
 
 <body>
 <!-- <div id="instructions">'a' - mark red cycle : 's' - mark as green cycle : 'd' - mark as blue cycle : 'f' mark as white cycle : 'g' mark as brown cycle<br>
@@ -163,68 +169,142 @@ shift + arrow - grow that side : alt (option) + arrow - shrink that side<br>
 x - delete all cycles under brush<br>
 </div> -->
 
-<!-- <div id="viz"></div>
+<div id="viz"></div>
 <svg class="chart"></svg>
 </div>
 <div id="accordion">
-</div> -->
-
-<div id="sourceCode"></div>
-
-<div id="allFiles"></div>
-
-<textarea id="myTextArea">
-  function myScript(){return 100;}
-</textarea>
-
-<!-- Create a simple CodeMirror instance -->
-<script>
-
-// var myCodeMirror = CodeMirror(document.body);
-
-var myCodeMirror = CodeMirror.fromTextArea(myTextArea);
-
-// var myCodeMirror = CodeMirror(document.body, {
-//   value: "function myScript(){return 100;}\n",
-//   mode:  "javascript"
-// });
-
-  // var editor = CodeMirror.fromTextArea(myTextarea, {
-  //   lineNumbers: true
-  // });
-
-// gon.allFiles.forEach(
-//   function(element, index) {
-//     console.log(element);
-// });
-
-jQuery.each(gon.allFiles, function(i, val) {
-
-  // $("#" + i).append(document.createTextNode(" - " + val));
-$("#allFiles").append("<textarea id=\"myTextArea+i\">"+ val +"</textarea>");
-
-
-
-
-});
-
-</script>
+</div>
 
 <script>
-
-
 
 // initializeKeyBindings();
 
 // var data = gon.compiles;
 // var phaseData = gon.phases;
-// // console.log(phaseData);
+// console.log(phaseData);
 // compiles = gon.compiles;
 // cycles = gon.cycles;
 // username = "<%= params[:researcher] %>";
 
 // pageSetup();
 
+
+function populateAccordion(data) {
+
+var commonFiles = data;
+  var uniqueStart = [];
+  var uniqueEnd = [];
+  
+
+  $('#accordion').html("");
+
+
+  //Add unique end files
+  // data.forEach(
+  //   function(element, index) {
+  //     var str1 = "";
+  //     var str2 = data[element];
+  //     addTitleAndDiffCode(str1, str2, element);
+  //   })
+
+  // data.forEach(function(element, index) {
+  //     var str1 = "";
+  //     var str2 = data[element];
+  //     // addTitleAndDiffCode(str1, str2, element);
+  //   });
+
+jQuery.each(data, function(i, val) {
+  // $("#" + i).append(document.createTextNode(" - " + val));
+  console.log(i);
+  console.log(val);
+
+addTitleAndDiffCode(val, val, i);
+
+});
+
+
+
+  $("#accordion").height($(window).height() - $("#header").height() - 20);
+}
+
+function collapse(e) {
+  $("#compare_" + e.currentTarget.id).css("display", "none");
+  $("#" + e.currentTarget.id).click(expand);
+}
+
+function expand(e) {
+  $("#compare_" + e.currentTarget.id).css("display", "inline");
+  $("#" + e.currentTarget.id).click(collapse);
+}
+
+function addTitleAndDiffCode(str1, str2, element) {
+
+  var safeName = element.replace('.', '');
+
+  var newDiv = "<div class='entireDiffArea'><div class='diffTitle' id='" + safeName + "'>" + element + "<\/div><div class='diffArea'><div id='compare_" + safeName + "' class='CodeMirror'></div></div></div></div></div>";
+  $('#accordion').append(newDiv);
+
+
+// var myCodeMirror = CodeMirror(function(elt) {
+//   document.getElementById('compare_' + safeName).parentNode.replaceChild(elt, document.getElementById('compare_' + safeName));
+// }, {value: str1,lineNumbers: true});
+
+if(element.indexOf("test") > -1){
+     $("#" + safeName).click(collapse);
+}else{
+    $("#compare_" + safeName).css("display", "none");
+     $("#" + safeName).addClass("collapsed");
+     $("#" + safeName).click(expand);
+
+ 
+}
+
+  
+
+
+// var myCodeMirror = CodeMirror(function(elt) {
+//   myTextArea.parentNode.replaceChild(elt, myTextArea);
+// }, {value: myTextArea.value});
+
+
+
+
+  // $('#compare_' + safeName)
+  //   .mergely({
+  //     // width: ($(window).width/2),
+  //     // height: 500,
+  //     width: $(window).width() - ($(window).width() * 0.05),
+  //     autoresize: true,
+  //     sidebar: false,
+  //     cmsettings: {
+  //       readOnly: true,
+  //       lineNumbers: true,
+  //       mode: "text/x-java"
+  //     },
+  //     lhs: function(setValue) {
+  //       setValue(str1);
+  //     },
+  //     rhs: function(setValue) {
+  //       setValue(str2);
+  //     }
+  //   });
+  // var diffLength = $('#compare_' + safeName).mergely('diff').split(/\r\n|\r|\n/).length;
+  // if (diffLength == 1) {
+  //   $("#compare_" + safeName).css("display", "none");
+  //   $("#" + safeName).addClass("collapsed");
+  //   $("#" + safeName).click(expand);
+  // } else {
+  //   $("#" + safeName).click(collapse);
+  // }
+
+  $('#' + safeName).html(element);
+
+  // $('#compare_' + safeName).mergely('resize')
+}
+
+
+
+populateAccordion(gon.allFiles);
 // drawUncatagorizedKata();
 // addAllPrexistingMarkup(gon.allMarkups[username]);
 
