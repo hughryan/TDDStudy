@@ -47,9 +47,36 @@ class MarkupController < ApplicationController
     allFiles = dojo.katas[currSession.cyberdojo_id].avatars[currSession.avatar].lights[currSession.total_light_count.to_i-1].tag.visible_files
 
     gon.allFiles = allFiles
+    gon.is_complete = currSession.is_complete
 
   end
 
+  def update_completion
+    puts "%%%%%%%%%%%%%%%%%%update_markup$$$$$$$$$$$$$$$$$$"
+    puts params[:complete]
+    curr_id =  params[:id]
+
+    currSession = Session.where(id: curr_id).first
+
+    if params[:complete] == "Yes"
+      currSession.is_complete = true
+    end
+    if params[:complete] == "No"
+      currSession.is_complete = false
+    end
+
+
+
+    currSession.save
+
+
+    names = Array.new
+    respond_to do |format|
+      format.html
+      # format.json { render :json => @oneSession }
+      format.json { render :json => names }
+    end
+  end
 
   def calculatePrecisionAndRecall(session)
     puts "%%%%%%%%%%%%%%%%%%%%%%%%% Recall %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"

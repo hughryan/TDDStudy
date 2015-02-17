@@ -22,6 +22,8 @@ Rails.application.routes.draw do
 
   get 'markup/' => 'markup#index'
 
+  post 'markup/update_completion' => 'markup#update_completion'
+
   get 'markup/markCompleted' => 'markup#markCompleted'
 
   get 'markup/markKata' => 'markup#markKata'
