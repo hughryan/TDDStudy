@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150106034930) do
+ActiveRecord::Schema.define(version: 20150216174516) do
 
   create_table "compiles", force: true do |t|
     t.integer  "phase_id"
@@ -147,6 +147,8 @@ ActiveRecord::Schema.define(version: 20150106034930) do
     t.float    "tdd_score"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "potential_complete"
+    t.boolean  "is_complete"
   end
 
 end
