@@ -47,7 +47,7 @@ def calc_edit_size
   Session.find_by_sql("SELECT s.* FROM sessions as s
   INNER JOIN compiles as c on s.id = c.session_id
   WHERE s.language_framework LIKE \"Java-1.8_JUnit\"
-  AND s.test_edited_line_count < 0
+  AND c.test_edited_line_count < 0
   AND s.id != 5768").each do |session|
 
 #TODO: FIX MAJOR ISSUES WITH RECOGNIZING STUFF
