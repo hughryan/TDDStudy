@@ -33,7 +33,7 @@ end
 def calc_edit_size
 
 #MARK SO QUERY CAN CONTINUE LATER
-  Session.update_all(test_edited_line_count: -1)
+  Compiles.where(test_edited_line_count: 0).update_all(test_edited_line_count: -1)
 
   # Session.where(language_framework: "Java-1.8_JUnit").each do |session|
   #   SELECT DISTINCT(s.id) FROM sessions as s
