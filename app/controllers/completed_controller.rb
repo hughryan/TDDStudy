@@ -9,13 +9,12 @@ require_relative root + '/lib/Git'
 require_relative root + '/lib/HostTestRunner'
 require_relative root + '/lib/OsDisk'
 
-class MarkupController < ApplicationController
+class CompletedController < ApplicationController
 
   skip_before_filter  :verify_authenticity_token
 
 
   def index
-    @researchers = Researcher.all
   end
 
   def dojo
@@ -33,13 +32,12 @@ class MarkupController < ApplicationController
 
   def mark_completed
     @kata = params[:kata]
-    researcher_id = Researcher.find_by(name: @researcher).id
-    allSessions = Session.where(language_framework: "Java-1.8_JUnit", kata_name: "Fizz_Buzz", potential_complete: true)
+    allSessions = Session.where(language_framework: "Java-1.8_JUnit", kata_name: @kata, potential_complete: true)
     gon.allSessions = allSessions
 
   end
 
-  def markKata
+  def mark_kata
     id = params[:id]
     currSession = Session.where(id: id).first
 

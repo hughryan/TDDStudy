@@ -1,26 +1,22 @@
-task :find_potential_completed_katas do
-  find_potential_completed_katas
+# Mark katas as potentially completed
+#
+# Note: This design should allow for these rules to be tweaked,
+#       and the rake task to be re-run
+#
+# Usage:
+#   bundle exec rake calc:completed
+#
+def get_valid_sessions
+  @sessions = Array.new
+  all_sessions = Session.all
+  #Limit sessions to desirable subset
+  all_sessions.each do |session|
+    if (session.language_framework == "Java-1.8_JUnit") && (session.compiles.count >= 2)
+       #&& (session.kata_name == "Fizz_Buzz")
+      @sessions.push(session)
+    end
+  end
 end
-
-# This data can be loaded with the rake db:seed (or created alongside the db with db:setup).
-root = '../..'
-
-require_relative root + '/config/environment.rb'
-require_relative root + '/lib/Docker'
-require_relative root + '/lib/DockerTestRunner'
-require_relative root + '/lib/DummyTestRunner'
-require_relative root + '/lib/Folders'
-require_relative root + '/lib/Git'
-require_relative root + '/lib/HostTestRunner'
-require_relative root + '/lib/OsDisk'
-require_relative root + '/lib/ASTInterface/ASTInterface'
-
-
-def root_path
-  Rails.root.to_s + '/'
-end
-
-
 
 def find_potential_completed_katas
 
@@ -39,5 +35,13 @@ AND kata_name LIKE \"Fizz_Buzz\"").each do |session|
       end
     end
     session.save
+  end
+end
+
+namespace :calc do
+  desc "Marks katas as potentially completed"
+  task completed: :environment do
+    get_valid_sessions
+    find_potential_completed_katas
   end
 end
