@@ -374,12 +374,17 @@ class MarkupController < ApplicationController
     Cycle.where(session_id: @currSession.id).each do |cycle|
       curr_cycle = Hash.new()
       # endCompile: 3startCompile: 1valid_tdd: true
-      # puts "CYCLE:!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      puts "CYCLE:!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      # puts cycle.inspect
       # puts cycle.phases.first.compiles.first.git_tag.to_s
-      curr_cycle["startCompile"] = cycle.phases.first.compiles.first.git_tag
-      curr_cycle["endCompile"] = cycle.phases.last.compiles.last.git_tag
+      firstCompile = cycle.phases.first.compiles.first
+      lastCompile = cycle.phases.last.compiles.last
+      unless lastCompile.nil?
+      curr_cycle["startCompile"] = firstCompile.git_tag
+      curr_cycle["endCompile"] = lastCompile.git_tag
       curr_cycle["valid_tdd"] = cycle.valid_tdd
       allCycles << curr_cycle
+      end
     end
     gon.allCycles = allCycles
 
