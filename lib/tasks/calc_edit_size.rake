@@ -148,6 +148,7 @@ def calc_edit_size
         if match == true
           # puts "Total Number of Changes is: "
           diffASTResult = diffAST(prev_path + "/" + filename,curr_path + "/" + filename)
+          if(diffASTResult != "ERROR")
           # puts "XXXXXXXXXXXXXXXXXXXXXXXX"
           puts "diffASTResult.length: " + JSON.parse(diffASTResult).length.to_s
           puts "XXXXXXXXXXXXXXXXXXXXXXXX"
@@ -182,7 +183,7 @@ def calc_edit_size
                 puts "++++++++++++++++++++ NOT PRODUCTION OR TEST CHANGE ++++++++++++++++++++"
               end
             end
-
+          end
           end
         end
       end
