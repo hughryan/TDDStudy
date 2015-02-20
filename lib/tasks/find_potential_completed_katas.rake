@@ -6,23 +6,11 @@
 # Usage:
 #   bundle exec rake calc:completed
 #
-def get_valid_sessions
-  @sessions = Array.new
-  all_sessions = Session.all
-  #Limit sessions to desirable subset
-  all_sessions.each do |session|
-    if (session.language_framework == "Java-1.8_JUnit") && (session.compiles.count >= 2)
-       #&& (session.kata_name == "Fizz_Buzz")
-      @sessions.push(session)
-    end
-  end
-end
 
 def find_potential_completed_katas
-
   Session.find_by_sql("SELECT * FROM sessions
-WHERE language_framework LIKE \"Java-1.8_JUnit\"
-AND kata_name LIKE \"Fizz_Buzz\"").each do |session|
+    WHERE language_framework LIKE \"Java-1.8_JUnit\"
+    AND kata_name LIKE \"Fizz_Buzz\"").each do |session|
 
     puts "(((((((((((((((((( New Session ))))))))))))))))))))"
     puts session.inspect
@@ -41,7 +29,6 @@ end
 namespace :calc do
   desc "Marks katas as potentially completed"
   task completed: :environment do
-    get_valid_sessions
     find_potential_completed_katas
   end
 end
