@@ -32,6 +32,9 @@ end
 
 def calc_edit_size
 
+#MARK SO QUERY CAN CONTINUE LATER
+  #Compile.where(test_edited_line_count: 0).update_all(test_edited_line_count: -1)
+
   # Session.where(language_framework: "Java-1.8_JUnit").each do |session|
   #   SELECT DISTINCT(s.id) FROM sessions as s
   # INNER JOIN compiles as c on s.id = c.session_id
@@ -44,10 +47,16 @@ def calc_edit_size
   Session.find_by_sql("SELECT s.* FROM sessions as s
   INNER JOIN compiles as c on s.id = c.session_id
   WHERE s.language_framework LIKE \"Java-1.8_JUnit\"
-  AND c.total_edited_line_count IS NULL 
+  AND c.test_edited_line_count < 0
   AND s.id != 5768").each do |session|
 
-    # Session.find_by_sql("SELECT * FROM sessions WHERE id = 735").each do |session|
+#TODO: FIX MAJOR ISSUES WITH RECOGNIZING STUFF
+
+
+  # 7437
+  FileUtils.remove_entry_secure(BUILD_DIR)
+
+  # Session.find_by_sql("SELECT * FROM sessions WHERE id = 127").each do |session|
 
     # 735
 
@@ -91,7 +100,7 @@ def calc_edit_size
       prev_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[prev.git_tag-1])
       curr_files = build_files(dojo.katas[session.cyberdojo_id].avatars[session.avatar].lights[curr.git_tag-1])
 
-      puts curr_files.inspect
+      # puts curr_files.inspect
 
 
       prev_files = prev_files.select{ |filename| filename.include? ".java" }
@@ -100,52 +109,61 @@ def calc_edit_size
       prev_filenames = prev_files.map{ |file| File.basename(file) }
       curr_filenames = curr_files.map{ |file| File.basename(file) }
 
-      testChanges = 0
-      productionChanges = 0
+      # testChanges = 0
+      # productionChanges = 0
       # cycle for each prev_files that exists in curr_files, run diff
       curr_filenames.each do |filename|
         prev_path = "#{BUILD_DIR}/" + prev.git_tag.to_s + "/src"
         curr_path = "#{BUILD_DIR}/" + curr.git_tag.to_s + "/src"
 
-        # puts "File To Match" + filename
+        puts "filename:  " + filename
 
         match = false
 
+        testChanges = false
+        productionChanges = false
+
         if prev_filenames.include?(filename)
-          match = true
-          if findChangeType(filename,prev_path,curr_path) == "Production"
-            productionChanges = true
-          end
-          if findChangeType(filename,prev_path,curr_path) == "Test"
-            testChanges = true
-          end
-        else
+           match = true
+         end
+        #   if findChangeType(filename,prev_path,curr_path) == "Production"
+        #     productionChanges = true
+        #   end
+        #   if findChangeType(filename,prev_path,curr_path) == "Test"
+        #     testChanges = true
+        #   end
+        # else
           if findFileType(curr_path + "/" + filename) == "Production"
             productionChanges = true
           end
           if findFileType(curr_path + "/" + filename) == "Test"
             testChanges = true
           end
-        end
+        # end
 
 
-        # puts "productionChanges: "+ productionChanges.to_s
-        # puts "testChanges: " + testChanges.to_s
+        puts "productionChanges: "+ productionChanges.to_s
+        puts "testChanges: " + testChanges.to_s
 
         if match == true
           # puts "Total Number of Changes is: "
           diffASTResult = diffAST(prev_path + "/" + filename,curr_path + "/" + filename)
           # puts "XXXXXXXXXXXXXXXXXXXXXXXX"
-          # puts "diffASTResult.length: " + diffASTResult.length.to_s
-          puts diffASTResult
+          puts "diffASTResult.length: " + JSON.parse(diffASTResult).length.to_s
+          puts "XXXXXXXXXXXXXXXXXXXXXXXX"
+          # puts diffASTResult
+          puts "XXXXXXXXXXXXXXXXXXXXXXXX"
           unless diffASTResult == "ERROR"
-            puts JSON.parse(diffASTResult)
+            # puts JSON.parse(diffASTResult)
             # puts JSON.parse(diffASTResult).length
 
             if productionChanges
+              puts "SET production_AST_nodes 1"
               production_AST_nodes += JSON.parse(diffASTResult).length
             elsif testChanges
+              puts "SET test_AST_nodes 1"
               test_AST_nodes += JSON.parse(diffASTResult).length
+              puts "test_AST_nodes: "+ test_AST_nodes.to_s
             else
               puts "++++++++++++++++++++ NOT PRODUCTION OR TEST CHANGE ++++++++++++++++++++"
             end
@@ -155,8 +173,10 @@ def calc_edit_size
             unless newAST == "ERROR"
 
               if productionChanges
+                puts "SET production_AST_nodes 2"
                 production_AST_nodes += JSON.parse(newAST).length
               elsif testChanges
+                puts "SET test_AST_nodes 2"
                 test_AST_nodes += JSON.parse(newAST).length
               else
                 puts "++++++++++++++++++++ NOT PRODUCTION OR TEST CHANGE ++++++++++++++++++++"
@@ -178,7 +198,7 @@ def calc_edit_size
       puts "----------------------"
 
     end
-    FileUtils.remove_entry_secure(BUILD_DIR)
+     # FileUtils.remove_entry_secure(BUILD_DIR)
   end
 end
 
