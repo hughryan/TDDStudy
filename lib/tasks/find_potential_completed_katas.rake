@@ -4,13 +4,14 @@
 #       and the rake task to be re-run
 #
 # Usage:
-#   bundle exec rake calc:completed
+#   bundle exec rake find_potential_completed_katas
 #
 
 def find_potential_completed_katas
+
   Session.find_by_sql("SELECT * FROM sessions
-    WHERE language_framework LIKE \"Java-1.8_JUnit\"
-    AND kata_name LIKE \"Fizz_Buzz\"").each do |session|
+WHERE language_framework LIKE \"Java-1.8_JUnit\"
+AND kata_name LIKE \"Fizz_Buzz\"").each do |session|
 
     puts "(((((((((((((((((( New Session ))))))))))))))))))))"
     puts session.inspect
@@ -26,9 +27,6 @@ def find_potential_completed_katas
   end
 end
 
-namespace :calc do
-  desc "Marks katas as potentially completed"
-  task completed: :environment do
-    find_potential_completed_katas
-  end
+task :find_potential_completed_katas do
+  find_potential_completed_katas
 end

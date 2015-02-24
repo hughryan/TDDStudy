@@ -91,7 +91,6 @@ margin-top: 10px;
 
 .diffTitle{
   border: 2px solid #ddd;
-/*background: white url("images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;*/
 font-weight: normal;
 color: #212121;
 border-top-right-radius: 4px;
@@ -135,7 +134,6 @@ width:99%;
 
 .CodeMirror{
   width:100%;
-  /*background: white url("images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;*/
    border: 2px solid #888888;
    border-top-right-radius: 4px;
 border-top-left-radius: 4px;
@@ -154,10 +152,10 @@ border-top-left-radius: 4px;
 <h3>
 Is Kata Complete?<br>
 
+<input type="radio" name="markup" value="" id="complete_un">Unmarked</input>
 <input type="radio" name="markup" value="Yes" id="complete_yes">Yes</input>
 <input type="radio" name="markup" value="No" id="complete_no">No</input>
 
- 
 </h3>
 
 <body>
@@ -169,38 +167,35 @@ Is Kata Complete?<br>
 
 id = "<%= params[:id] %>";
 
-if(gon.is_complete){
-$('#complete_yes').attr('checked', 'checked');
-}else{
+if (gon.is_complete) {
+  $('#complete_yes').attr('checked', 'checked');
+} else if (gon.is_complete == null) {
+  $('#complete_un').attr('checked', 'checked');
+} else {
   $('#complete_no').attr('checked', 'checked');
 }
 
-
-
-
 $('input:radio[name="markup"]').change(
     function(){
-    console.log("ChangE");
+      console.log("Change");
 
-  //Update data on server
-  markupJSON = {
-    id: id,
-    complete: this.value
-  };
+      //Update data on server
+      markupJSON = {
+        id: id,
+        complete: this.value
+      };
 
-  $.ajax({
-    url: 'update_completion',
-    type: 'post',
-    data: markupJSON,
-    dataType: 'JSON'
-  });
-
-
+      $.ajax({
+        url: 'update_completion',
+        type: 'post',
+        data: markupJSON,
+        dataType: 'JSON'
+      });
     });
 
 function populateAccordion(data) {
 
-var commonFiles = data;
+  var commonFiles = data;
   var uniqueStart = [];
   var uniqueEnd = [];
   
