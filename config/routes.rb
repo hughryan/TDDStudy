@@ -22,12 +22,6 @@ Rails.application.routes.draw do
 
   get 'markup/' => 'markup#index'
 
-  post 'markup/update_completion' => 'markup#update_completion'
-
-  get 'markup/markCompleted' => 'markup#markCompleted'
-
-  get 'markup/markKata' => 'markup#markKata'
-
   post 'markup/store_markup' => 'markup#store_markup'
 
   post 'markup/del_markup' => 'markup#del_markup'
@@ -46,8 +40,19 @@ Rails.application.routes.draw do
 
   get 'markup/:researcher' => 'markup#researcher'
 
+  ### Mark Completed
 
+  get 'completed/' => 'completed#index'
 
+  post 'completed/update_completion' => 'completed#update_completion'
+
+  get 'completed/timelineWithBrush' => 'markup#timelineWithBrush'
+
+  get 'completed/mark_kata/' => 'completed#mark_kata'
+
+  get 'completed/:kata' => 'completed#mark_completed'
+
+  ###
 
   get 'cycle_catagorizer/cycle_catgories'
 

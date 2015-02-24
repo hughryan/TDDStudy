@@ -1,26 +1,11 @@
-task :find_potential_completed_katas do
-  find_potential_completed_katas
-end
-
-# This data can be loaded with the rake db:seed (or created alongside the db with db:setup).
-root = '../..'
-
-require_relative root + '/config/environment.rb'
-require_relative root + '/lib/Docker'
-require_relative root + '/lib/DockerTestRunner'
-require_relative root + '/lib/DummyTestRunner'
-require_relative root + '/lib/Folders'
-require_relative root + '/lib/Git'
-require_relative root + '/lib/HostTestRunner'
-require_relative root + '/lib/OsDisk'
-require_relative root + '/lib/ASTInterface/ASTInterface'
-
-
-def root_path
-  Rails.root.to_s + '/'
-end
-
-
+# Mark katas as potentially completed
+#
+# Note: This design should allow for these rules to be tweaked,
+#       and the rake task to be re-run
+#
+# Usage:
+#   bundle exec rake find_potential_completed_katas
+#
 
 def find_potential_completed_katas
 
@@ -40,4 +25,8 @@ AND kata_name LIKE \"Fizz_Buzz\"").each do |session|
     end
     session.save
   end
+end
+
+task :find_potential_completed_katas do
+  find_potential_completed_katas
 end

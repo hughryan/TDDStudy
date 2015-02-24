@@ -31,7 +31,9 @@ class MarkupController < ApplicationController
     Rails.root.to_s + '/'
   end
 
-  def markCompleted
+  def mark_completed
+    @kata = params[:kata]
+    researcher_id = Researcher.find_by(name: @researcher).id
     allSessions = Session.where(language_framework: "Java-1.8_JUnit", kata_name: "Fizz_Buzz", potential_complete: true)
     gon.allSessions = allSessions
 
