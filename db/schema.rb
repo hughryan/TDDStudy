@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150217204025) do
+ActiveRecord::Schema.define(version: 20150226225729) do
 
   create_table "compiles", force: true do |t|
     t.integer  "phase_id"
@@ -151,6 +151,9 @@ ActiveRecord::Schema.define(version: 20150217204025) do
     t.boolean  "is_complete"
     t.float    "test_cyclomatic_complexity"
     t.float    "production_cyclomatic_complexity"
+    t.float    "final_production_file_method_count"
+    t.float    "final_test_file_method_count"
+    t.float    "final_total_method_count"
   end
 
 end
